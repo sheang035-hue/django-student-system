@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied (403) - Build Bright University{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center py-5">
+    <div class="col-md-8 col-lg-6 text-center">
+        <div class="card card-bbu shadow-sm border-0 p-4 p-md-5">
+            <div class="empty-state-icon mx-auto mb-3">
+                <i class="fa-solid fa-shield-halved text-danger"></i>
+            </div>
+            <h1 class="display-4 fw-bold text-danger mb-1">403</h1>
+            <h4 class="fw-bold text-dark mb-2">គ្មានសិទ្ធិចូលប្រើ / Access Forbidden</h4>
+            <p class="text-muted mb-4">
+                You do not have administrative permission to view or modify this university record. If you require access, please contact the BBU IT Department or Registrar Office.
+            </p>
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{% url 'home' %}" class="btn btn-bbu-primary px-4 py-2">
+                    <i class="fa-solid fa-house me-1"></i> Return to Safety
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

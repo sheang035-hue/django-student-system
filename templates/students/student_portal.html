@@ -1,0 +1,475 @@
+{% extends 'base.html' %}
+{% load static l10n %}
+
+{% block title %}Student Academic Portal - {{ student.get_primary_name }} ({{ student.student_id }}){% endblock %}
+
+{% block content %}
+{% localize off %}
+<!-- Student Portal Hero Greeting Banner -->
+<div class="card card-bbu hero-banner mb-4">
+    <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="BBU Official Logo" class="bbu-hero-logo">
+                    <div>
+                        <span class="badge badge-soft-warning px-3 py-1 fw-semibold shadow-sm">
+                            🎓 Build Bright University • Student Academic Portal
+                        </span>
+                        <div class="text-white-50 small mt-1">ផតថលព័ត៌មានសិក្សា និងលទ្ធផលប្រឡងរបស់និស្សិត</div>
+                    </div>
+                </div>
+                <h1 class="display-6 fw-bold mb-2 text-white khmer-text">
+                    សូមស្វាគមន៍, {{ student.get_primary_name }}!
+                </h1>
+                <p class="lead mb-3 text-white-50">
+                    Welcome back, {{ student.user.get_full_name|default:student.user.username }}. Track your enrolled courses, view academic grades, inspect your digital ID card, and access your official transcript.
+                </p>
+                <div class="d-flex flex-wrap gap-2 text-white-50 small">
+                    <span>🪪 ID: <strong class="text-white">{{ student.student_id }}</strong></span>
+                    <span class="mx-2">•</span>
+                    <span>🏛️ Faculty of Science & IT</span>
+                    <span class="mx-2">•</span>
+                    <span>🎓 Bachelor Degree (Year 2)</span>
+                    <span class="mx-2">•</span>
+                    <span class="badge badge-soft-success px-2 py-0 align-self-center">🟢 Active Student</span>
+                </div>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <a href="{% url 'enrollments:student_transcript' student.student_id %}" class="btn btn-bbu-gold px-3 py-2 shadow-sm">
+                        📜 Official Transcript
+                    </a>
+                    <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-bbu-primary px-3 py-2 shadow-sm">
+                        🪪 My Student ID Card
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4 Personal Academic KPI Metric Cards -->
+<div class="row g-3 mb-4">
+    <!-- Cumulative GPA -->
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-blue h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📊 Cumulative GPA</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ effective_gpa|floatformat:"2u" }} <small class="fs-6 text-muted">/ 4.00</small></h3>
+                    <span class="badge badge-soft-{{ standing_badge }} mt-1">
+                        {{ standing_kh }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <small class="text-muted">{{ standing_en }}</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credits Progress -->
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-green h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">🎯 Credits Earned</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ earned_credits }} <small class="fs-6 text-muted">/ {{ total_credits }} Cr</small></h3>
+                    <small class="text-success fw-semibold">
+                        🟢 100% On-Track
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <div class="progress-bbu">
+                    <div class="progress-bbu-bar progress-bbu-bar-success" role="progressbar" 
+                         style="width: {% if total_credits %}{% widthratio earned_credits total_credits 100 %}{% else %}100{% endif %}%;"
+                         aria-valuenow="{{ earned_credits }}" aria-valuemin="0" aria-valuemax="{{ total_credits }}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrolled Courses -->
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-amber h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-book-open-reader"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📚 Enrolled Courses</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_enrolled }} <small class="fs-6 text-muted">courses</small></h3>
+                    <small class="text-muted fw-semibold">
+                        🟢 {{ completed_count }} Completed
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <a href="#enrolled-courses" class="small text-decoration-none text-warning fw-semibold">
+                    View Course Details <i class="fa-solid fa-arrow-down ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Average Score -->
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-purple h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📈 Average Score</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ avg_score }}%</h3>
+                    <small class="text-success fw-semibold">
+                        🌟 Grade A Average
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <span class="small text-muted">Across {{ completed_count }} completed subjects</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Portal Body -->
+<div class="row g-4">
+    <!-- Left Column: Courses Table & Academic Grade Distribution (8 cols) -->
+    <div class="col-lg-8" id="enrolled-courses">
+        <!-- Enrolled Courses & Academic Grades Card -->
+        <div class="card card-bbu mb-4">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark">📚 My Enrolled Courses & Grades</h5>
+                    <small class="text-muted">មុខវិជ្ជា និងលទ្ធផលសិក្សារបស់និស្សិត</small>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge badge-soft-primary">{{ total_enrolled }} Total Enrolled</span>
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                        <i class="fa-solid fa-book-open me-1"></i> Catalog
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                {% if enrollments %}
+                <div class="table-responsive">
+                    <table class="table table-bbu table-bbu-responsive table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 44%;">Course & Subject Title / មុខវិជ្ជា</th>
+                                <th class="text-center" style="width: 14%;">Credits</th>
+                                <th class="text-center" style="width: 18%;">Score / ពិន្ទុ</th>
+                                <th class="text-center" style="width: 12%;">Grade</th>
+                                <th class="text-center" style="width: 12%;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for e in enrollments %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-start gap-2">
+                                        <span class="badge bg-light text-dark border fw-bold px-2 py-1 mt-1">
+                                            {{ e.course.code }}
+                                        </span>
+                                        <div>
+                                            <a href="{% url 'courses:course_detail' e.course.pk %}" class="fw-bold text-decoration-none text-dark d-block">
+                                                {{ e.clean_en_title }}
+                                            </a>
+                                            {% if e.clean_kh_title %}
+                                            <small class="text-muted khmer-text d-block">{{ e.clean_kh_title }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="badge badge-soft-primary px-2 py-1">
+                                        {{ e.course.credits }} Cr
+                                    </span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% if e.score is not None %}
+                                        <div class="fw-bold text-dark mb-1">{{ e.score }}%</div>
+                                        <div class="progress-bbu mx-auto" style="height: 5px; max-width: 90px;">
+                                            <div class="progress-bbu-bar {% if e.score >= 80 %}progress-bbu-bar-success{% elif e.score >= 65 %}progress-bbu-bar-primary{% elif e.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
+                                                 role="progressbar" 
+                                                 style="width: {{ e.score }}%;"
+                                                 aria-valuenow="{{ e.score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small">In Progress</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% include "components/_grade_badge.html" with grade=e.grade %}
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% include "components/_status_badge.html" with status=e.status %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light fw-bold">
+                                <td>Total / សរុប</td>
+                                <td class="text-center"><span class="badge badge-soft-success">{{ earned_credits }} Cr</span></td>
+                                <td class="text-center">{{ avg_score }}% Avg</td>
+                                <td class="text-center text-primary fs-6">{{ effective_gpa|floatformat:"2u" }} GPA</td>
+                                <td class="text-center"><span class="badge badge-soft-success">Passed</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-4 text-center">
+                    <p class="text-muted mb-0">No enrolled courses found for this student account.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Academic Performance & Grading Reference Card -->
+        <div class="card card-bbu mb-4">
+            <div class="card-bbu-header">
+                <h6 class="fw-bold mb-0 text-dark">📊 Academic Standing & Grading Scale Reference</h6>
+                <small class="text-muted">បទដ្ឋាននៃការវាយតម្លៃពិន្ទុ និងចំណាត់ថ្នាក់តាមស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS)</small>
+            </div>
+            <div class="card-body p-4">
+                <!-- Grade Summary Chips -->
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <div class="p-2 px-3 rounded border bg-light d-flex align-items-center gap-2">
+                        <span class="badge bg-success">Grade A</span>
+                        <span class="fw-bold">{{ grade_a_count }} Course(s)</span>
+                    </div>
+                    <div class="p-2 px-3 rounded border bg-light d-flex align-items-center gap-2">
+                        <span class="badge bg-primary">Grade B / B+</span>
+                        <span class="fw-bold">{{ grade_b_count }} Course(s)</span>
+                    </div>
+                    <div class="p-2 px-3 rounded border bg-light d-flex align-items-center gap-2">
+                        <span class="badge bg-info text-white">Grade C / C+</span>
+                        <span class="fw-bold">{{ grade_c_count }} Course(s)</span>
+                    </div>
+                    <div class="p-2 px-3 rounded border bg-light d-flex align-items-center gap-2">
+                        <span class="badge bg-warning text-dark">Grade D</span>
+                        <span class="fw-bold">{{ grade_d_count }} Course(s)</span>
+                    </div>
+                    <div class="p-2 px-3 rounded border bg-light d-flex align-items-center gap-2">
+                        <span class="badge bg-danger">Grade F</span>
+                        <span class="fw-bold">{{ grade_f_count }} Course(s)</span>
+                    </div>
+                </div>
+
+                <!-- Grading Scale Table -->
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered text-center mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Grade</th>
+                                <th>Score Range</th>
+                                <th>Grade Point</th>
+                                <th>Academic Description (English)</th>
+                                <th>ការកំណត់កម្រិត (ភាសាខ្មែរ)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="{% if effective_gpa >= 3.80 %}table-success fw-bold{% endif %}">
+                                <td><span class="badge bg-success">A</span></td>
+                                <td>85% - 100%</td>
+                                <td>4.00</td>
+                                <td>Excellent (Highest Distinction)</td>
+                                <td>ល្អប្រសើរដាច់គេ</td>
+                            </tr>
+                            <tr class="{% if effective_gpa >= 3.50 and effective_gpa < 3.80 %}table-success fw-bold{% endif %}">
+                                <td><span class="badge bg-primary">B+</span></td>
+                                <td>80% - 84%</td>
+                                <td>3.50</td>
+                                <td>Very Good (High Distinction)</td>
+                                <td>ល្អប្រសើរ</td>
+                            </tr>
+                            <tr class="{% if effective_gpa >= 3.00 and effective_gpa < 3.50 %}table-primary fw-bold{% endif %}">
+                                <td><span class="badge bg-info text-white">B</span></td>
+                                <td>70% - 79%</td>
+                                <td>3.00</td>
+                                <td>Good (Distinction)</td>
+                                <td>ល្អណាស់</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-secondary">C+</span></td>
+                                <td>65% - 69%</td>
+                                <td>2.50</td>
+                                <td>Fairly Good</td>
+                                <td>ល្អបង្គួរ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-secondary">C</span></td>
+                                <td>50% - 64%</td>
+                                <td>2.00</td>
+                                <td>Satisfactory</td>
+                                <td>មធ្យម</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-warning text-dark">D</span></td>
+                                <td>45% - 49%</td>
+                                <td>1.50</td>
+                                <td>Poor</td>
+                                <td>ខ្សោយ</td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge bg-danger">F</span></td>
+                                <td>&lt; 45%</td>
+                                <td>0.00</td>
+                                <td>Fail</td>
+                                <td>ធ្លាក់</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Digital Student ID Card & Academic Quick Services (4 cols) -->
+    <div class="col-lg-4">
+        <!-- Digital Student ID Card Widget -->
+        <div class="id-card-wrapper mb-4 shadow-sm" id="my-id-card">
+            <div class="id-card-header">
+                <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-idcard-logo">
+                    <div>
+                        <h6 class="fw-bold mb-0 text-uppercase text-white">Build Bright University</h6>
+                        <small class="text-warning small fw-bold">🪪 STUDENT IDENTITY CARD</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id-card-body">
+                <div class="mb-3">
+                    {% if student.profile_picture %}
+                        <img src="{{ student.profile_picture.url }}" alt="{{ student.get_primary_name }}" class="id-card-photo shadow-sm">
+                    {% else %}
+                        <div class="id-card-photo-placeholder shadow-sm">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <h5 class="fw-bold text-dark mb-0 khmer-text">{{ student.khmer_name|default:student.user.get_full_name }}</h5>
+                <p class="text-muted small mb-2">{{ student.user.get_full_name|default:student.user.username }}</p>
+                
+                <div class="id-card-badge">
+                    <span class="text-muted small d-block">STUDENT ID</span>
+                    <strong class="fs-5 text-primary">{{ student.student_id }}</strong>
+                </div>
+
+                <div class="d-flex justify-content-between text-muted small px-2 mb-3">
+                    <span><strong>Faculty:</strong> Science & IT</span>
+                    <span><strong>Year:</strong> Year 2</span>
+                </div>
+
+                <!-- Dynamic Verification QR Code -->
+                <div class="id-card-barcode-box d-flex flex-column align-items-center">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ request.scheme }}://{{ request.get_host }}{% url 'students:student_detail' student.pk %}&color=0b1e36" 
+                         alt="Verify Student ID" 
+                         class="mb-2 border p-1 rounded bg-white">
+                    <small class="text-muted fw-bold">SCAN TO VERIFY CREDENTIAL</small>
+                </div>
+
+                <div class="d-flex gap-2 mt-3">
+                    <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-outline-primary btn-sm w-100">
+                        <i class="fa-solid fa-address-card me-1"></i> View Profile
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary btn-sm copy-id-btn" data-id="{{ student.student_id }}" title="Copy Student ID">
+                        📋 Copy ID
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Services & Quick Actions Card -->
+        <div class="card card-bbu mb-4">
+            <div class="card-bbu-header">
+                <h6 class="fw-bold mb-0 text-dark">📜 Academic Services & Verification</h6>
+                <small class="text-muted">ឯកសារ និងសេវាកម្មសិក្សាផ្លូវការ</small>
+            </div>
+            <div class="card-body p-3 d-flex flex-column gap-2">
+                <a href="{% url 'enrollments:student_transcript' student.student_id %}" class="btn btn-bbu-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa-solid fa-certificate"></i>
+                    <span>Official Academic Transcript</span>
+                </a>
+                <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-outline-primary w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Digital ID Card Details</span>
+                </a>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-outline-secondary w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>University Course Catalog</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Faculty Department Contact Card -->
+        <div class="card card-bbu">
+            <div class="card-bbu-header">
+                <h6 class="fw-bold mb-0 text-dark">🏛️ Academic Affairs & Faculty</h6>
+                <small class="text-muted">ការិយាល័យកិច្ចការសិក្សា</small>
+            </div>
+            <div class="card-body p-3 small text-muted">
+                <div class="mb-2">
+                    <strong class="text-dark d-block">Faculty of Science & Information Technology</strong>
+                    <span>Building B, 2nd Floor, Room 204</span>
+                </div>
+                <div class="mb-2">
+                    <strong class="text-dark d-block">Academic Advisor:</strong>
+                    <span>Prof. Touch Sokha (Dean of IT)</span>
+                </div>
+                <div class="mb-2">
+                    <i class="fa-solid fa-envelope text-primary me-1"></i>
+                    <a href="mailto:academic@bbu.edu.kh" class="text-decoration-none">academic@bbu.edu.kh</a>
+                </div>
+                <div>
+                    <i class="fa-solid fa-phone text-success me-1"></i>
+                    <span>+855 (0) 23 999 111 / 012 888 999</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endlocalize %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const copyBtns = document.querySelectorAll('.copy-id-btn');
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(id).then(() => {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '✅ Copied!';
+                        this.classList.remove('btn-outline-secondary');
+                        this.classList.add('btn-success');
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.classList.remove('btn-success');
+                            this.classList.add('btn-outline-secondary');
+                        }, 2000);
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+

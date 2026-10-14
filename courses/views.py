@@ -1,79 +1,108 @@
-# courses/views.py
-
-# import render, get_object_or_404, redirect from django.shortcuts module for view functions
-# render is used to render a template
-# get_object_or_404 is used to get an object or return a 404 error
-# redirect is used to redirect to another URL
+import csv
 from django.shortcuts import render, get_object_or_404, redirect
-# import ListView, DetailView, CreateView, UpdateView, DeleteView from django.views.generic module for view functions
-# ListView is used to display a list of objects
-# DetailView is used to display detail of a single object
-# CreateView is used to create a new object
-# UpdateView is used to update an object
-# DeleteView is used to delete an object
+from django.http import HttpResponse
+from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-# import LoginRequiredMixin, UserPassesTestMixin from django.contrib.auth.mixins module for view functions
-# LoginRequiredMixin is used to require login to access a view
-# UserPassesTestMixin is used to require a user to pass a test to access a view
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-# import login_required from django.contrib.auth.decorators module for view functions
-# login_required is used to require login to access a view
 from django.contrib.auth.decorators import login_required
-# import Q, Count from django.db.models module for view functions
-# Q is used to perform complex queries
-# Count is used to count the number of objects
 from django.db.models import Q, Count
-# import reverse_lazy from django.urls module for view functions
-# reverse_lazy is used to reverse a URL
 from django.urls import reverse_lazy
-# import Course model from .models module for view functions
 from .models import Course
-# import CourseForm, CourseFilterForm from .forms module for view functions
 from .forms import CourseForm, CourseFilterForm
 
 # Function-Based Views (FBV)
-# Function-Based Views are views that are defined as functions
-# FBV is more concise and easier to understand than CBV
-# FBV is less flexible than CBV
-# FBV is not as reusable as CBV
-# FBV is not as maintainable as CBV
 
-# FBV for listing courses with pagination
-# request is a parameter that is passed to the view function
-# it is a HttpRequest object that contains information about the request
-# it has the following attributes: method, GET, POST, COOKIES, session, user, etc.
-# it has the following methods: is_ajax(), is_secure(), etc.
 def course_list(request):
-    """List all courses with filtering options"""
-    # Get all courses
-    courses = Course.objects.all()
-    # Get the filter form
+    """List all courses with filtering options, KPI stats, and pagination"""
+    courses_qs = Course.objects.select_related('instructor').all()
     form = CourseFilterForm(request.GET or None)
-    # Apply filters
-    if form.is_valid(): # form.is_valid() is a method that returns True if the form is valid according to the validation rules
-        # Filter by level
-        if form.cleaned_data.get('level'): # form.cleaned_data is a dictionary that contains the form data
-            courses = courses.filter(level=form.cleaned_data['level'])
-        # Filter by status
-        if form.cleaned_data.get('status'): # form.cleaned_data.get() is a method that returns the value of the specified key
-            courses = courses.filter(status=form.cleaned_data['status'])
-        # Filter by search
-        if form.cleaned_data.get('search'): # form.cleaned_data.get() is a method that returns the value of the specified key
-            search = form.cleaned_data['search'] # search is a variable that contains the search term
-            # __icontains is used to perform a case-insensitive search
-            # | is used to perform an OR operation
-            # Q() is used to perform complex queries
-            courses = courses.filter(
-                Q(code__icontains=search) |
-                Q(title__icontains=search)
-            )
-    # Context for the template
+    
+    # Check both form cleaned_data and direct GET parameters for search/status
+    search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
+    level = request.GET.get('level', '').strip()
+    
+    if search:
+        courses_qs = courses_qs.filter(
+            Q(code__icontains=search) |
+            Q(title__icontains=search)
+        )
+    if status:
+        courses_qs = courses_qs.filter(status=status)
+    if level:
+        courses_qs = courses_qs.filter(level=level)
+
+    courses_qs = courses_qs.order_by('code')
+    total_count = Course.objects.count()
+    active_count = Course.objects.filter(status='ACTIVE').count()
+    
+    paginator = Paginator(courses_qs, 12)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'courses': courses,
+        'courses': page_obj,
+        'page_obj': page_obj,
         'form': form,
+        'total_count': total_count,
+        'active_count': active_count,
     }
-    # Render the template
     return render(request, 'courses/course_list.html', context)
+
+
+@login_required
+def export_courses_csv(request):
+    """Export filtered or all academic courses to CSV spreadsheet with UTF-8 BOM."""
+    courses_qs = Course.objects.select_related('instructor').all()
+    search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
+    level = request.GET.get('level', '').strip()
+    
+    if search:
+        courses_qs = courses_qs.filter(
+            Q(code__icontains=search) |
+            Q(title__icontains=search)
+        )
+    if status:
+        courses_qs = courses_qs.filter(status=status)
+    if level:
+        courses_qs = courses_qs.filter(level=level)
+        
+    courses_qs = courses_qs.order_by('code')
+
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="bbu_academic_courses.csv"'
+    
+    # Write UTF-8 BOM for Microsoft Excel
+    response.write('\ufeff'.encode('utf8'))
+    
+    writer = csv.writer(response)
+    writer.writerow([
+        'Course Code',
+        'Course Title',
+        'Instructor',
+        'Credits',
+        'Level',
+        'Capacity',
+        'Status',
+        'Start Date',
+        'End Date'
+    ])
+    
+    for c in courses_qs:
+        instructor_name = c.instructor.get_full_name() if c.instructor else 'Unassigned'
+        writer.writerow([
+            c.code,
+            c.title,
+            instructor_name,
+            c.credits,
+            c.get_level_display(),
+            c.capacity,
+            c.get_status_display(),
+            c.start_date.strftime('%Y-%m-%d') if c.start_date else '',
+            c.end_date.strftime('%Y-%m-%d') if c.end_date else ''
+        ])
+    return response
 
 def course_detail(request, pk):
     """Display detailed information about a course"""

@@ -1,0 +1,14 @@
+<div class="empty-state-card">
+    <div class="empty-state-icon">
+        <i class="{{ icon|default:'fa-solid fa-folder-open' }}"></i>
+    </div>
+    <h4 class="empty-state-title">{{ title }}</h4>
+    <p class="empty-state-text">{{ text }}</p>
+    {% if cta_url and cta_label %}
+    <a href="{{ cta_url }}" class="btn btn-bbu-primary shadow-sm">
+        {% if cta_icon %}<i class="{{ cta_icon }}"></i>{% endif %}
+        {{ cta_label }}
+    </a>
+    {% endif %}
+</div>
+

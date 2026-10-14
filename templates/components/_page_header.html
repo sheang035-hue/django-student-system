@@ -1,0 +1,28 @@
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        {% if breadcrumb_current %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-bbu mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a></li>
+                {% if breadcrumb_parent and breadcrumb_parent_url %}
+                <li class="breadcrumb-item"><a href="{{ breadcrumb_parent_url }}">{{ breadcrumb_parent }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb_current }}</li>
+            </ol>
+        </nav>
+        {% endif %}
+        <h1 class="page-header-title">{{ title }}</h1>
+        {% if subtitle %}
+        <p class="page-header-subtitle">{{ subtitle }}</p>
+        {% endif %}
+    </div>
+    {% if action_url and action_label %}
+    <div class="text-md-end flex-shrink-0">
+        <a href="{{ action_url }}" class="btn {{ action_class|default:'btn-bbu-primary' }} shadow-sm">
+            {% if action_icon %}<i class="{{ action_icon }}"></i>{% endif %}
+            {{ action_label }}
+        </a>
+    </div>
+    {% endif %}
+</div>
+

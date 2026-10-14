@@ -2,68 +2,92 @@
 # Git Ignore Configuration for Django Student Management System (BBU)
 # ==============================================================================
 
-# Python bytecode and cache
+# 1. Virtual Environments (CRITICAL: Never commit python environments)
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+bin/
+lib/
+include/
+
+# 2. Python Bytecode, Cache & Compiled Files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+parts/
+var/
+sdist/
+develop-eggs/
 .Python
 
-# Virtual Environments
-venv/
-env/
-.venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Environment Variables & Secrets (CRITICAL: NEVER commit secrets to Git!)
+# 3. Environment Variables & Secrets (CRITICAL: Never commit credentials or secrets)
 .env
 .env.local
 .env.*.local
 *.env
+*.pem
+*.key
+credentials.json
+client_secret*.json
 
-# SQLite Database (Production uses PostgreSQL on Render/Heroku)
+# 4. SQLite Database (Local dev db - Production uses PostgreSQL on Render/Heroku)
 *.sqlite3
+*.sqlite3-journal
 db.sqlite3
 db.sqlite3-journal
 
-# Collected Static Files (generated dynamically during deployment build via collectstatic)
+# 5. Django Collected Static Files (Generated during production deploy build)
 staticfiles/
 
-# User Uploaded Media Files (Ignore uploaded images, keep directory structure via .gitkeep)
+# 6. User Uploaded Media Files (Keep folder structure via .gitkeep, ignore uploads)
 media/*
 !media/.gitkeep
-!media/profiles/
 media/profiles/*
 !media/profiles/.gitkeep
+media/uploads/*
+!media/uploads/.gitkeep
 
-# Server logs and runtime outputs
+# 7. Server Logs & Runtime Outputs
 *.log
 server.log
 server_logs/
-development_plan/
-lessons/
-# Testing and Coverage
-.tox/
-.nox/
+*.pid
+*.tmp
+*.bak
+
+# 8. Testing, Linting & Coverage
 .coverage
 .coverage.*
+.pytest_cache/
 nosetests.xml
 coverage.xml
 htmlcov/
-.pytest_cache/
+.tox/
+.nox/
 
-# IDEs and Code Editors
+# 9. IDEs & Text Editors
 .vscode/
 .idea/
-*.sublime-workspace
 *.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
 *~
+.project
+.pydevproject
+.settings/
 
-# Operating System Files
+# 10. Operating System Files
 .DS_Store
 .DS_Store?
 ._*
@@ -71,13 +95,10 @@ htmlcov/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
-# Build & Packaging
-build/
-dist/
-*.egg-info/
-*.egg
-
-# Temporary & Antigravity/Agent Files
+# 11. Antigravity & Agent Temporary Files
 scratch/
 .gemini/
+.system_generated/

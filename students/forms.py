@@ -79,11 +79,15 @@ class StudentRegistrationForm(UserCreationForm):
         max_length=100, required=True,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Country'})
     )
+    profile_picture = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'})
+    )
 
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2',
-                  'student_id', 'khmer_name', 'date_of_birth', 'gender', 'phone_number', 'address', 'city', 'country')
+                  'student_id', 'khmer_name', 'date_of_birth', 'gender', 'phone_number', 'address', 'city', 'country', 'profile_picture')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
         }

@@ -15,6 +15,7 @@ urlpatterns = [
     # views.course_list is the view function that will be called when the URL is accessed
     # name='course_list' is the name of the URL pattern
     path('', views.course_list, name='course_list'),
+    path('export/csv/', views.export_courses_csv, name='export_csv'),
     # path('<int:pk>/', ...) creates a URL pattern for a specific course by its primary key
     # views.course_detail is the view function that will be called when the URL is accessed
     # name='course_detail' is the name of the URL pattern

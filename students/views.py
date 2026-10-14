@@ -12,11 +12,14 @@ from django.core.paginator import Paginator
 from .models import Student
 from .forms import StudentForm, UserForm, StudentRegistrationForm
 
+import csv
+from django.http import HttpResponse
+
 # Function-Based Views (FBV)
 
 @login_required
 def student_list(request):
-    """List all students with search functionality and pagination"""
+    """List all students with search functionality, KPI chips, and pagination"""
     search_query = request.GET.get('q', '').strip()
     students_qs = Student.objects.select_related('user').all()
     
@@ -30,6 +33,9 @@ def student_list(request):
         )
     
     students_qs = students_qs.order_by('student_id')
+    total_count = Student.objects.count()
+    active_count = Student.objects.filter(is_active=True).count()
+    
     paginator = Paginator(students_qs, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -38,8 +44,60 @@ def student_list(request):
         'students': page_obj,
         'page_obj': page_obj,
         'search_query': search_query,
+        'total_count': total_count,
+        'active_count': active_count,
     }
     return render(request, 'students/student_list.html', context)
+
+
+@login_required
+def export_students_csv(request):
+    """Export filtered or all students to a CSV spreadsheet with UTF-8 BOM for Excel."""
+    search_query = request.GET.get('q', '').strip()
+    students_qs = Student.objects.select_related('user').all()
+    
+    if search_query:
+        students_qs = students_qs.filter(
+            Q(student_id__icontains=search_query) |
+            Q(khmer_name__icontains=search_query) |
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query) |
+            Q(user__email__icontains=search_query)
+        )
+    students_qs = students_qs.order_by('student_id')
+
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = 'attachment; filename="bbu_students_directory.csv"'
+    
+    # Write UTF-8 BOM so Microsoft Excel renders Khmer characters correctly
+    response.write('\ufeff'.encode('utf8'))
+    
+    writer = csv.writer(response)
+    writer.writerow([
+        'Student ID',
+        'Khmer Name',
+        'Latin Name',
+        'Email',
+        'Gender',
+        'Phone Number',
+        'Date of Birth',
+        'City',
+        'Status'
+    ])
+    
+    for s in students_qs:
+        writer.writerow([
+            s.student_id,
+            s.khmer_name or '',
+            s.user.get_full_name() or s.user.username,
+            s.user.email or '',
+            s.get_gender_display(),
+            s.phone_number or '',
+            s.date_of_birth.strftime('%Y-%m-%d') if s.date_of_birth else '',
+            s.city or '',
+            'Active' if s.is_active else 'Inactive'
+        ])
+    return response
 
 
 @login_required
@@ -84,7 +142,7 @@ def student_update(request, pk):
 def register_student(request):
     """Register a new student"""
     if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST)
+        form = StudentRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             # Create user
             user = User.objects.create_user(
@@ -106,6 +164,7 @@ def register_student(request):
                 address=form.cleaned_data['address'],
                 city=form.cleaned_data['city'],
                 country=form.cleaned_data['country'],
+                profile_picture=form.cleaned_data.get('profile_picture'),
             )
             
             messages.success(request, f"Welcome {user.first_name}! Your student registration is complete.")

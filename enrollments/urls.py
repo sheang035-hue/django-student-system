@@ -6,6 +6,7 @@ app_name = 'enrollments'
 urlpatterns = [
     # FBV URLs
     path('', views.enrollment_list, name='enrollment_list'),
+    path('export/csv/', views.export_enrollments_csv, name='export_csv'),
     path('<int:pk>/', views.enrollment_detail, name='enrollment_detail'),
     path('create/', views.enrollment_create, name='enrollment_create'),
     path('<int:pk>/update/', views.enrollment_update, name='enrollment_update'),

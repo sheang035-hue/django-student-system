@@ -1,105 +1,606 @@
 {% extends 'base.html' %}
+{% load static l10n %}
 
-{% block title %}Home - Student Management System{% endblock %}
+{% block title %}Dashboard - Build Bright University{% endblock %}
 
 {% block content %}
-<div class="jumbotron bg-light p-5 rounded">
-    <h1 class="display-4">📚 ប្រព័ន្ធគ្រប់គ្រងនិស្សិត</h1>
-    <p class="lead">Student Management System by Build Bright University</p>
-    <hr class="my-4">
-    <p>ស្វាគមន៍ដល់ប្រព័ន្ធគ្រប់គ្រងនិស្សិតដែលប្រើ Django Framework។</p>
-</div>
-
-<div class="row mt-5">
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">👥 សិស្ស</h5>
-                <h2 class="text-primary">{{ total_students }}</h2>
-                <p class="text-muted">សិស្សសរុប</p>
+{% localize off %}
+<!-- Greeting Hero Banner -->
+<div class="card card-bbu hero-banner mb-4">
+    <div class="card-body p-4 p-md-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="BBU Official Logo" class="bbu-hero-logo">
+                    <div>
+                        <span class="badge badge-soft-warning px-3 py-1 fw-semibold shadow-sm">
+                            Build Bright University • Academic Portal
+                        </span>
+                        <div class="text-white-50 small mt-1">សាកលវិទ្យាល័យ បៀលប្រាយ</div>
+                    </div>
+                </div>
+                <h1 class="display-6 fw-bold mb-2 text-white">
+                    សូមស្វាគមន៍, {{ request.user.first_name|default:request.user.username }}!
+                </h1>
+                <p class="lead mb-3 text-white-50">
+                    Welcome to your BBU Academic Dashboard — manage students, courses, grades, and enrollments in one place.
+                </p>
+                <div class="d-flex flex-wrap gap-2 text-white-50 small">
+                    <span>📅 Academic Term: 2026</span>
+                    <span class="mx-2">•</span>
+                    <span>🏛️ Faculty of Science & IT</span>
+                    <span class="mx-2">•</span>
+                    <span>🟢 System Active</span>
+                </div>
             </div>
-            <div class="card-footer">
-                <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-primary">មើលលម្អិត</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">📖 វគ្គ</h5>
-                <h2 class="text-success">{{ total_courses }}</h2>
-                <p class="text-muted">វគ្គសរុប</p>
-            </div>
-            <div class="card-footer">
-                <a href="{% url 'courses:course_list' %}" class="btn btn-sm btn-success">មើលលម្អិត</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">✍️ ការចុះឈ្មោះ</h5>
-                <h2 class="text-info">{{ total_enrollments }}</h2>
-                <p class="text-muted">ការចុះឈ្មោះសរុប</p>
-            </div>
-            <div class="card-footer">
-                <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-sm btn-info">មើលលម្អិត</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3 mb-4">
-        <div class="card h-100">
-            <div class="card-body text-center">
-                <h5 class="card-title">⚙️ Admin</h5>
-                <h2 class="text-warning">🔧</h2>
-                <p class="text-muted">ផ្ទាំងគ្រប់គ្រង</p>
-            </div>
-            <div class="card-footer">
-                <a href="/admin/" class="btn btn-sm btn-warning">ចូលគ្រប់គ្រង</a>
+            <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <a href="{% url 'students:register' %}" class="btn btn-bbu-primary px-4 py-2">
+                        ➕ Add Student
+                    </a>
+                    <a href="{% url 'enrollments:enrollment_create' %}" class="btn btn-bbu-gold px-4 py-2">
+                        📋 Enroll Course
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-md-4">
-        <h3>📊 ស្ថានភាព</h3>
-        <ul class="list-group">
-            <li class="list-group-item">
-                <strong>សិស្សដែលសកម្ម:</strong> {{ active_students }}
-            </li>
-            <li class="list-group-item">
-                <strong>វគ្គដែលសកម្ម:</strong> {{ active_courses }}
-            </li>
-        </ul>
+<!-- 4 KPI Metric Summary Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-blue h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">👨‍🎓 Students / សិស្ស</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_students }}</h3>
+                    <small class="text-success fw-semibold">
+                        🟢 {{ active_students }} Active
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <a href="{% url 'students:student_list' %}" class="small text-decoration-none fw-semibold">
+                    View directory <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
     </div>
-    
-    <div class="col-md-8">
-        <h3>🎯 ដូចម្តេច ចាប់ផ្តើម</h3>
-        <div class="alert alert-info">
-            <h5>ត្រើងយល់ដឹង ប្រព័ន្ធគ្រប់គ្រងនិស្សិត:</h5>
-            <ol>
-                <li>ចូលក្នុង Admin Panel សម្រាប់ management ពេញលេញ</li>
-                <li>ឆ្លើយ Students, Courses, Enrollments pages</li>
-                <li>សាកល្បង REST API នៅលើ /api/ URL</li>
-                <li>អានឯកសារលម្អិតក្នុងថត lessons/ (INSTRUCTIONS_KH.md) សម្រាប់ព័ត៌មានបន្ថែម</li>
-                <li>ធ្វើលំហាត់ក្នុងថត lessons/ (PRACTICE_EXERCISES_KH.md) ដើម្បីរៀនអនុវត្តជាក់ស្តែង</li>
-            </ol>
+
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-green h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📚 Courses / មុខវិជ្ជា</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_courses }}</h3>
+                    <small class="text-success fw-semibold">
+                        🟢 {{ active_courses }} Active
+                    </small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <a href="{% url 'courses:course_list' %}" class="small text-decoration-none text-success fw-semibold">
+                    View courses <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-amber h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📋 Enrollments / ចុះឈ្មោះ</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ total_enrollments }}</h3>
+                    <small class="text-warning fw-semibold">⚡ Total records</small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <a href="{% url 'enrollments:enrollment_list' %}" class="small text-decoration-none text-warning fw-semibold">
+                    View records <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="card card-bbu kpi-card kpi-card-purple h-100">
+            <div class="card-body d-flex align-items-center p-3 p-md-4">
+                <div class="kpi-icon me-3">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">🏆 Average GPA / ពិន្ទុមធ្យម</h6>
+                    <h3 class="fw-bold mb-0 text-dark">{{ avg_gpa|floatformat:"2u" }}</h3>
+                    <small class="text-muted">Scale: 0.00 - 4.00</small>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0 pt-0 pb-3 px-3 px-md-4">
+                <a href="{% url 'students:student_list' %}" class="small text-decoration-none text-primary fw-semibold">
+                    Academic ranking <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-5">
-    <div class="col-md-12">
-        <h3>🔗 ឯកសារមានប្រយោជន៍</h3>
-        <ul>
-            <li><a href="https://docs.djangoproject.com/" target="_blank">Django Documentation</a></li>
-            <li><a href="https://www.django-rest-framework.org/" target="_blank">Django REST Framework</a></li>
-            <li><a href="https://getbootstrap.com/" target="_blank">Bootstrap Documentation</a></li>
-        </ul>
+<!-- Quick Actions Bar -->
+<div class="card card-bbu border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <div class="row align-items-center">
+            <div class="col-md-3 mb-2 mb-md-0">
+                <span class="fw-bold text-dark">⚡ Quick Actions / ផ្លូវកាត់:</span>
+            </div>
+            <div class="col-md-9 d-flex flex-wrap gap-2 justify-content-md-end">
+                <a href="{% url 'students:register' %}" class="btn btn-sm btn-outline-primary">
+                    ➕ Add Student
+                </a>
+                <a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-outline-success">
+                    ➕ Add Course
+                </a>
+                <a href="{% url 'enrollments:enrollment_create' %}" class="btn btn-sm btn-outline-warning text-dark">
+                    📋 Enroll Student
+                </a>
+                {% if user.is_staff %}
+                <a href="/admin/" target="_blank" class="btn btn-sm btn-outline-secondary">
+                    🛡️ Admin Panel
+                </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card card-bbu h-100 shadow-sm border-0">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-chart-column text-primary me-2"></i> Grade Distribution
+                </h6>
+            </div>
+            <div class="card-body p-4">
+                <div class="chart-container-bbu">
+                    <canvas id="gradeChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card card-bbu h-100 shadow-sm border-0">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-chart-pie text-success me-2"></i> Top Courses / វគ្គពេញនិយម
+                </h6>
+                {% if total_enrollments > 0 %}
+                    <span class="badge badge-soft-success">{{ total_enrollments }} Enrolled</span>
+                {% else %}
+                    <span class="badge badge-soft-secondary">0 Enrolled</span>
+                {% endif %}
+            </div>
+            <div class="card-body p-4 d-flex flex-column justify-content-center">
+                {% if total_enrollments > 0 and course_counts %}
+                    <div class="chart-container-bbu">
+                        <canvas id="courseChart"></canvas>
+                    </div>
+                {% else %}
+                    <div class="text-center py-3 my-auto">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 52px; height: 52px; background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                            <i class="fa-solid fa-book-open fa-lg"></i>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1">No Course Enrollments Yet</h6>
+                        <p class="text-muted small mb-3">Add courses and enroll students to see course volume analytics.</p>
+                        <div class="d-flex justify-content-center gap-2">
+                            <a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-outline-success">
+                                ➕ Add Course
+                            </a>
+                            <a href="{% url 'enrollments:enrollment_create' %}" class="btn btn-sm btn-bbu-primary">
+                                📋 Enroll
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card card-bbu h-100 shadow-sm border-0">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-venus-mars text-info me-2"></i> Gender Ratio / សមាមាត្រភេទ
+                </h6>
+                <span class="badge badge-soft-info">{{ male_pct }}% M • {{ female_pct }}% F</span>
+            </div>
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div class="chart-container-bbu">
+                    <canvas id="genderChart"></canvas>
+                </div>
+                <!-- Percentage Stat Pills -->
+                <div class="d-flex justify-content-center gap-2 mt-3 pt-2 border-top">
+                    <div class="px-2 py-2 rounded bg-light text-center flex-fill border">
+                        <small class="text-secondary d-block fw-semibold small">👨 ប្រុស (Male)</small>
+                        <span class="fw-bold fs-6 text-primary">{{ male_pct }}%</span>
+                        <small class="text-secondary">({{ male_students }})</small>
+                    </div>
+                    <div class="px-2 py-2 rounded bg-light text-center flex-fill border">
+                        <small class="text-secondary d-block fw-semibold small">👩 ស្រី (Female)</small>
+                        <span class="fw-bold fs-6 text-danger">{{ female_pct }}%</span>
+                        <small class="text-secondary">({{ female_students }})</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recently Registered Students Table -->
+<div class="card card-bbu shadow-sm border-0 mb-4">
+    <div class="card-bbu-header d-flex justify-content-between align-items-center">
+        <h6 class="fw-bold mb-0 text-dark">
+            <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recently Registered Students / និស្សិតចុះឈ្មោះថ្មីៗ
+        </h6>
+        <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-bbu-primary">
+            View All Students <i class="fa-solid fa-chevron-right ms-1"></i>
+        </a>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-bbu align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="col-avatar-width">Photo</th>
+                        <th>Student ID</th>
+                        <th>Khmer Name</th>
+                        <th>English Name</th>
+                        <th class="text-center">GPA</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in recent_students %}
+                    <tr>
+                        <td>
+                            {% include "components/_avatar.html" with student=student size="sm" %}
+                        </td>
+                        <td>
+                            <a href="{% url 'students:student_detail' student.pk %}" class="fw-bold text-decoration-none text-dark">
+                                {{ student.student_id }}
+                            </a>
+                        </td>
+                        <td>
+                            <strong class="text-primary">{{ student.khmer_name|default:"—" }}</strong>
+                        </td>
+                        <td class="text-secondary">
+                            {{ student.user.get_full_name|default:student.user.username }}
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if student.gpa >= 3.5 %}badge-soft-success{% elif student.gpa >= 2.5 %}badge-soft-primary{% else %}badge-soft-warning{% endif %} px-2 py-1">
+                                {{ student.gpa|floatformat:"2u" }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            {% include "components/_status_badge.html" with status=student.is_active %}
+                        </td>
+                        <td class="text-end">
+                            <div class="action-btn-group">
+                                <a href="{% url 'students:student_detail' student.pk %}" class="action-btn" title="View Profile" aria-label="View Profile">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{% url 'enrollments:student_transcript' student.student_id %}" class="action-btn" title="View Transcript" aria-label="View Transcript">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="p-4">
+                            {% url 'students:register' as add_student_url %}
+                            {% include "components/_empty_state.html" with icon="fa-solid fa-users-slash" title="No Students Yet" text="No students registered yet. Click below to add the first student." cta_url=add_student_url cta_label="Add First Student" cta_icon="fa-solid fa-user-plus me-1" %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endlocalize %}
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js CDN for Interactive Visual Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function () {
+    let gradeChart = null;
+    let courseChart = null;
+    let genderChart = null;
+
+    function getChartTheme() {
+        const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        return {
+            textColor: isDark ? '#f8fafc' : '#334155',
+            mutedColor: isDark ? '#94a3b8' : '#64748b',
+            gridColor: isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(0, 0, 0, 0.06)',
+            borderColor: isDark ? '#111827' : '#ffffff'
+        };
+    }
+
+    function initCharts() {
+        if (typeof Chart === 'undefined') {
+            console.warn('Chart.js library is not loaded or unreachable.');
+            return;
+        }
+
+        const theme = getChartTheme();
+        Chart.defaults.color = theme.textColor;
+        Chart.defaults.font.family = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+        // 1. Grade Distribution Chart (Bar Chart)
+        const gradeCtx = document.getElementById('gradeChart');
+        if (gradeCtx) {
+            const existingGrade = Chart.getChart(gradeCtx);
+            if (existingGrade) existingGrade.destroy();
+
+            gradeChart = new Chart(gradeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Grade A (85-100)', 'Grade B (70-84)', 'Grade C (50-69)', 'Grade D (45-49)', 'Grade F (<45)'],
+                    datasets: [{
+                        label: 'Students Count',
+                        data: [
+                            {{ grade_a|default:0 }},
+                            {{ grade_b|default:0 }},
+                            {{ grade_c|default:0 }},
+                            {{ grade_d|default:0 }},
+                            {{ grade_f|default:0 }}
+                        ],
+                        backgroundColor: [
+                            '#15803d', // Green A
+                            '#2563eb', // Blue B
+                            '#f59e0b', // Amber C
+                            '#d97706', // Orange D
+                            '#dc2626'  // Red F
+                        ],
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return ` ${context.raw || 0} student(s)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: theme.textColor },
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0, color: theme.textColor },
+                            grid: { color: theme.gridColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Top Enrolled Courses (Doughnut Chart with Percentages)
+        const courseCtx = document.getElementById('courseChart');
+        if (courseCtx) {
+            const existingCourse = Chart.getChart(courseCtx);
+            if (existingCourse) existingCourse.destroy();
+
+            const labels = {{ course_labels|default:"[]"|safe }};
+            const data = {{ course_counts|default:"[]"|safe }};
+            const totalCoursesEnrolled = Array.isArray(data) ? data.reduce((a, b) => a + b, 0) : 0;
+
+            if (labels.length > 0 && totalCoursesEnrolled > 0) {
+                courseChart = new Chart(courseCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [
+                                '#2563eb',
+                                '#15803d',
+                                '#f59e0b',
+                                '#0b1e36',
+                                '#8b5cf6'
+                            ],
+                            borderWidth: 2,
+                            borderColor: theme.borderColor,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '62%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: theme.textColor,
+                                    usePointStyle: true,
+                                    padding: 10,
+                                    generateLabels: function (chart) {
+                                        const curTheme = getChartTheme();
+                                        const d = chart.data.datasets[0].data;
+                                        const tot = d.reduce((a, b) => a + b, 0);
+                                        return chart.data.labels.map((label, i) => {
+                                            const val = d[i] || 0;
+                                            const pct = tot > 0 ? ((val / tot) * 100).toFixed(1) : '0.0';
+                                            return {
+                                                text: `${label}: ${pct}% (${val})`,
+                                                fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                                strokeStyle: curTheme.borderColor,
+                                                fontColor: curTheme.textColor,
+                                                lineWidth: 1,
+                                                hidden: false,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const val = context.raw || 0;
+                                        const tot = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = tot > 0 ? ((val / tot) * 100).toFixed(1) : '0.0';
+                                        return ` ${context.label}: ${val} students (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // 3. Gender Ratio (Doughnut Chart with Percentages)
+        const genderCtx = document.getElementById('genderChart');
+        if (genderCtx) {
+            const existingGender = Chart.getChart(genderCtx);
+            if (existingGender) existingGender.destroy();
+
+            const genderData = [
+                {{ male_students|default:0 }},
+                {{ female_students|default:0 }}
+            ];
+            const totalGenderCount = genderData.reduce((a, b) => a + b, 0);
+
+            if (totalGenderCount > 0) {
+                genderChart = new Chart(genderCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Male', 'Female'],
+                        datasets: [{
+                            data: genderData,
+                            backgroundColor: ['#2563eb', '#db2777'],
+                            borderWidth: 2,
+                            borderColor: theme.borderColor,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '62%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: theme.textColor,
+                                    usePointStyle: true,
+                                    padding: 12,
+                                    generateLabels: function (chart) {
+                                        const curTheme = getChartTheme();
+                                        const d = chart.data.datasets[0].data;
+                                        const total = d.reduce((a, b) => a + b, 0);
+                                        return chart.data.labels.map((label, i) => {
+                                            const val = d[i] || 0;
+                                            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                            return {
+                                                text: `${label}: ${pct}% (${val})`,
+                                                fillStyle: chart.data.datasets[0].backgroundColor[i],
+                                                strokeStyle: curTheme.borderColor,
+                                                fontColor: curTheme.textColor,
+                                                lineWidth: 1,
+                                                hidden: false,
+                                                index: i
+                                            };
+                                        });
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const val = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
+                                        return ` ${context.label}: ${val} students (${pct}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    // Dynamic Chart Theme Adaptation on Light <-> Dark theme toggle
+    window.addEventListener('bbuThemeChanged', function () {
+        if (typeof Chart === 'undefined') return;
+        const newTheme = getChartTheme();
+        Chart.defaults.color = newTheme.textColor;
+
+        if (gradeChart && gradeChart.options && gradeChart.options.scales) {
+            if (gradeChart.options.scales.x && gradeChart.options.scales.x.ticks) {
+                gradeChart.options.scales.x.ticks.color = newTheme.textColor;
+            }
+            if (gradeChart.options.scales.y) {
+                if (gradeChart.options.scales.y.ticks) gradeChart.options.scales.y.ticks.color = newTheme.textColor;
+                if (gradeChart.options.scales.y.grid) gradeChart.options.scales.y.grid.color = newTheme.gridColor;
+            }
+            gradeChart.update();
+        }
+
+        if (courseChart && courseChart.options && courseChart.options.plugins) {
+            if (courseChart.options.plugins.legend && courseChart.options.plugins.legend.labels) {
+                courseChart.options.plugins.legend.labels.color = newTheme.textColor;
+            }
+            if (courseChart.data.datasets[0]) {
+                courseChart.data.datasets[0].borderColor = newTheme.borderColor;
+            }
+            courseChart.update();
+        }
+
+        if (genderChart && genderChart.options && genderChart.options.plugins) {
+            if (genderChart.options.plugins.legend && genderChart.options.plugins.legend.labels) {
+                genderChart.options.plugins.legend.labels.color = newTheme.textColor;
+            }
+            if (genderChart.data.datasets[0]) {
+                genderChart.data.datasets[0].borderColor = newTheme.borderColor;
+            }
+            genderChart.update();
+        }
+    });
+
+    // Execute immediately if DOM is already ready, or listen to DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initCharts);
+    } else {
+        initCharts();
+    }
+})();
+</script>
 {% endblock %}

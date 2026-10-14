@@ -1,59 +1,145 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Login - Student Management System{% endblock %}
+{% block title %}Login - Build Bright University{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white text-center py-3">
-                    <h4 class="mb-0">🔐 Account Login</h4>
-                </div>
-                <div class="card-body p-4">
-                    {% if form.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        Invalid username or password. Please try again.
+<div class="row justify-content-center py-4">
+    <div class="col-lg-10 col-xl-9">
+        <div class="split-auth-container row g-0">
+            <!-- Left Branding Panel (Hidden on mobile) -->
+            <div class="col-lg-5 d-none d-lg-flex split-auth-left">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-auth-logo">
+                        <div>
+                            <h5 class="fw-bold text-white mb-0 text-uppercase">BBU Portal</h5>
+                            <small class="text-warning">Build Bright University</small>
+                        </div>
                     </div>
-                    {% endif %}
 
-                    {% if next %}
-                        {% if user.is_authenticated %}
-                        <div class="alert alert-warning" role="alert">
-                            Your account doesn't have access to this page. Please login with an authorized account.
+                    <h4 class="fw-bold text-white mb-2">សាកលវិទ្យាល័យ បៀលប្រាយ</h4>
+                    <p class="text-white-50 small mb-4">
+                        Building Bright Careers • Student & Faculty Academic Management System
+                    </p>
+
+                    <div class="split-auth-benefit">
+                        <div class="split-auth-benefit-icon">
+                            <i class="fa-solid fa-book-open"></i>
                         </div>
-                        {% else %}
-                        <div class="alert alert-info" role="alert">
-                            Please log in to view this page.
+                        <div>
+                            <strong class="text-white small d-block"> Course Registration</strong>
+                            <small class="text-white-50">Enroll and manage your academic course sections.</small>
                         </div>
-                        {% endif %}
-                    {% endif %}
+                    </div>
 
-                    <form method="post" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ next }}">
-
-                        <div class="mb-3">
-                            <label for="id_username" class="form-label">Username</label>
-                            <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" required id="id_username" class="form-control" placeholder="Enter username">
+                    <div class="split-auth-benefit">
+                        <div class="split-auth-benefit-icon">
+                            <i class="fa-solid fa-award"></i>
                         </div>
-
-                        <div class="mb-4">
-                            <label for="id_password" class="form-label">Password</label>
-                            <input type="password" name="password" autocomplete="current-password" required id="id_password" class="form-control" placeholder="Enter password">
+                        <div>
+                            <strong class="text-white small d-block"> Official Transcripts</strong>
+                            <small class="text-white-50">Generate instant verified transcripts and grading sheets.</small>
                         </div>
+                    </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </button>
-                    </form>
+                    <div class="split-auth-benefit">
+                        <div class="split-auth-benefit-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <strong class="text-white small d-block"> Secure Access</strong>
+                            <small class="text-white-50">End-to-end encrypted portal credentials and data security.</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer bg-light text-center py-3">
-                    <span class="text-muted">Don't have an account?</span>
-                    <a href="{% url 'students:register' %}" class="fw-bold">Register as a Student</a>
+
+                <div class="pt-4 border-top border-secondary">
+                    <small class="text-white-50">&copy; Build Bright University. All rights reserved.</small>
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="col-12 col-lg-7 p-4 p-md-5 bg-white">
+                <div class="d-lg-none text-center mb-3">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-navbar-logo mb-2">
+                    <h6 class="fw-bold text-navy mb-0">Build Bright University</h6>
+                </div>
+                <div class="text-center text-lg-start mb-4">
+                    <h3 class="fw-bold text-dark mb-1">
+                        Sign In / ចូលគណនី
+                    </h3>
+                    <p class="text-muted small mb-0">Enter your university credentials to access your dashboard</p>
+                </div>
+
+                {% if form.errors %}
+                <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center mb-4" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2 fs-5"></i>
+                    <div class="small">Invalid username or password. Please verify your credentials and try again.</div>
+                </div>
+                {% endif %}
+
+                {% if next and not user.is_authenticated %}
+                <div class="alert alert-info shadow-sm border-0 small mb-4" role="alert">
+                    <i class="fa-solid fa-circle-info me-1"></i> Please log in to view that requested page.
+                </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Username / ឈ្មោះគណនី</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" 
+                                   maxlength="150" required id="id_username" class="form-control" placeholder="Enter your username">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label">Password / ពាក្យសម្ងាត់</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                            <input type="password" name="password" autocomplete="current-password" 
+                                   required id="id_password" class="form-control" placeholder="••••••••">
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-password-btn" aria-label="Toggle password visibility">
+                                <i class="fa-solid fa-eye" id="toggle-password-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-bbu-primary w-100 py-2 fs-6 shadow-sm mb-3">
+                         Sign In to Portal
+                    </button>
+                </form>
+
+                <div class="text-center pt-3 border-top">
+                    <span class="text-muted small">New student?</span>
+                    <a href="{% url 'students:register' %}" class="fw-bold text-primary small ms-1 text-decoration-none">
+                         Register Account <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggle-password-btn');
+        const passwordInput = document.getElementById('id_password');
+        const toggleIcon = document.getElementById('toggle-password-icon');
+        if (toggleBtn && passwordInput && toggleIcon) {
+            toggleBtn.addEventListener('click', function () {
+                const isPassword = passwordInput.type === 'password';
+                passwordInput.type = isPassword ? 'text' : 'password';
+                toggleIcon.className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+            });
+        }
+    });
+</script>
 {% endblock %}

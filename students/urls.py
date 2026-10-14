@@ -7,6 +7,7 @@ urlpatterns = [
     # FBV URLs
     path('', views.student_list, name='student_list'),
     path('register/', views.register_student, name='register'),
+    path('export/csv/', views.export_students_csv, name='export_csv'),
     path('<int:pk>/', views.student_detail, name='student_detail'),
     path('<int:pk>/update/', views.student_update, name='student_update'),
     path('<int:pk>/delete/', views.student_delete, name='student_delete'),

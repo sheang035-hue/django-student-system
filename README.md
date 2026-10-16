@@ -70,6 +70,18 @@ python manage.py runserver
 
 ចូលក្នុង `http://127.0.0.1:8000/admin/` ដោយប្រើ superuser credentials
 
+### បន្ថែម (ជាជម្រើស): បញ្ចូលទិន្នន័យសាកល្បង (Demo Data)
+
+ដើម្បីបង្ហាញ Dashboard ជាមួយទិន្នន័យពេញលេញ (សិស្ស 16 នាក់, មុខវិជ្ជា 11, ការចុះឈ្មោះ 70+):
+
+```bash
+python manage.py loaddata demo_data
+```
+
+- គណនីសិស្សសាកល្បង: `std_stu0002` ដល់ `std_stu0017` / ពាក្យសម្ងាត់ `bbu12345`
+- គណនីសាស្រ្តាចារ្យ: `prof_sokha`, `prof_vann` / ពាក្យសម្ងាត់ `bbu12345`
+- ស្គ្រីបបង្ហាញលម្អិត: មើល `docs/DEMO_SCRIPT.md` និងដ្យាក្រាម DB នៅ `docs/ERD.md`
+
 ---
 
 ## 📁 រចនាសម្ព័ន្ធគម្រោង (Project Structure)

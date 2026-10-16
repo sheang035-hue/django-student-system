@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Avg, Count
+from django.utils import timezone
+from datetime import timedelta
 from students.models import Student
 from courses.models import Course
 from enrollments.models import Enrollment
@@ -195,6 +197,41 @@ def home(request):
     male_pct = round((male_students / total_gender * 100), 1) if total_gender > 0 else 0
     female_pct = round((female_students / total_gender * 100), 1) if total_gender > 0 else 0
 
+    # 30-day KPI trends vs the previous 30-day window
+    now = timezone.now()
+    last_30 = now - timedelta(days=30)
+    prev_30 = now - timedelta(days=60)
+
+    def build_trend(current, previous):
+        if previous > 0:
+            pct = round((current - previous) / previous * 100, 1)
+            return {'has': True, 'pct': abs(pct), 'dir': 'up' if pct >= 0 else 'down'}
+        if current > 0:
+            return {'has': False, 'pct': None, 'dir': 'up'}
+        return {'has': False, 'pct': None, 'dir': 'flat'}
+
+    new_students_30 = Student.objects.filter(created_at__gte=last_30).count()
+    prev_students_30 = Student.objects.filter(created_at__gte=prev_30, created_at__lt=last_30).count()
+    student_trend = build_trend(new_students_30, prev_students_30)
+
+    new_courses_30 = Course.objects.filter(created_at__gte=last_30).count()
+    prev_courses_30 = Course.objects.filter(created_at__gte=prev_30, created_at__lt=last_30).count()
+    course_trend = build_trend(new_courses_30, prev_courses_30)
+
+    new_enroll_30 = Enrollment.objects.filter(enrollment_date__gte=last_30.date()).count()
+    prev_enroll_30 = Enrollment.objects.filter(
+        enrollment_date__gte=prev_30.date(), enrollment_date__lt=last_30.date()
+    ).count()
+    enrollment_trend = build_trend(new_enroll_30, prev_enroll_30)
+
+    recent_score = Enrollment.objects.filter(
+        status='COMPLETED', completed_date__gte=last_30.date()
+    ).aggregate(Avg('score'))['score__avg']
+    previous_score = Enrollment.objects.filter(
+        status='COMPLETED', completed_date__gte=prev_30.date(), completed_date__lt=last_30.date()
+    ).aggregate(Avg('score'))['score__avg']
+    gpa_trend = build_trend(float(recent_score or 0), float(previous_score or 0))
+
     context = {
         'total_students': total_students,
         'active_students': active_students,
@@ -216,6 +253,10 @@ def home(request):
         'female_students': female_students,
         'male_pct': male_pct,
         'female_pct': female_pct,
+        'student_trend': student_trend,
+        'course_trend': course_trend,
+        'enrollment_trend': enrollment_trend,
+        'gpa_trend': gpa_trend,
     }
 
     return render(request, 'home.html', context)

@@ -577,7 +577,7 @@
                 </div>
                 <div class="col-md-5">
                     <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; padding: 8px 10px; display: flex; align-items: center; gap: 10px;">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ request.scheme }}://{{ request.get_host }}{% url 'students:student_detail' student.pk %}&color=0b1e36" alt="Verify Transcript QR" width="70" height="70" class="border p-1 rounded" style="width: 70px; height: 70px; flex-shrink: 0;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ request.scheme }}://{{ request.get_host }}{% url 'verify_student' student.student_id %}&color=0b1e36" alt="Verify Transcript QR" width="70" height="70" class="border p-1 rounded" style="width: 70px; height: 70px; flex-shrink: 0;">
                         <div style="font-size: 0.7rem; line-height: 1.35;">
                             <div class="badge bg-primary text-white mb-1" style="font-size: 0.62rem;">
                                 <i class="fa-solid fa-lock me-1"></i> VERIFIED DOCUMENT

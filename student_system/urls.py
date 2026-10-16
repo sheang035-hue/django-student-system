@@ -5,6 +5,7 @@ The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -12,6 +13,8 @@ from django.views.generic import RedirectView
 from django.templatetags.static import static as static_url
 from django.http import JsonResponse
 from . import views
+from .forms import StyledPasswordChangeForm
+from students import views as student_views
 
 urlpatterns = [
     # Favicon and Chrome DevTools endpoints (prevents 404 log noise)
@@ -19,10 +22,14 @@ urlpatterns = [
     path('.well-known/appspecific/com.chrome.devtools.json', lambda request: JsonResponse({}, status=200)),
     
     path('', views.home, name='home'),
+    path('verify/<str:student_id>/', student_views.verify_student, name='verify_student'),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     
     # Authentication URLs
+    path('accounts/password_change/', auth_views.PasswordChangeView.as_view(
+        form_class=StyledPasswordChangeForm,
+    ), name='password_change'),
     path('accounts/', include('django.contrib.auth.urls')),
     
     # API URLs

@@ -45,6 +45,30 @@ class EnrollmentForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-select'}),
         }
 
+    def clean(self):
+        """Block new seat-taking enrollments when the course is already full."""
+        cleaned_data = super().clean()
+        course = cleaned_data.get('course')
+        status = cleaned_data.get('status')
+
+        if course and status == 'ENROLLED' and course.capacity:
+            # An existing ENROLLED record for the same course does not take a new seat
+            holds_seat = bool(
+                self.instance and self.instance.pk
+                and self.instance.status == 'ENROLLED'
+                and self.instance.course_id == course.pk
+            )
+            if not holds_seat:
+                taken = Enrollment.objects.filter(course=course, status='ENROLLED').count()
+                if taken >= course.capacity:
+                    self.add_error(
+                        'course',
+                        f"This course is full — {taken}/{course.capacity} seats taken. "
+                        f"Choose another course or contact the registrar. "
+                        f"(មុខវិជ្ជានេះពេញហើយ — សូមជ្រើសរើសមុខវិជ្ជាផ្សេង)"
+                    )
+        return cleaned_data
+
 class GradeForm(forms.ModelForm):
     """Form for entering student grades and scores"""
     class Meta:

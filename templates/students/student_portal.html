@@ -378,7 +378,7 @@
 
                 <!-- Dynamic Verification QR Code -->
                 <div class="id-card-barcode-box d-flex flex-column align-items-center">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ request.scheme }}://{{ request.get_host }}{% url 'students:student_detail' student.pk %}&color=0b1e36" 
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ request.scheme }}://{{ request.get_host }}{% url 'verify_student' student.student_id %}&color=0b1e36" 
                          alt="Verify Student ID" 
                          class="mb-2 border p-1 rounded bg-white">
                     <small class="text-muted fw-bold">SCAN TO VERIFY CREDENTIAL</small>

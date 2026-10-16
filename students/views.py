@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.utils import timezone
 from .models import Student
 from .forms import StudentForm, UserForm, StudentRegistrationForm
 
@@ -193,6 +194,27 @@ def student_delete(request, pk):
     
     context = {'student': student}
     return render(request, 'students/student_confirm_delete.html', context)
+
+def verify_student(request, student_id):
+    """
+    Public QR verification page (no login required).
+    Shows a minimal authenticity check for a student ID: name, photo,
+    active status, - without exposing grades, GPA or contact details.
+    """
+    student = Student.objects.select_related('user').filter(
+        student_id__iexact=str(student_id).strip()
+    ).first()
+
+    context = {
+        'student': student,
+        'queried_id': student_id,
+        'verified_at': timezone.now(),
+    }
+    if student:
+        context['completed_count'] = student.enrollments.filter(status='COMPLETED').count()
+        context['enrolled_count'] = student.enrollments.filter(status='ENROLLED').count()
+
+    return render(request, 'students/verify_student.html', context)
 
 # Class-Based Views (CBV)
 

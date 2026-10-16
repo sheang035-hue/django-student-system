@@ -2,42 +2,61 @@
 {% load static %}
 
 {% block title %}Build Bright University (BBU) - Student Management System{% endblock %}
+{% block body_class %}bbu-public-bg{% endblock %}
 
 {% block content %}
-<!-- Section 1: Hero Section -->
+<!-- Section 1: Aurora Hero -->
 <section class="landing-hero">
     <div class="landing-shape-decor"></div>
-    <div class="row align-items-center position-relative">
-        <div class="col-lg-8">
-            <span class="badge badge-soft-warning px-3 py-2 fw-semibold mb-3">
-                <i class="fa-solid fa-graduation-cap me-1"></i> Build Bright University • Cambodia
+    <div class="landing-shape-decor-2"></div>
+    <div class="row align-items-center position-relative g-4">
+        <div class="col-lg-7">
+            <span class="badge-on-dark badge-on-dark-gold mb-3 reveal">
+                <i class="fa-solid fa-graduation-cap"></i> Build Bright University &bull; Cambodia
             </span>
-            <h1 class="display-5 fw-bold text-dark mb-2">
+            <h1 class="display-5 fw-bold text-white mb-2 khmer-text reveal reveal-delay-1">
                 សាកលវិទ្យាល័យ បៀលប្រាយ
             </h1>
-            <h2 class="h3 fw-bold text-primary mb-3">
-                Empowering Minds, Building Bright Futures
+            <h2 class="h3 fw-bold mb-3 reveal reveal-delay-1">
+                Empowering Minds, <span class="landing-highlight">Building Bright Futures</span>
             </h2>
-            <p class="lead text-muted mb-4">
-                Welcome to BBU's integrated student academic management system. Manage courses, track grading and attendance in real time, and generate official academic transcripts seamlessly.
+            <p class="lead mb-4 reveal reveal-delay-2">
+                Welcome to BBU's integrated student academic management system. Manage courses, track grades and
+                attendance in real time, and generate official academic transcripts seamlessly.
             </p>
-            <div class="d-flex flex-wrap gap-3">
-                <a href="{% url 'login' %}" class="btn btn-bbu-primary btn-lg px-4 shadow-sm">
-                    👉 Sign In to Portal
+            <div class="d-flex flex-wrap gap-3 mb-4 reveal reveal-delay-3">
+                <a href="{% url 'login' %}" class="btn btn-bbu-gold btn-lg px-4">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Portal
                 </a>
-                <a href="{% url 'students:register' %}" class="btn btn-bbu-gold btn-lg px-4 shadow-sm">
-                    ✨ Register New Student
+                <a href="{% url 'students:register' %}" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                    <i class="fa-solid fa-user-plus"></i> Register New Student
                 </a>
             </div>
+            <div class="hero-trust-row d-flex flex-wrap gap-4 reveal reveal-delay-4">
+                <span class="trust-item"><i class="fa-solid fa-circle-check"></i> MoEHS 4.0 Grading Scale</span>
+                <span class="trust-item"><i class="fa-solid fa-shield-halved"></i> Role-Based Secure Access</span>
+                <span class="trust-item"><i class="fa-solid fa-language"></i> Khmer &amp; English Bilingual</span>
+            </div>
         </div>
-        <div class="col-lg-4 text-center mt-4 mt-lg-0 d-none d-lg-block">
-            <div class="p-4 bg-white rounded shadow-sm border border-light">
-                <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Official Logo" class="bbu-landing-logo mb-3">
-                <h5 class="fw-bold text-dark mb-1">Official University Portal</h5>
-                <p class="text-muted small mb-3">Accessible to students, faculty members, and academic administrators.</p>
-                <div class="d-flex justify-content-center gap-2">
-                    <span class="badge badge-soft-success">🟢 Online</span>
-                    <span class="badge badge-soft-primary">Semester 1</span>
+
+        <div class="col-lg-5 mt-4 mt-lg-0">
+            <div class="position-relative mx-auto landing-visual-col reveal reveal-delay-2">
+                <span class="landing-float-chip chip-1 d-none d-xl-inline-flex">
+                    <i class="fa-solid fa-award text-warning"></i> GPA Scale 4.0
+                </span>
+                <span class="landing-float-chip chip-2 d-none d-xl-inline-flex">
+                    <i class="fa-solid fa-file-circle-check text-success"></i> Verified Transcripts
+                </span>
+                <div class="landing-glass-card text-center">
+                    <div class="bbu-logo-ring mx-auto mb-3">
+                        <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Official Logo" class="bbu-landing-logo">
+                    </div>
+                    <h5 class="fw-bold mb-1">Official University Portal</h5>
+                    <p class="small mb-3">Accessible to students, faculty members, and academic administrators.</p>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <span class="badge-on-dark"><i class="fa-solid fa-circle text-success small-icon"></i> Online</span>
+                        <span class="badge-on-dark"><i class="fa-solid fa-calendar-days"></i> Semester 1 &bull; 2026</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,97 +64,83 @@
 </section>
 
 <!-- Section 2: Stats Strip -->
-<section class="landing-stat-strip">
+<section class="landing-stat-strip reveal">
     <div class="row g-4 text-center">
         <div class="col-6 col-md-3">
-            <h2 class="display-6 fw-bold text-primary mb-1">{{ total_students|default:"100+" }}</h2>
-            <span class="text-muted small fw-semibold text-uppercase">👨‍🎓 Enrolled Students / និស្សិត</span>
+            <div class="landing-stat-icon tint-blue"><i class="fa-solid fa-user-graduate"></i></div>
+            <h2 class="landing-stat-number num-blue mb-1">{{ total_students|default:"100+" }}</h2>
+            <span class="text-muted small fw-semibold text-uppercase">Enrolled Students / និស្សិត</span>
         </div>
         <div class="col-6 col-md-3">
-            <h2 class="display-6 fw-bold text-success mb-1">{{ total_courses|default:"20+" }}</h2>
-            <span class="text-muted small fw-semibold text-uppercase">📚 Course Modules / មុខវិជ្ជា</span>
+            <div class="landing-stat-icon tint-green"><i class="fa-solid fa-book-open"></i></div>
+            <h2 class="landing-stat-number num-green mb-1">{{ total_courses|default:"20+" }}</h2>
+            <span class="text-muted small fw-semibold text-uppercase">Course Modules / មុខវិជ្ជា</span>
         </div>
         <div class="col-6 col-md-3">
-            <h2 class="display-6 fw-bold text-warning mb-1">{{ total_instructors|default:"12+" }}</h2>
-            <span class="text-muted small fw-semibold text-uppercase">👩‍🏫 Faculty Members / សាស្ត្រាចារ្យ</span>
+            <div class="landing-stat-icon tint-amber"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <h2 class="landing-stat-number num-amber mb-1">{{ total_instructors|default:"12+" }}</h2>
+            <span class="text-muted small fw-semibold text-uppercase">Faculty Members / សាស្ត្រាចារ្យ</span>
         </div>
         <div class="col-6 col-md-3">
-            <h2 class="display-6 fw-bold text-dark mb-1">{{ academic_years|default:"4" }}</h2>
-            <span class="text-muted small fw-semibold text-uppercase">🏛️ Academic Years / ឆ្នាំសិក្សា</span>
+            <div class="landing-stat-icon tint-violet"><i class="fa-solid fa-landmark"></i></div>
+            <h2 class="landing-stat-number num-violet mb-1">{{ academic_years|default:"4" }}</h2>
+            <span class="text-muted small fw-semibold text-uppercase">Academic Years / ឆ្នាំសិក្សា</span>
         </div>
     </div>
 </section>
 
 <!-- Section 3: Features Grid (6 Cards) -->
-<section class="mb-5">
-    <div class="text-center mb-5">
-        <h6 class="text-primary text-uppercase fw-bold letter-spacing-1 mb-2">Comprehensive Features</h6>
-        <h2 class="fw-bold text-dark">Designed for Modern Higher Education</h2>
-        <p class="text-muted">Explore the key capabilities engineered for student excellence and administrative agility.</p>
+<section class="landing-section">
+    <div class="text-center mb-5 reveal">
+        <span class="landing-eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Comprehensive Features</span>
+        <h2 class="landing-section-title text-dark mb-2 d-block">Designed for Modern Higher Education</h2>
+        <p class="text-muted mb-0">Explore the key capabilities engineered for student excellence and administrative agility.</p>
     </div>
 
     <div class="row g-4">
-        <!-- Feature 1 -->
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-1">
             <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-book-open"></i>
-                </div>
+                <div class="landing-icon-circle"><i class="fa-solid fa-book-open"></i></div>
                 <h5 class="fw-bold text-dark mb-2">Course Management</h5>
                 <p class="text-muted small mb-0">Browse university course offerings, review credit allocations, level rankings, and curriculum prerequisites.</p>
             </div>
         </div>
 
-        <!-- Feature 2 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-award"></i>
-                </div>
-                <h5 class="fw-bold text-dark mb-2">Grade & GPA Analytics</h5>
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-2">
+            <div class="landing-feature-card feat-green">
+                <div class="landing-icon-circle"><i class="fa-solid fa-award"></i></div>
+                <h5 class="fw-bold text-dark mb-2">Grade &amp; GPA Analytics</h5>
                 <p class="text-muted small mb-0">Automated 4.0 grading scale conversions with interactive grade distribution charts and GPA summaries.</p>
             </div>
         </div>
 
-        <!-- Feature 3 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-file-invoice"></i>
-                </div>
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-3">
+            <div class="landing-feature-card feat-amber">
+                <div class="landing-icon-circle"><i class="fa-solid fa-file-invoice"></i></div>
                 <h5 class="fw-bold text-dark mb-2">Verified Transcripts</h5>
                 <p class="text-muted small mb-0">Printable official academic certificates with BBU letterhead and dual-language Khmer and English formatting.</p>
             </div>
         </div>
 
-        <!-- Feature 4 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-calendar-check"></i>
-                </div>
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-1">
+            <div class="landing-feature-card feat-violet">
+                <div class="landing-icon-circle"><i class="fa-solid fa-calendar-check"></i></div>
                 <h5 class="fw-bold text-dark mb-2">Attendance Monitoring</h5>
                 <p class="text-muted small mb-0">Track real-time student attendance percentages with color-coded threshold progress indicators.</p>
             </div>
         </div>
 
-        <!-- Feature 5 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </div>
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-2">
+            <div class="landing-feature-card feat-cyan">
+                <div class="landing-icon-circle"><i class="fa-solid fa-magnifying-glass"></i></div>
                 <h5 class="fw-bold text-dark mb-2">Bilingual Search</h5>
                 <p class="text-muted small mb-0">High-speed filtering supporting Khmer Unicode text, Latin student names, and course identifier codes.</p>
             </div>
         </div>
 
-        <!-- Feature 6 -->
-        <div class="col-md-6 col-lg-4">
-            <div class="landing-feature-card">
-                <div class="landing-icon-circle">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
+        <div class="col-md-6 col-lg-4 reveal reveal-delay-3">
+            <div class="landing-feature-card feat-rose">
+                <div class="landing-icon-circle"><i class="fa-solid fa-shield-halved"></i></div>
                 <h5 class="fw-bold text-dark mb-2">Role-Based Security</h5>
                 <p class="text-muted small mb-0">Protected student records with strict permission checks, CSRF defenses, and encrypted authentication.</p>
             </div>
@@ -144,14 +149,14 @@
 </section>
 
 <!-- Section 4: How It Works (3 Steps) -->
-<section class="mb-5">
-    <div class="text-center mb-5">
-        <h6 class="text-primary text-uppercase fw-bold letter-spacing-1 mb-2">Simple Workflow</h6>
-        <h2 class="fw-bold text-dark">How It Works / ដំណើរការប្រើប្រាស់</h2>
+<section class="landing-section">
+    <div class="text-center mb-5 reveal">
+        <span class="landing-eyebrow"><i class="fa-solid fa-route"></i> Simple Workflow</span>
+        <h2 class="landing-section-title text-dark mb-0 d-block">How It Works / ដំណើរការប្រើប្រាស់</h2>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-4">
+    <div class="row g-4 landing-steps-row">
+        <div class="col-md-4 reveal reveal-delay-1">
             <div class="landing-step-card">
                 <div class="landing-step-num">1</div>
                 <h5 class="fw-bold text-dark mb-2">Register Account</h5>
@@ -159,7 +164,7 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 reveal reveal-delay-2">
             <div class="landing-step-card">
                 <div class="landing-step-num">2</div>
                 <h5 class="fw-bold text-dark mb-2">Enroll In Courses</h5>
@@ -167,10 +172,10 @@
             </div>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-4 reveal reveal-delay-3">
             <div class="landing-step-card">
                 <div class="landing-step-num">3</div>
-                <h5 class="fw-bold text-dark mb-2">Track & Succeed</h5>
+                <h5 class="fw-bold text-dark mb-2">Track &amp; Succeed</h5>
                 <p class="text-muted small mb-0">Monitor your grades, track attendance, and print your certified transcript whenever needed.</p>
             </div>
         </div>
@@ -178,21 +183,23 @@
 </section>
 
 <!-- Section 5: Bottom CTA Banner -->
-<section class="card card-bbu bg-dark text-white p-4 p-md-5 text-center mb-4 border-0">
-    <div class="row justify-content-center">
+<section class="landing-cta-banner p-4 p-md-5 text-center mb-4 reveal">
+    <div class="row justify-content-center position-relative">
         <div class="col-lg-8">
-            <h3 class="fw-bold mb-3 text-white">Ready to begin your academic journey?</h3>
+            <span class="badge-on-dark badge-on-dark-gold mb-3">
+                <i class="fa-solid fa-star"></i> Start Today
+            </span>
+            <h3 class="fw-bold mb-3">Ready to begin your academic journey?</h3>
             <p class="text-white-50 mb-4">Join thousands of students building their bright future at Build Bright University today.</p>
-            <div class="d-flex justify-content-center gap-3">
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
                 <a href="{% url 'students:register' %}" class="btn btn-bbu-gold px-4 py-2">
-                    <i class="fa-solid fa-user-plus me-1"></i> Register Today
+                    <i class="fa-solid fa-user-plus"></i> Register Today
                 </a>
-                <a href="{% url 'login' %}" class="btn btn-outline-light px-4 py-2">
-                    <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Student Sign In
+                <a href="{% url 'login' %}" class="btn btn-outline-light px-4 py-2 rounded-pill">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Student Sign In
                 </a>
             </div>
         </div>
     </div>
 </section>
 {% endblock %}
-

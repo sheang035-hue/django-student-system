@@ -447,29 +447,5 @@
 {% endlocalize %}
 {% endblock %}
 
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const copyBtns = document.querySelectorAll('.copy-id-btn');
-        copyBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
-                const id = this.getAttribute('data-id');
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(id).then(() => {
-                        const originalText = this.innerHTML;
-                        this.innerHTML = '✅ Copied!';
-                        this.classList.remove('btn-outline-secondary');
-                        this.classList.add('btn-success');
-                        setTimeout(() => {
-                            this.innerHTML = originalText;
-                            this.classList.remove('btn-success');
-                            this.classList.add('btn-outline-secondary');
-                        }, 2000);
-                    });
-                }
-            });
-        });
-    });
-</script>
-{% endblock %}
+
 

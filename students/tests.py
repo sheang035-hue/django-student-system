@@ -248,16 +248,16 @@ class RoleBasedDashboardTest(TestCase):
         self.assertContains(response, 'STU0001')
         self.assertContains(response, 'CS101')
         self.assertContains(response, 'My Official Transcript')
-        # Ensure student does NOT see management "+ Add Student" button
-        self.assertNotContains(response, '➕ Add Student')
+        # Ensure student does NOT see management "Add Student" button
+        self.assertNotContains(response, 'Add Student')
 
     def test_admin_gets_university_management_dashboard(self):
         self.client.login(username='admin_staff', password='password123')
         response = self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'home.html')
-        self.assertContains(response, '➕ Add Student')
-        self.assertContains(response, '📋 Enroll Course')
+        self.assertContains(response, 'Add Student')
+        self.assertContains(response, 'Enroll Course')
         self.assertContains(response, 'Academic Dashboard')
 
 

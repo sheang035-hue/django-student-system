@@ -30,10 +30,10 @@
                 {% csrf_token %}
                 <div class="d-flex justify-content-center gap-2">
                     <a href="{{ cancel_url }}" class="btn btn-bbu-soft px-4">
-                        ❌ Cancel
+                        <i class="fa-solid fa-xmark"></i> Cancel
                     </a>
                     <button type="submit" class="btn btn-bbu-danger px-4">
-                        🗑️ Yes, Delete Permanently
+                        <i class="fa-solid fa-trash-can"></i> Yes, Delete Permanently
                     </button>
                 </div>
             </form>

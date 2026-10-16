@@ -827,13 +827,6 @@ a:hover {
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.18);
 }
 
-.bbu-navbar-logo {
-    height: 38px;
-    width: auto;
-    object-fit: contain;
-    transition: transform 0.2s ease;
-}
-
 .bbu-wordmark {
     font-weight: 800;
     font-size: 1.3rem;
@@ -2346,27 +2339,6 @@ a:hover {
     box-shadow: var(--shadow-glow-primary);
 }
 
-/* Tom Select Styling mapped to Design Tokens */
-.ts-control {
-    border-radius: var(--radius-input) !important;
-    border: 1.5px solid var(--bbu-border) !important;
-    padding: 0.65rem 1rem !important;
-    background-color: var(--bbu-surface) !important;
-    color: var(--bbu-text) !important;
-}
-
-.ts-control.focus {
-    border-color: var(--bbu-primary) !important;
-    box-shadow: var(--shadow-focus) !important;
-}
-
-.ts-dropdown {
-    border-radius: var(--radius-input) !important;
-    border: 1px solid var(--bbu-border) !important;
-    box-shadow: var(--shadow-hover) !important;
-    background: var(--bbu-surface) !important;
-}
-
 /* Reduced Motion Override */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -2516,6 +2488,12 @@ a:hover {
 .progress-bbu-bar-primary { background-color: var(--bbu-primary); }
 .progress-bbu-bar-warning { background-color: var(--bbu-warning); }
 .progress-bbu-bar-danger  { background-color: var(--bbu-danger); }
+
+.progress-bbu-sm {
+    height: 5px;
+    max-width: 90px;
+    margin-top: 0;
+}
 
 /* Confirmation Deletion Modal / Panel */
 .delete-icon-circle {
@@ -3064,6 +3042,11 @@ a:hover {
 .col-min-160 { min-width: 160px; }
 .col-min-180 { min-width: 180px; }
 
+.pct-44 { width: 44%; }
+.pct-18 { width: 18%; }
+.pct-14 { width: 14%; }
+.pct-12 { width: 12%; }
+
 .search-input-max { max-width: 320px; }
 
 /* ------------------------------------------------------------------------------
@@ -3465,6 +3448,15 @@ body.bbu-public-bg {
     background-attachment: fixed;
 }
 
+/* Smooth anchor scrolling for public landing navigation */
+html {
+    scroll-behavior: smooth;
+}
+
+section[id] {
+    scroll-margin-top: 96px;
+}
+
 [data-bs-theme="dark"] body.bbu-public-bg {
     background-image: radial-gradient(60% 45% at 100% 0%, rgba(45, 92, 246, 0.12) 0%, transparent 60%),
                       radial-gradient(50% 40% at 0% 100%, rgba(245, 158, 11, 0.07) 0%, transparent 60%);
@@ -3488,4 +3480,17 @@ body.bbu-public-bg {
 
 [data-bs-theme="light"] ::-webkit-scrollbar-thumb:hover {
     background: #9fb1cb;
+}
+
+/* Empty chart illustration badge (dashboard analytics) */
+.empty-chart-icon {
+    width: 52px;
+    height: 52px;
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+[data-bs-theme="dark"] .empty-chart-icon {
+    background: rgba(16, 185, 129, 0.18);
+    color: #34d399;
 }

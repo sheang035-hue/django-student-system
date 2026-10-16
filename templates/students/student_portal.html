@@ -14,7 +14,7 @@
                     <img src="{% static 'images/bbu-logo.png' %}" alt="BBU Official Logo" class="bbu-hero-logo">
                     <div>
                         <span class="badge badge-soft-warning px-3 py-1 fw-semibold shadow-sm">
-                            🎓 Build Bright University • Student Academic Portal
+                            <i class="fa-solid fa-graduation-cap me-1"></i> Build Bright University • Student Academic Portal
                         </span>
                         <div class="text-white-50 small mt-1">ផតថលព័ត៌មានសិក្សា និងលទ្ធផលប្រឡងរបស់និស្សិត</div>
                     </div>
@@ -26,22 +26,22 @@
                     Welcome back, {{ student.user.get_full_name|default:student.user.username }}. Track your enrolled courses, view academic grades, inspect your digital ID card, and access your official transcript.
                 </p>
                 <div class="d-flex flex-wrap gap-2 text-white-50 small">
-                    <span>🪪 ID: <strong class="text-white">{{ student.student_id }}</strong></span>
+                    <span><i class="fa-solid fa-id-card me-1"></i>ID: <strong class="text-white">{{ student.student_id }}</strong></span>
                     <span class="mx-2">•</span>
-                    <span>🏛️ Faculty of Science & IT</span>
+                    <span><i class="fa-solid fa-building-columns me-1"></i>Faculty of Science & IT</span>
                     <span class="mx-2">•</span>
-                    <span>🎓 Bachelor Degree (Year 2)</span>
+                    <span><i class="fa-solid fa-graduation-cap me-1"></i>Bachelor Degree (Year 2)</span>
                     <span class="mx-2">•</span>
-                    <span class="badge badge-soft-success px-2 py-0 align-self-center">🟢 Active Student</span>
+                    <span class="badge badge-soft-success px-2 py-0 align-self-center"><span class="status-dot status-dot-active me-1"></span>Active Student</span>
                 </div>
             </div>
             <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
                 <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                     <a href="{% url 'enrollments:student_transcript' student.student_id %}" class="btn btn-bbu-gold px-3 py-2 shadow-sm">
-                        📜 Official Transcript
+                        <i class="fa-solid fa-certificate me-1"></i> Official Transcript
                     </a>
                     <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-bbu-primary px-3 py-2 shadow-sm">
-                        🪪 My Student ID Card
+                        <i class="fa-solid fa-id-card me-1"></i> My Student ID Card
                     </a>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                     <i class="fa-solid fa-award"></i>
                 </div>
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📊 Cumulative GPA</h6>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Cumulative GPA</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ effective_gpa|floatformat:"2u" }} <small class="fs-6 text-muted">/ 4.00</small></h3>
                     <span class="badge badge-soft-{{ standing_badge }} mt-1">
                         {{ standing_kh }}
@@ -80,10 +80,10 @@
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">🎯 Credits Earned</h6>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Credits Earned</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ earned_credits }} <small class="fs-6 text-muted">/ {{ total_credits }} Cr</small></h3>
                     <small class="text-success fw-semibold">
-                        🟢 100% On-Track
+                        <span class="status-dot status-dot-active me-1"></span>100% On-Track
                     </small>
                 </div>
             </div>
@@ -105,10 +105,10 @@
                     <i class="fa-solid fa-book-open-reader"></i>
                 </div>
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📚 Enrolled Courses</h6>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Enrolled Courses</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ total_enrolled }} <small class="fs-6 text-muted">courses</small></h3>
                     <small class="text-muted fw-semibold">
-                        🟢 {{ completed_count }} Completed
+                        <span class="status-dot status-dot-active me-1"></span>{{ completed_count }} Completed
                     </small>
                 </div>
             </div>
@@ -128,10 +128,10 @@
                     <i class="fa-solid fa-chart-line"></i>
                 </div>
                 <div>
-                    <h6 class="text-muted small fw-bold text-uppercase mb-1">📈 Average Score</h6>
+                    <h6 class="text-muted small fw-bold text-uppercase mb-1">Average Score</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ avg_score }}%</h3>
                     <small class="text-success fw-semibold">
-                        🌟 Grade A Average
+                        <i class="fa-solid fa-star text-warning me-1"></i>Grade A Average
                     </small>
                 </div>
             </div>
@@ -150,7 +150,7 @@
         <div class="card card-bbu mb-4">
             <div class="card-bbu-header d-flex justify-content-between align-items-center">
                 <div>
-                    <h5 class="fw-bold mb-0 text-dark">📚 My Enrolled Courses & Grades</h5>
+                    <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-book-open-reader me-2 text-primary"></i>My Enrolled Courses & Grades</h5>
                     <small class="text-muted">មុខវិជ្ជា និងលទ្ធផលសិក្សារបស់និស្សិត</small>
                 </div>
                 <div class="d-flex align-items-center gap-2">
@@ -167,11 +167,11 @@
                     <table class="table table-bbu table-bbu-responsive table-hover mb-0">
                         <thead>
                             <tr>
-                                <th style="width: 44%;">Course & Subject Title / មុខវិជ្ជា</th>
-                                <th class="text-center" style="width: 14%;">Credits</th>
-                                <th class="text-center" style="width: 18%;">Score / ពិន្ទុ</th>
-                                <th class="text-center" style="width: 12%;">Grade</th>
-                                <th class="text-center" style="width: 12%;">Status</th>
+                                <th class="pct-44">Course & Subject Title / មុខវិជ្ជា</th>
+                                <th class="text-center pct-14">Credits</th>
+                                <th class="text-center pct-18">Score / ពិន្ទុ</th>
+                                <th class="text-center pct-12">Grade</th>
+                                <th class="text-center pct-12">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -200,7 +200,7 @@
                                 <td class="text-center align-middle">
                                     {% if e.score is not None %}
                                         <div class="fw-bold text-dark mb-1">{{ e.score }}%</div>
-                                        <div class="progress-bbu mx-auto" style="height: 5px; max-width: 90px;">
+                                        <div class="progress-bbu progress-bbu-sm mx-auto">
                                             <div class="progress-bbu-bar {% if e.score >= 80 %}progress-bbu-bar-success{% elif e.score >= 65 %}progress-bbu-bar-primary{% elif e.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
                                                  role="progressbar" 
                                                  style="width: {{ e.score }}%;"
@@ -241,7 +241,7 @@
         <!-- Academic Performance & Grading Reference Card -->
         <div class="card card-bbu mb-4">
             <div class="card-bbu-header">
-                <h6 class="fw-bold mb-0 text-dark">📊 Academic Standing & Grading Scale Reference</h6>
+                <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-scale-balanced me-2 text-primary"></i>Academic Standing & Grading Scale Reference</h6>
                 <small class="text-muted">បទដ្ឋាននៃការវាយតម្លៃពិន្ទុ និងចំណាត់ថ្នាក់តាមស្តង់ដារក្រសួងអប់រំ យុវជន និងកីឡា (MoEYS)</small>
             </div>
             <div class="card-body p-4">
@@ -347,7 +347,7 @@
                     <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-idcard-logo">
                     <div>
                         <h6 class="fw-bold mb-0 text-uppercase text-white">Build Bright University</h6>
-                        <small class="text-warning small fw-bold">🪪 STUDENT IDENTITY CARD</small>
+                        <small class="text-warning small fw-bold"><i class="fa-solid fa-id-card me-1"></i>STUDENT IDENTITY CARD</small>
                     </div>
                 </div>
             </div>
@@ -389,7 +389,7 @@
                         <i class="fa-solid fa-address-card me-1"></i> View Profile
                     </a>
                     <button type="button" class="btn btn-outline-secondary btn-sm copy-id-btn" data-id="{{ student.student_id }}" title="Copy Student ID">
-                        📋 Copy ID
+                        <i class="fa-solid fa-copy me-1"></i> Copy ID
                     </button>
                 </div>
             </div>
@@ -398,7 +398,7 @@
         <!-- Academic Services & Quick Actions Card -->
         <div class="card card-bbu mb-4">
             <div class="card-bbu-header">
-                <h6 class="fw-bold mb-0 text-dark">📜 Academic Services & Verification</h6>
+                <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-file-circle-check me-2 text-primary"></i>Academic Services & Verification</h6>
                 <small class="text-muted">ឯកសារ និងសេវាកម្មសិក្សាផ្លូវការ</small>
             </div>
             <div class="card-body p-3 d-flex flex-column gap-2">
@@ -420,7 +420,7 @@
         <!-- Faculty Department Contact Card -->
         <div class="card card-bbu">
             <div class="card-bbu-header">
-                <h6 class="fw-bold mb-0 text-dark">🏛️ Academic Affairs & Faculty</h6>
+                <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-building-columns me-2 text-primary"></i>Academic Affairs & Faculty</h6>
                 <small class="text-muted">ការិយាល័យកិច្ចការសិក្សា</small>
             </div>
             <div class="card-body p-3 small text-muted">

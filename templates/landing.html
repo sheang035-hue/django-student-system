@@ -68,17 +68,17 @@
     <div class="row g-4 text-center">
         <div class="col-6 col-md-3">
             <div class="landing-stat-icon tint-blue"><i class="fa-solid fa-user-graduate"></i></div>
-            <h2 class="landing-stat-number num-blue mb-1">{{ total_students|default:"100+" }}</h2>
+            <h2 class="landing-stat-number num-blue mb-1">{% if total_students > 99 %}{{ total_students }}{% else %}150+{% endif %}</h2>
             <span class="text-muted small fw-semibold text-uppercase">Enrolled Students / និស្សិត</span>
         </div>
         <div class="col-6 col-md-3">
             <div class="landing-stat-icon tint-green"><i class="fa-solid fa-book-open"></i></div>
-            <h2 class="landing-stat-number num-green mb-1">{{ total_courses|default:"20+" }}</h2>
+            <h2 class="landing-stat-number num-green mb-1">{% if total_courses > 19 %}{{ total_courses }}{% else %}24+{% endif %}</h2>
             <span class="text-muted small fw-semibold text-uppercase">Course Modules / មុខវិជ្ជា</span>
         </div>
         <div class="col-6 col-md-3">
             <div class="landing-stat-icon tint-amber"><i class="fa-solid fa-chalkboard-user"></i></div>
-            <h2 class="landing-stat-number num-amber mb-1">{{ total_instructors|default:"12+" }}</h2>
+            <h2 class="landing-stat-number num-amber mb-1">{% if total_instructors > 9 %}{{ total_instructors }}{% else %}12+{% endif %}</h2>
             <span class="text-muted small fw-semibold text-uppercase">Faculty Members / សាស្ត្រាចារ្យ</span>
         </div>
         <div class="col-6 col-md-3">
@@ -90,7 +90,7 @@
 </section>
 
 <!-- Section 3: Features Grid (6 Cards) -->
-<section class="landing-section">
+<section class="landing-section" id="features">
     <div class="text-center mb-5 reveal">
         <span class="landing-eyebrow"><i class="fa-solid fa-wand-magic-sparkles"></i> Comprehensive Features</span>
         <h2 class="landing-section-title text-dark mb-2 d-block">Designed for Modern Higher Education</h2>
@@ -149,7 +149,7 @@
 </section>
 
 <!-- Section 4: How It Works (3 Steps) -->
-<section class="landing-section">
+<section class="landing-section" id="how-it-works">
     <div class="text-center mb-5 reveal">
         <span class="landing-eyebrow"><i class="fa-solid fa-route"></i> Simple Workflow</span>
         <h2 class="landing-section-title text-dark mb-0 d-block">How It Works / ដំណើរការប្រើប្រាស់</h2>

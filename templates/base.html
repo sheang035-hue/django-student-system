@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Custom Astra-Inspired BBU Stylesheet -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.1">
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -101,8 +101,8 @@
                                 <span>Courses</span>
                             </a>
                         </li>
-                    {% else %}
-                        <!-- Staff / Admin / Public Navigation Links -->
+                    {% elif user.is_authenticated %}
+                        <!-- Staff / Admin Navigation Links -->
                         <li class="nav-item">
                             <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
                                 <i class="fa-solid fa-chart-line nav-link-icon text-primary"></i>
@@ -127,8 +127,29 @@
                                 <span>Enrollments</span>
                             </a>
                         </li>
+                    {% else %}
+                        <!-- Public / Anonymous Visitor Navigation Links -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-house nav-link-icon text-primary"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu" href="{% url 'home' %}#features">
+                                <i class="fa-solid fa-star nav-link-icon text-warning"></i>
+                                <span>Features</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu" href="{% url 'home' %}#how-it-works">
+                                <i class="fa-solid fa-route nav-link-icon text-info"></i>
+                                <span>How It Works</span>
+                            </a>
+                        </li>
                     {% endif %}
                     
+                    {% if user.is_authenticated %}
                     <li class="nav-item d-none d-lg-flex ms-2">
                         {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}
                         <form class="nav-search-form" method="get" action="{% url 'courses:course_list' %}">
@@ -176,6 +197,7 @@
                         </form>
                         {% endif %}
                     </li>
+                    {% endif %}
                 </ul>
                 
                 <!-- Right Side Actions & User Menu -->
@@ -386,10 +408,17 @@
                 <div class="col-md-3 col-6">
                     <h6 class="fw-bold text-dark small text-uppercase mb-3">Quick Navigation</h6>
                     <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
+                        {% if user.is_authenticated %}
                         <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Dashboard</a></li>
                         <li><a href="{% url 'students:student_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Students Directory</a></li>
                         <li><a href="{% url 'courses:course_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Academic Courses</a></li>
                         <li><a href="{% url 'enrollments:enrollment_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Course Enrollments</a></li>
+                        {% else %}
+                        <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Home</a></li>
+                        <li><a href="{% url 'home' %}#features" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> System Features</a></li>
+                        <li><a href="{% url 'home' %}#how-it-works" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> How It Works</a></li>
+                        <li><a href="{% url 'students:register' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Student Registration</a></li>
+                        {% endif %}
                     </ul>
                 </div>
 
@@ -419,7 +448,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom Main JS -->
-    <script src="{% static 'js/main.js' %}?v=6.0"></script>
+    <script src="{% static 'js/main.js' %}?v=6.1"></script>
     
     {% block extra_js %}{% endblock %}
 </body>

@@ -18,6 +18,7 @@
  *   14. Instant Client-Side Table Filtering
  *   15. Universal Copy-to-Clipboard
  *   16. Global Search Helpers
+ *   17. Instant Form Validation Feedback (native constraint validation)
  */
 
 (function () {
@@ -432,6 +433,49 @@
                 pageSearchInput.dispatchEvent(new Event('input'));
             });
         }
+
+        // ---------------------------------------------------------------------
+        // 17. Instant Form Validation Feedback (native constraint validation)
+        // ---------------------------------------------------------------------
+        document.querySelectorAll('form[method="post"], form[method="POST"]').forEach(function (form) {
+            var fields = form.querySelectorAll('input, select, textarea');
+
+            function validateField(field) {
+                if (field.getAttribute('data-bbu-touched') !== 'yes') return;
+                if (field.checkValidity()) {
+                    field.classList.remove('is-invalid');
+                    if (field.value !== '') field.classList.add('is-valid');
+                } else {
+                    field.classList.add('is-invalid');
+                    field.classList.remove('is-valid');
+                }
+            }
+
+            fields.forEach(function (field) {
+                var type = (field.getAttribute('type') || '').toLowerCase();
+                if (field.disabled || ['hidden', 'submit', 'button', 'reset', 'file'].includes(type)) return;
+                if (!field.classList.contains('form-control') && !field.classList.contains('form-select')) return;
+
+                field.addEventListener('blur', function () {
+                    field.setAttribute('data-bbu-touched', 'yes');
+                    validateField(field);
+                });
+                field.addEventListener('input', function () {
+                    validateField(field);
+                });
+                field.addEventListener('change', function () {
+                    field.setAttribute('data-bbu-touched', 'yes');
+                    validateField(field);
+                });
+            });
+
+            form.addEventListener('reset', function () {
+                form.querySelectorAll('.is-invalid, .is-valid').forEach(function (el) {
+                    el.classList.remove('is-invalid', 'is-valid');
+                    el.removeAttribute('data-bbu-touched');
+                });
+            });
+        });
 
         console.log('BBU front-end suite v6 loaded.');
     });

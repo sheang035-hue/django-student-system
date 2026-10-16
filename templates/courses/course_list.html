@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Page Header Component -->
 {% url 'courses:course_create' as add_course_url %}
-{% include "components/_page_header.html" with title="📚 Academic Courses / បញ្ជីមុខវិជ្ជាសិក្សា" subtitle="Manage university curricula, credit weights, class capacities, and instructors" action_url=add_course_url action_label="Add New Course" action_icon="fa-solid fa-circle-plus" %}
+{% include "components/_page_header.html" with title="Academic Courses / បញ្ជីមុខវិជ្ជាសិក្សា" subtitle="Manage university curricula, credit weights, class capacities, and instructors" action_url=add_course_url action_label="Add New Course" action_icon="fa-solid fa-circle-plus" %}
 
 <!-- Toolbar Card (Search, Status Filters & CSV Export) -->
 <div class="toolbar-card">
@@ -27,18 +27,18 @@
                 <div class="col-md-3 col-lg-3">
                     <select name="status" class="form-select">
                         <option value="">All Statuses / ទាំងអស់</option>
-                        <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>🟢 Active / សកម្ម</option>
-                        <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>🔴 Inactive / អសកម្ម</option>
-                        <option value="ARCHIVED" {% if request.GET.status == 'ARCHIVED' %}selected{% endif %}>📦 Archived / រក្សាទុក</option>
+                        <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active / សកម្ម</option>
+                        <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive / អសកម្ម</option>
+                        <option value="ARCHIVED" {% if request.GET.status == 'ARCHIVED' %}selected{% endif %}>Archived / រក្សាទុក</option>
                     </select>
                 </div>
                 <div class="col-md-3 col-lg-3 d-flex gap-2">
                     <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
-                        <i class="fa-solid fa-filter me-1"></i> Filter 🔍
+                        <i class="fa-solid fa-filter me-1"></i> Filter
                     </button>
                     {% if request.GET.search or request.GET.status %}
                     <a href="{% url 'courses:course_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
-                        🔄 Reset
+                        <i class="fa-solid fa-rotate-left me-1"></i> Reset
                     </a>
                     {% endif %}
                 </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="col-lg-3 d-flex justify-content-lg-end">
             <a href="{% url 'courses:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of academic curriculum">
-                <i class="fa-solid fa-file-excel me-1"></i> Export CSV 📥
+                <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
     </div>
@@ -55,16 +55,16 @@
 <!-- Stat Chips Row -->
 <div class="stat-chips-row">
     <div class="stat-chip">
-        <span>📚 Total Courses: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
+        <span><i class="fa-solid fa-book-open me-1 text-primary"></i>Total Courses: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
     </div>
     {% if active_count is not None %}
     <div class="stat-chip">
-        <span>🟢 Active: <strong>{{ active_count }}</strong></span>
+        <span><span class="status-dot status-dot-active me-1"></span>Active: <strong>{{ active_count }}</strong></span>
     </div>
     {% endif %}
     {% if page_obj %}
     <div class="stat-chip">
-        <span>📄 Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
+        <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
     </div>
     {% endif %}
 </div>

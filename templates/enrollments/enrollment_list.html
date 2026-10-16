@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Page Header Component -->
 {% url 'enrollments:enrollment_create' as add_enrollment_url %}
-{% include "components/_page_header.html" with title="📋 Course Enrollments / ការចុះឈ្មោះសិក្សា" subtitle="Track student course registrations, scores, academic grades, and course completions" action_url=add_enrollment_url action_label="New Enrollment" action_icon="fa-solid fa-circle-plus" %}
+{% include "components/_page_header.html" with title="Course Enrollments / ការចុះឈ្មោះសិក្សា" subtitle="Track student course registrations, scores, academic grades, and course completions" action_url=add_enrollment_url action_label="New Enrollment" action_icon="fa-solid fa-circle-plus" %}
 
 <!-- Toolbar Card (Search, Status Filters & CSV Export) -->
 <div class="toolbar-card">
@@ -27,19 +27,19 @@
                 <div class="col-md-3 col-lg-3">
                     <select name="status" class="form-select">
                         <option value="">All Statuses / ទាំងអស់</option>
-                        <option value="ENROLLED" {% if request.GET.status == 'ENROLLED' %}selected{% endif %}>📚 Enrolled / បានចុះឈ្មោះ</option>
-                        <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>✅ Completed / បានបញ្ចប់</option>
-                        <option value="DROPPED" {% if request.GET.status == 'DROPPED' %}selected{% endif %}>⚠️ Dropped / បានបោះបង់</option>
-                        <option value="SUSPENDED" {% if request.GET.status == 'SUSPENDED' %}selected{% endif %}>⏸️ Suspended / ព្យួរ</option>
+                        <option value="ENROLLED" {% if request.GET.status == 'ENROLLED' %}selected{% endif %}>Enrolled / បានចុះឈ្មោះ</option>
+                        <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed / បានបញ្ចប់</option>
+                        <option value="DROPPED" {% if request.GET.status == 'DROPPED' %}selected{% endif %}>Dropped / បានបោះបង់</option>
+                        <option value="SUSPENDED" {% if request.GET.status == 'SUSPENDED' %}selected{% endif %}>Suspended / ព្យួរ</option>
                     </select>
                 </div>
                 <div class="col-md-3 col-lg-3 d-flex gap-2">
                     <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
-                        <i class="fa-solid fa-filter me-1"></i> Filter 🔍
+                        <i class="fa-solid fa-filter me-1"></i> Filter
                     </button>
                     {% if request.GET.search or request.GET.status %}
                     <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
-                        🔄 Reset
+                        <i class="fa-solid fa-rotate-left me-1"></i> Reset
                     </a>
                     {% endif %}
                 </div>
@@ -47,7 +47,7 @@
         </div>
         <div class="col-lg-3 d-flex justify-content-lg-end">
             <a href="{% url 'enrollments:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of student enrollments">
-                <i class="fa-solid fa-file-excel me-1"></i> Export CSV 📥
+                <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
     </div>
@@ -56,16 +56,16 @@
 <!-- Stat Chips Row -->
 <div class="stat-chips-row">
     <div class="stat-chip">
-        <span>📋 Total Enrollments: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
+        <span><i class="fa-solid fa-clipboard-list me-1 text-primary"></i>Total Enrollments: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
     </div>
     {% if completed_count is not None %}
     <div class="stat-chip">
-        <span>✅ Completed: <strong>{{ completed_count }}</strong></span>
+        <span><i class="fa-solid fa-circle-check me-1 text-success"></i>Completed: <strong>{{ completed_count }}</strong></span>
     </div>
     {% endif %}
     {% if page_obj %}
     <div class="stat-chip">
-        <span>📄 Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
+        <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
     </div>
     {% endif %}
 </div>

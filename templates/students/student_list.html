@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Page Header Component -->
 {% url 'students:register' as add_student_url %}
-{% include "components/_page_header.html" with title="👨‍🎓 Students Directory / បញ្ជីឈ្មោះនិស្សិត" subtitle="Manage registered students, academic performance, and official transcripts" action_url=add_student_url action_label="Add New Student" action_icon="fa-solid fa-user-plus" %}
+{% include "components/_page_header.html" with title="Students Directory / បញ្ជីឈ្មោះនិស្សិត" subtitle="Manage registered students, academic performance, and official transcripts" action_url=add_student_url action_label="Add New Student" action_icon="fa-solid fa-user-plus" %}
 
 <!-- Toolbar Card (Search, Filters & CSV Export) -->
 <div class="toolbar-card">
@@ -23,18 +23,18 @@
                     </span>
                 </div>
                 <button class="btn btn-bbu-primary px-3 text-nowrap" type="submit">
-                    <i class="fa-solid fa-filter me-1"></i> Filter 🔍
+                    <i class="fa-solid fa-filter me-1"></i> Filter
                 </button>
                 {% if search_query %}
                 <a href="{% url 'students:student_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
-                    🔄 Reset
+                    <i class="fa-solid fa-rotate-left me-1"></i> Reset
                 </a>
                 {% endif %}
             </form>
         </div>
         <div class="col-md-5 col-lg-5 d-flex justify-content-md-end gap-2">
             <a href="{% url 'students:export_csv' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="btn btn-bbu-gold text-nowrap" title="Download Excel-compatible CSV of student directory">
-                <i class="fa-solid fa-file-excel me-1"></i> Export CSV 📥
+                <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
     </div>
@@ -43,16 +43,16 @@
 <!-- Stat Chips Row -->
 <div class="stat-chips-row">
     <div class="stat-chip">
-        <span>👨‍🎓 Total Students: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
+        <span><i class="fa-solid fa-user-graduate me-1 text-primary"></i>Total Students: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
     </div>
     {% if active_count is not None %}
     <div class="stat-chip">
-        <span>🟢 Active: <strong>{{ active_count }}</strong></span>
+        <span><span class="status-dot status-dot-active me-1"></span>Active: <strong>{{ active_count }}</strong></span>
     </div>
     {% endif %}
     {% if page_obj %}
     <div class="stat-chip">
-        <span>📄 Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
+        <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
     </div>
     {% endif %}
 </div>

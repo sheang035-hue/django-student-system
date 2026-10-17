@@ -1,0 +1,17 @@
+{% if student.profile_picture %}
+    <img src="{{ student.profile_picture.url }}" 
+         alt="{{ student.get_primary_name }}" 
+         class="student-avatar-thumb avatar-{{ size|default:'md' }}" 
+         loading="lazy">
+{% else %}
+    <div class="student-avatar-placeholder avatar-{{ size|default:'md' }}">
+        {% if student.khmer_name %}
+            {{ student.khmer_name|slice:":1" }}
+        {% elif student.user.first_name %}
+            {{ student.user.first_name|slice:":1"|upper }}
+        {% else %}
+            {{ student.user.username|slice:":1"|upper }}
+        {% endif %}
+    </div>
+{% endif %}
+

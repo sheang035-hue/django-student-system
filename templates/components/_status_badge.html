@@ -1,0 +1,31 @@
+{% if status == True or status == 'ACTIVE' %}
+    <span class="badge badge-soft-success">
+        <span class="status-dot status-dot-active"></span>Active
+    </span>
+{% elif status == False or status == 'INACTIVE' %}
+    <span class="badge badge-soft-danger">
+        <span class="status-dot status-dot-danger"></span>Inactive
+    </span>
+{% elif status == 'ARCHIVED' %}
+    <span class="badge badge-soft-secondary">
+        <span class="status-dot status-dot-warning"></span>Archived
+    </span>
+{% elif status == 'ENROLLED' %}
+    <span class="badge badge-soft-primary">
+        <span class="status-dot status-dot-info"></span>Enrolled
+    </span>
+{% elif status == 'COMPLETED' %}
+    <span class="badge badge-soft-success">
+        <span class="status-dot status-dot-active"></span>Completed
+    </span>
+{% elif status == 'DROPPED' %}
+    <span class="badge badge-soft-danger">
+        <span class="status-dot status-dot-danger"></span>Dropped
+    </span>
+{% elif status == 'SUSPENDED' %}
+    <span class="badge badge-soft-warning">
+        <span class="status-dot status-dot-warning"></span>Suspended
+    </span>
+{% else %}
+    <span class="badge badge-soft-secondary">{{ status }}</span>
+{% endif %}

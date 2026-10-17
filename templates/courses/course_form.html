@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}{% if form.instance.pk %}Edit Course: {{ form.instance.code }}{% else %}Add New Course{% endif %} - BBU{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="row mb-3">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit {{ form.instance.code }}{% else %}Add Course{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card card-bbu shadow-sm border-0 mb-4">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <h4 class="fw-bold text-dark mb-0">
+                    <i class="fa-solid fa-book-open text-primary me-2"></i>
+                    {% if form.instance.pk %}
+                        Edit Course: <span class="text-primary">{{ form.instance.code }}</span>
+                    {% else %}
+                        Add New Course / បង្កើតមុខវិជ្ជាថ្មី
+                    {% endif %}
+                </h4>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to Courses
+                </a>
+            </div>
+
+            <div class="card-body p-4">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0 mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="fa-solid fa-circle-exclamation me-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Section 1: Course Identity -->
+                    <div class="p-3 bg-light rounded mb-4">
+                        <h6 class="fw-bold text-dark small text-uppercase mb-3">
+                            <i class="fa-solid fa-id-card text-primary me-2"></i> Course Basic Information
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.code %}
+                            </div>
+                            <div class="col-md-8">
+                                {% include "components/_form_field.html" with field=form.title %}
+                            </div>
+                            <div class="col-12">
+                                {% include "components/_form_field.html" with field=form.description %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Academic Specs & Schedule -->
+                    <div class="p-3 bg-light rounded mb-4">
+                        <h6 class="fw-bold text-dark small text-uppercase mb-3">
+                            <i class="fa-solid fa-graduation-cap text-primary me-2"></i> Academic Specs & Schedule
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.instructor %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include "components/_form_field.html" with field=form.credits %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include "components/_form_field.html" with field=form.level %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.capacity %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.status %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.start_date %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.end_date %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons Desktop & Mobile -->
+                    <div class="d-flex gap-2 pt-2 form-mobile-action-bar">
+                        <button type="submit" class="btn btn-bbu-primary px-4 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Course
+                        </button>
+                        <a href="{% url 'courses:course_list' %}" class="btn btn-bbu-soft px-4 py-2">
+                            <i class="fa-solid fa-xmark me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

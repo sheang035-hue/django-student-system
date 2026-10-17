@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Enrollment - BBU{% endblock %}
+
+{% block content %}
+{% url 'enrollments:enrollment_detail' enrollment.id as cancel_url %}
+{% include "components/_confirm_delete.html" with title="Delete Enrollment / លុបការចុះឈ្មោះ" record_name=enrollment.student.get_primary_name record_detail=enrollment.course.code warning_extra="The enrollment and any recorded scores or attendance will be permanently removed." cancel_url=cancel_url %}
+{% endblock %}

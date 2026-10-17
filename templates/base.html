@@ -1,0 +1,460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>{% block title %}BBU Student Management System{% endblock %} — Build Bright University</title>
+    
+    <!-- Meta description & SEO -->
+    <meta name="description" content="Build Bright University Student Management & Academic Information System">
+    
+    <!-- Inline theme setup to prevent white flash -->
+    <script>
+        (function() {
+            try {
+                const storedTheme = localStorage.getItem('bbu-theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = storedTheme || (prefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-bs-theme', theme);
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Favicon, This like is the place for include logo on Browser Tab-->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="icon" type="image/png" sizes="128x128" href="{% static 'images/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.png' %}">
+    
+    <!-- Google Fonts: Inter + Kantumruy Pro (Khmer) with font-display: swap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Icons (fa-solid) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom Astra-Inspired BBU Stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6.3">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <!-- Accessibility: Skip to Content link -->
+    <a href="#main-content" class="visually-hidden-focusable bg-primary text-white p-2 text-decoration-none">
+        Skip to main content
+    </a>
+
+    <!-- Top Sticky Astra-Inspired Light Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-bbu-astra sticky-top">
+        <div class="container">
+            <!-- Brand Crest with Official BBU Logo -->
+            <a class="navbar-brand-bbu" href="{% url 'home' %}">
+                <div class="bbu-logo-badge">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-navbar-logo">
+                </div>
+                <div class="d-flex flex-column lh-sm">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="bbu-wordmark">BBU</span>
+                        <span class="badge-academic-term d-none d-sm-inline-flex">Portal</span>
+                    </div>
+                    <span class="bbu-brand-subtitle d-none d-sm-inline">Build Bright University</span>
+                </div>
+            </a>
+
+            <div class="bbu-nav-divider d-none d-lg-block"></div>
+            
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Navigation Items -->
+                <ul class="navbar-nav me-auto my-2 my-lg-0 align-items-lg-center">
+                    {% if user.is_authenticated and user.student and not user.is_staff and not user.is_superuser %}
+                        <!-- Student Specific Navigation Links -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-house-user nav-link-icon text-primary"></i>
+                                <span>Portal</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'student_transcript' in request.path %}active{% endif %}" href="{% url 'enrollments:student_transcript' user.student.student_id %}">
+                                <i class="fa-solid fa-certificate nav-link-icon text-warning"></i>
+                                <span>My Transcript</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'student' in request.path and not 'student_transcript' in request.path %}active{% endif %}" href="{% url 'students:student_detail' user.student.pk %}">
+                                <i class="fa-solid fa-id-card nav-link-icon text-info"></i>
+                                <span>My ID Card</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}active{% endif %}" href="{% url 'courses:course_list' %}">
+                                <i class="fa-solid fa-book-open nav-link-icon text-success"></i>
+                                <span>Courses</span>
+                            </a>
+                        </li>
+                    {% elif user.is_authenticated %}
+                        <!-- Staff / Admin Navigation Links -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-chart-line nav-link-icon text-primary"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'students' in request.resolver_match.namespaces or 'student' in request.path %}active{% endif %}" href="{% url 'students:student_list' %}">
+                                <i class="fa-solid fa-user-graduate nav-link-icon text-info"></i>
+                                <span>Students</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}active{% endif %}" href="{% url 'courses:course_list' %}">
+                                <i class="fa-solid fa-book-open nav-link-icon text-success"></i>
+                                <span>Courses</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if 'enrollments' in request.resolver_match.namespaces or 'enrollment' in request.path %}active{% endif %}" href="{% url 'enrollments:enrollment_list' %}">
+                                <i class="fa-solid fa-clipboard-check nav-link-icon text-warning"></i>
+                                <span>Enrollments</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <!-- Public / Anonymous Visitor Navigation Links -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="fa-solid fa-house nav-link-icon text-primary"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu" href="{% url 'home' %}#features">
+                                <i class="fa-solid fa-star nav-link-icon text-warning"></i>
+                                <span>Features</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-bbu" href="{% url 'home' %}#how-it-works">
+                                <i class="fa-solid fa-route nav-link-icon text-info"></i>
+                                <span>How It Works</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
+                    <li class="nav-item d-none d-lg-flex ms-2">
+                        {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}
+                        <form class="nav-search-form" method="get" action="{% url 'courses:course_list' %}">
+                            <div class="nav-search-bar" title="Search academic courses (Press /)">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" name="search" id="nav-global-search" class="nav-search-input" 
+                                       placeholder="Search courses... (/)" 
+                                       value="{{ request.GET.search|default:'' }}"
+                                       autocomplete="off" aria-label="Search courses">
+                                <kbd class="shortcut-kbd">/</kbd>
+                            </div>
+                        </form>
+                        {% elif 'enrollments' in request.resolver_match.namespaces or 'enrollment' in request.path %}
+                        <form class="nav-search-form" method="get" action="{% url 'enrollments:enrollment_list' %}">
+                            <div class="nav-search-bar" title="Search enrollment records (Press /)">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" name="search" id="nav-global-search" class="nav-search-input" 
+                                       placeholder="Search enrollments... (/)" 
+                                       value="{{ request.GET.search|default:'' }}"
+                                       autocomplete="off" aria-label="Search enrollments">
+                                <kbd class="shortcut-kbd">/</kbd>
+                            </div>
+                        </form>
+                        {% elif user.is_authenticated and user.student and not user.is_staff and not user.is_superuser %}
+                        <form class="nav-search-form" method="get" action="{% url 'courses:course_list' %}">
+                            <div class="nav-search-bar" title="Search academic courses (Press /)">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" name="search" id="nav-global-search" class="nav-search-input" 
+                                       placeholder="Search courses... (/)" 
+                                       value="{{ request.GET.search|default:'' }}"
+                                       autocomplete="off" aria-label="Search courses">
+                                <kbd class="shortcut-kbd">/</kbd>
+                            </div>
+                        </form>
+                        {% else %}
+                        <form class="nav-search-form" method="get" action="{% url 'students:student_list' %}">
+                            <div class="nav-search-bar" title="Search students directory (Press /)">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" name="q" id="nav-global-search" class="nav-search-input" 
+                                       placeholder="Search students... (/)" 
+                                       value="{{ search_query|default:'' }}"
+                                       autocomplete="off" aria-label="Search students">
+                                <kbd class="shortcut-kbd">/</kbd>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <!-- Right Side Actions & User Menu -->
+                <ul class="navbar-nav ms-auto align-items-center flex-row gap-2 mt-2 mt-lg-0">
+                    <!-- Light / Dark Theme Toggle -->
+                    <li class="nav-item">
+                        <button id="theme-toggle-btn" class="btn-theme-toggle" type="button" aria-label="Toggle Dark Mode" title="Toggle theme (Alt+T)">
+                            <i class="fa-solid fa-moon" id="theme-icon"></i>
+                        </button>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff or user.is_superuser %}
+                        <!-- Quick Add Dropdown (Staff / Admin Only) -->
+                        <li class="nav-item dropdown d-none d-sm-block">
+                            <button class="btn btn-bbu-gold btn-sm d-inline-flex align-items-center gap-1 dropdown-toggle px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-circle-plus"></i>
+                                <span>New</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                                <li><h6 class="dropdown-header small text-muted text-uppercase">Quick Actions</h6></li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{% url 'students:register' %}">
+                                        <i class="fa-solid fa-user-plus text-primary me-2"></i> Add Student
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{% url 'courses:course_create' %}">
+                                        <i class="fa-solid fa-book-medical text-success me-2"></i> Create Course
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{% url 'enrollments:enrollment_create' %}">
+                                        <i class="fa-solid fa-file-circle-plus text-warning me-2"></i> New Enrollment
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Admin Panel Link (Staff Only) -->
+                        <li class="nav-item d-none d-md-block">
+                            <a class="nav-link text-warning px-2" href="{% url 'admin:index' %}" target="_blank" title="Django Administration">
+                                <i class="fa-solid fa-shield-halved me-1"></i> Admin
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- User Profile Dropdown -->
+                        <li class="nav-item dropdown ms-1">
+                            <a class="nav-link dropdown-toggle btn-bbu-soft d-inline-flex align-items-center gap-2 px-3 py-1" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="position-relative d-inline-block">
+                                    <span class="student-avatar-placeholder avatar-xs">
+                                        {{ user.username|slice:":1"|upper }}
+                                    </span>
+                                    <span class="user-status-dot online"></span>
+                                </div>
+                                <span class="d-none d-sm-inline fw-semibold">{{ user.username }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                                <li>
+                                    <div class="px-3 py-2 border-bottom">
+                                        <small class="text-muted d-block">Signed in as</small>
+                                        <strong class="text-dark d-block">
+                                            {% if user.student and user.student.khmer_name %}
+                                                {{ user.student.khmer_name }}
+                                            {% else %}
+                                                {{ user.get_full_name|default:user.username }}
+                                            {% endif %}
+                                        </strong>
+                                        <small class="text-muted d-block text-truncate user-email-max">{{ user.email|default:"No email set" }}</small>
+                                        <span class="badge {% if user.is_staff or user.is_superuser %}badge-soft-warning{% else %}badge-soft-primary{% endif %} mt-1">
+                                            {% if user.is_staff or user.is_superuser %}
+                                                Staff / Administrator
+                                            {% elif user.student %}
+                                                Student ({{ user.student.student_id }})
+                                            {% else %}
+                                                User Account
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </li>
+                                {% if user.is_staff or user.is_superuser %}
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'home' %}">
+                                            <i class="fa-solid fa-chart-line me-2 text-primary"></i> Management Dashboard
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'students:student_list' %}">
+                                            <i class="fa-solid fa-address-book me-2 text-info"></i> Students Directory
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'courses:course_list' %}">
+                                            <i class="fa-solid fa-graduation-cap me-2 text-success"></i> Academic Courses
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'enrollments:enrollment_list' %}">
+                                            <i class="fa-solid fa-clipboard-check me-2 text-warning"></i> Enrollments Records
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'admin:index' %}" target="_blank">
+                                            <i class="fa-solid fa-shield-halved me-2 text-danger"></i> Admin Panel
+                                        </a>
+                                    </li>
+                                {% elif user.student %}
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'home' %}">
+                                            <i class="fa-solid fa-house-user me-2 text-primary"></i> My Student Portal
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'students:student_detail' user.student.pk %}">
+                                            <i class="fa-solid fa-id-card me-2 text-info"></i> My ID Card & Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'enrollments:student_transcript' user.student.student_id %}">
+                                            <i class="fa-solid fa-certificate me-2 text-warning"></i> My Official Transcript
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'courses:course_list' %}">
+                                            <i class="fa-solid fa-book-open me-2 text-success"></i> Course Catalog
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                <li>
+                                    <a class="dropdown-item py-2" href="{% url 'password_change' %}">
+                                        <i class="fa-solid fa-key me-2 text-warning"></i> Change Password
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider my-1"></li>
+                                <li>
+                                    <!-- Logout Form via POST (CSRF protected) -->
+                                    <form method="post" action="{% url 'logout' %}" class="m-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
+                                            <i class="fa-solid fa-arrow-right-from-bracket me-2 text-danger"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <!-- Logged Out Actions -->
+                        <li class="nav-item">
+                            <a class="btn btn-ghost-primary btn-sm px-3" href="{% url 'login' %}">
+                                <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-bbu-gold btn-sm px-3" href="{% url 'students:register' %}">
+                                <i class="fa-solid fa-user-plus me-1"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="container my-4 flex-grow-1">
+        <!-- Toast / Alerts Notification Container -->
+        {% if messages %}
+        <div class="row mb-3">
+            <div class="col-12">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show border-0 shadow-sm d-flex align-items-center" role="alert">
+                    {% if message.tags == 'success' %}
+                        <i class="fa-solid fa-circle-check fs-5 me-2 text-success"></i>
+                    {% elif message.tags == 'danger' or message.tags == 'error' %}
+                        <i class="fa-solid fa-circle-xmark fs-5 me-2 text-danger"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fa-solid fa-triangle-exclamation fs-5 me-2 text-warning"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle-info fs-5 me-2 text-info"></i>
+                    {% endif %}
+                    <div class="flex-grow-1">{{ message }}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer: 3 Columns (Brand, Quick Links, Copyright) -->
+    <footer class="footer-bbu py-5 mt-auto no-print">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Column 1: Brand -->
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-footer-logo">
+                        <div>
+                            <h6 class="fw-bold text-dark mb-0">Build Bright University (BBU)</h6>
+                            <small class="text-muted fs-xs">សាកលវិទ្យាល័យ បៀលប្រាយ</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-3 footer-desc-width">
+                        Faculty of Science and Information Technology. Dedicated to academic excellence, innovative research, and professional student empowerment.
+                    </p>
+                    <span class="badge badge-soft-primary">Semester 1 &bull; Year 2 Final Project</span>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div class="col-md-3 col-6">
+                    <h6 class="fw-bold text-dark small text-uppercase mb-3">Quick Navigation</h6>
+                    <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
+                        {% if user.is_authenticated %}
+                        <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Dashboard</a></li>
+                        <li><a href="{% url 'students:student_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Students Directory</a></li>
+                        <li><a href="{% url 'courses:course_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Academic Courses</a></li>
+                        <li><a href="{% url 'enrollments:enrollment_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Course Enrollments</a></li>
+                        {% else %}
+                        <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Home</a></li>
+                        <li><a href="{% url 'home' %}#features" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> System Features</a></li>
+                        <li><a href="{% url 'home' %}#how-it-works" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> How It Works</a></li>
+                        <li><a href="{% url 'students:register' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Student Registration</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <!-- Column 3: Contact & Copyright -->
+                <div class="col-md-4 col-6">
+                    <h6 class="fw-bold text-dark small text-uppercase mb-3">Academic Portal</h6>
+                    <p class="text-muted small mb-2">
+                        <i class="fa-solid fa-location-dot me-2 text-danger"></i> Phnom Penh &amp; Siem Reap, Cambodia
+                    </p>
+                    <p class="text-muted small mb-3">
+                        <i class="fa-solid fa-globe me-2 text-primary"></i> Built with Django &amp; Bootstrap 5
+                    </p>
+                    <p class="text-muted small mb-0">
+                        &copy; 2026 Build Bright University. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Floating Button -->
+    <button id="back-to-top" class="back-to-top-btn" type="button" aria-label="Back to Top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Main JS -->
+    <script src="{% static 'js/main.js' %}?v=6.2"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

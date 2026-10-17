@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Student Registration - Build Bright University{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <!-- Header Hero Banner -->
+            <div class="card card-bbu hero-banner mb-4">
+                <div class="card-body text-center d-flex flex-column align-items-center justify-content-center text-white py-4 px-3 p-md-5">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-hero-logo mb-3">
+                    <span class="badge badge-soft-warning px-3 py-1 mb-2">Build Bright University</span>
+                    <h2 class="fw-bold mb-1 text-white">
+                        Student Registration / ចុះឈ្មោះនិស្សិត
+                    </h2>
+                    <p class="text-white-50 small mb-0">
+                        Create your student account to enroll in courses, view grades, and access official transcripts
+                    </p>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger shadow-sm border-0 mb-4">
+                    <h6 class="fw-bold mb-1"><i class="fa-solid fa-circle-exclamation me-1"></i>Please correct the following:</h6>
+                    <ul class="mb-0 ps-3">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Section 1: Account & Credentials -->
+                <div class="card card-bbu shadow-sm border-0 mb-4">
+                    <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-circle p-2">
+                                <i class="fa-solid fa-lock text-white"></i>
+                            </span>
+                            <h5 class="mb-0 fw-bold text-dark">Step 1: Account Credentials / ព័ត៌មានគណនី</h5>
+                        </div>
+                        <span class="badge badge-soft-primary small">Step 1 of 2</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.username %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.email %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.password1 %}
+                                <div class="form-text text-muted small mt-1">
+                                    <i class="fa-solid fa-circle-info text-primary me-1"></i>Use at least 8 characters with letters and numbers.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.password2 %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2: Student Identity & Academic Details -->
+                <div class="card card-bbu shadow-sm border-0 mb-4">
+                    <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-warning rounded-circle p-2">
+                                <i class="fa-solid fa-user-graduate text-white"></i>
+                            </span>
+                            <h5 class="mb-0 fw-bold text-dark">Step 2: Student Profile & Personal Details / ព័ត៌មានផ្ទាល់ខ្លួន</h5>
+                        </div>
+                        <span class="badge badge-soft-warning small">Step 2 of 2</span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.student_id %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.khmer_name %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.first_name %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.last_name %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.date_of_birth %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.gender %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include "components/_form_field.html" with field=form.phone_number %}
+                            </div>
+
+                            <div class="col-12">
+                                {% include "components/_form_field.html" with field=form.address %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.city %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include "components/_form_field.html" with field=form.country %}
+                            </div>
+
+                            <!-- Profile Picture Upload with Live Preview -->
+                            <div class="col-12">
+                                <label for="{{ form.profile_picture.id_for_label }}" class="form-label fw-semibold">
+                                    <i class="fa-solid fa-camera text-primary me-1"></i> Profile Picture / រូបថតនិស្សិត <span class="text-muted fw-normal small">(Optional)</span>
+                                </label>
+                                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded border">
+                                    <div class="avatar-preview-box">
+                                        <img id="avatar-preview-img" src="" alt="Preview" class="d-none-initial">
+                                        <div id="avatar-preview-placeholder" class="avatar-placeholder text-center">
+                                            <i class="fa-solid fa-camera fa-lg"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        {{ form.profile_picture }}
+                                        <small class="text-muted d-block mt-1">Upload JPG, PNG or WebP image (max 5MB). You can also add or update your photo later from your student profile.</small>
+                                    </div>
+                                </div>
+                                {% if form.profile_picture.errors %}
+                                    {% for error in form.profile_picture.errors %}
+                                        <div class="invalid-feedback d-block"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 mb-4">
+                    <button type="submit" class="btn btn-bbu-primary btn-lg py-3 shadow-sm">
+                        <i class="fa-solid fa-circle-check me-1"></i> Complete Student Registration / បញ្ចប់ការចុះឈ្មោះ
+                    </button>
+                </div>
+            </form>
+
+            <!-- Login Redirect Card -->
+            <div class="card card-bbu shadow-sm border-0 text-center py-3 bg-white">
+                <p class="mb-0 text-muted">
+                    Already registered as a student?
+                    <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none ms-1">
+                        Log in here <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

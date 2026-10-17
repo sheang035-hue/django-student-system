@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Students Directory — BBU Student Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header Component -->
+{% url 'students:register' as add_student_url %}
+{% include "components/_page_header.html" with title="Students Directory / បញ្ជីឈ្មោះនិស្សិត" subtitle="Manage registered students, academic performance, and official transcripts" action_url=add_student_url action_label="Add New Student" action_icon="fa-solid fa-user-plus" %}
+
+<!-- Toolbar Card (Search, Filters & CSV Export) -->
+<div class="toolbar-card">
+    <div class="row g-2 align-items-center">
+        <div class="col-md-7 col-lg-7">
+            <form method="get" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" name="q" class="form-control border-start-0 ps-0" 
+                           placeholder="Search by student ID, Khmer name, Latin name, or email... (Press / to focus)" 
+                           value="{{ search_query }}">
+                    <span class="input-group-text bg-transparent border-start-0 text-muted d-none d-sm-flex">
+                        <kbd class="shortcut-kbd">/</kbd>
+                    </span>
+                </div>
+                <button class="btn btn-bbu-primary px-3 text-nowrap" type="submit">
+                    <i class="fa-solid fa-filter me-1"></i> Filter
+                </button>
+                {% if search_query %}
+                <a href="{% url 'students:student_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
+                    <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                </a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="col-md-5 col-lg-5 d-flex justify-content-md-end gap-2">
+            <a href="{% url 'students:export_csv' %}{% if search_query %}?q={{ search_query }}{% endif %}" class="btn btn-bbu-gold text-nowrap" title="Download Excel-compatible CSV of student directory">
+                <i class="fa-solid fa-file-excel me-1"></i> Export CSV
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stat Chips Row -->
+<div class="stat-chips-row">
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-user-graduate me-1 text-primary"></i>Total Students: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
+    </div>
+    {% if active_count is not None %}
+    <div class="stat-chip">
+        <span><span class="status-dot status-dot-active me-1"></span>Active: <strong>{{ active_count }}</strong></span>
+    </div>
+    {% endif %}
+    {% if page_obj %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Students Table Card -->
+{% if students %}
+<div class="table-bbu-wrapper">
+    <div class="table-responsive">
+        <table class="table table-bbu table-bbu-responsive align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-3 text-center col-w-50">#</th>
+                    <th class="col-w-50">Photo</th>
+                    <th class="col-min-130">Student ID</th>
+                    <th>Khmer Name</th>
+                    <th>English Name</th>
+                    <th class="col-min-180">Email</th>
+                    <th class="col-min-120">City</th>
+                    <th class="text-center col-w-90">GPA</th>
+                    <th class="text-center col-w-110">Status</th>
+                    <th class="text-end pe-3 col-min-150">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <!-- Index -->
+                    <td class="ps-3 text-center text-muted small fw-semibold" data-label="#">
+                        {% if page_obj %}
+                            {{ page_obj.start_index|add:forloop.counter0 }}
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </td>
+
+                    <!-- Photo -->
+                    <td data-label="Photo">
+                        {% include "components/_avatar.html" with student=student size="sm" %}
+                    </td>
+
+                    <!-- Student ID -->
+                    <td data-label="Student ID">
+                        <span class="badge bg-light text-primary border px-2 py-1">{{ student.student_id }}</span>
+                    </td>
+
+                    <!-- Khmer Name -->
+                    <td data-label="Khmer Name">
+                        <a href="{% url 'students:student_detail' student.pk %}" class="fw-bold text-dark text-decoration-none">
+                            {{ student.khmer_name|default:"—" }}
+                        </a>
+                    </td>
+
+                    <!-- English Name -->
+                    <td data-label="English Name">
+                        <span class="text-secondary">{{ student.user.get_full_name|default:student.user.username }}</span>
+                    </td>
+
+                    <!-- Email -->
+                    <td data-label="Email" class="text-muted small">
+                        {{ student.user.email|default:"—" }}
+                    </td>
+
+                    <!-- City -->
+                    <td data-label="City" class="text-secondary small">
+                        {{ student.city|default:"—" }}
+                    </td>
+
+                    <!-- GPA (Color-scaled pill) -->
+                    <td class="text-center" data-label="GPA">
+                        <span class="badge {% if student.gpa >= 3.5 %}gpa-pill-high{% elif student.gpa >= 2.5 %}gpa-pill-mid{% elif student.gpa >= 1.5 %}gpa-pill-low{% else %}gpa-pill-fail{% endif %} px-2 py-1 fw-bold">
+                            {{ student.gpa }}
+                        </span>
+                    </td>
+
+                    <!-- Status Badge -->
+                    <td class="text-center" data-label="Status">
+                        {% include "components/_status_badge.html" with status=student.is_active %}
+                    </td>
+
+                    <!-- Compact Row Action Buttons -->
+                    <td class="text-end pe-3 text-nowrap" data-label="Actions">
+                        <div class="action-btn-group">
+                            <a href="{% url 'students:student_detail' student.pk %}" class="action-btn" title="View Profile" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a href="{% url 'enrollments:student_transcript' student.student_id %}" class="action-btn" title="Academic Transcript" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-file-invoice"></i>
+                            </a>
+                            <a href="{% url 'students:student_update' student.pk %}" class="action-btn" title="Edit Student" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="{% url 'students:student_delete' student.pk %}" class="action-btn action-btn-danger" title="Delete Student" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Component -->
+    <div class="p-3 border-top table-footer-bbu">
+        {% include "components/_pagination.html" with page_obj=page_obj %}
+    </div>
+</div>
+{% else %}
+    <!-- Empty State Component -->
+    {% url 'students:register' as reg_url %}
+    {% include "components/_empty_state.html" with icon="fa-solid fa-user-slash" title="No Students Found / មិនមានទិន្នន័យនិស្សិត" text="No student records matched your search query. Try another keyword or register a new student." cta_url=reg_url cta_label="Register New Student" cta_icon="fa-solid fa-user-plus" %}
+{% endif %}
+{% endblock %}

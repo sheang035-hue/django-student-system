@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Course: {{ course.code }} - BBU{% endblock %}
+
+{% block content %}
+{% url 'courses:course_detail' course.id as cancel_url %}
+{% include "components/_confirm_delete.html" with title="Delete Course / លុបមុខវិជ្ជា" record_name=course.title record_detail=course.code warning_extra="All associated enrollments and student grading records in this course will also be deleted." cancel_url=cancel_url %}
+{% endblock %}

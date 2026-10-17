@@ -1,0 +1,16 @@
+{% if grade == 'A' %}
+    <span class="badge badge-soft-success fw-bold px-2 py-1">A</span>
+{% elif grade == 'B' %}
+    <span class="badge badge-soft-primary fw-bold px-2 py-1">B</span>
+{% elif grade == 'C' %}
+    <span class="badge badge-soft-warning fw-bold px-2 py-1">C</span>
+{% elif grade == 'D' %}
+    <span class="badge badge-soft-danger fw-bold px-2 py-1">D</span>
+{% elif grade == 'F' %}
+    <span class="badge badge-soft-danger fw-bold px-2 py-1">F</span>
+{% elif grade %}
+    <span class="badge badge-soft-secondary fw-bold px-2 py-1">{{ grade }}</span>
+{% else %}
+    <span class="text-muted small">—</span>
+{% endif %}
+

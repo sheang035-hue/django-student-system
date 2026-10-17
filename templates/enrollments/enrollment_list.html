@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Course Enrollments — BBU Student Management System{% endblock %}
+
+{% block content %}
+<!-- Page Header Component -->
+{% url 'enrollments:enrollment_create' as add_enrollment_url %}
+{% include "components/_page_header.html" with title="Course Enrollments / ការចុះឈ្មោះសិក្សា" subtitle="Track student course registrations, scores, academic grades, and course completions" action_url=add_enrollment_url action_label="New Enrollment" action_icon="fa-solid fa-circle-plus" %}
+
+<!-- Toolbar Card (Search, Status Filters & CSV Export) -->
+<div class="toolbar-card">
+    <div class="row g-2 align-items-center">
+        <div class="col-lg-9">
+            <form method="get" class="row g-2 align-items-center">
+                <div class="col-md-6 col-lg-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="search" class="form-control border-start-0 ps-0" 
+                               placeholder="Search by student ID, name, or course... (Press / to focus)" 
+                               value="{{ request.GET.search }}">
+                        <span class="input-group-text bg-transparent border-start-0 text-muted d-none d-sm-flex">
+                            <kbd class="shortcut-kbd">/</kbd>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses / ទាំងអស់</option>
+                        <option value="ENROLLED" {% if request.GET.status == 'ENROLLED' %}selected{% endif %}>Enrolled / បានចុះឈ្មោះ</option>
+                        <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed / បានបញ្ចប់</option>
+                        <option value="DROPPED" {% if request.GET.status == 'DROPPED' %}selected{% endif %}>Dropped / បានបោះបង់</option>
+                        <option value="SUSPENDED" {% if request.GET.status == 'SUSPENDED' %}selected{% endif %}>Suspended / ព្យួរ</option>
+                    </select>
+                </div>
+                <div class="col-md-3 col-lg-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
+                        <i class="fa-solid fa-filter me-1"></i> Filter
+                    </button>
+                    {% if request.GET.search or request.GET.status %}
+                    <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 d-flex justify-content-lg-end">
+            <a href="{% url 'enrollments:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of student enrollments">
+                <i class="fa-solid fa-file-excel me-1"></i> Export CSV
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stat Chips Row -->
+<div class="stat-chips-row">
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-clipboard-list me-1 text-primary"></i>Total Enrollments: <strong>{{ total_count|default:page_obj.paginator.count }}</strong></span>
+    </div>
+    {% if completed_count is not None %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-circle-check me-1 text-success"></i>Completed: <strong>{{ completed_count }}</strong></span>
+    </div>
+    {% endif %}
+    {% if page_obj %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Enrollments Table Card -->
+{% if enrollments %}
+<div class="table-bbu-wrapper">
+    <div class="table-responsive">
+        <table class="table table-bbu table-bbu-responsive align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-3">Student / និស្សិត</th>
+                    <th>Course / មុខវិជ្ជា</th>
+                    <th class="text-center col-w-100">Score</th>
+                    <th class="text-center col-w-90">Grade</th>
+                    <th class="text-center col-w-120">Status</th>
+                    <th class="text-center col-w-130">Date Enrolled</th>
+                    <th class="text-end pe-3 col-min-160">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <!-- Student with Avatar Component -->
+                    <td class="ps-3" data-label="Student">
+                        <div class="d-flex align-items-center gap-2">
+                            {% include "components/_avatar.html" with student=enrollment.student size="sm" %}
+                            <div>
+                                <a href="{% url 'students:student_detail' enrollment.student.pk %}" class="fw-bold text-dark text-decoration-none">
+                                    {{ enrollment.student.khmer_name|default:enrollment.student.user.get_full_name }}
+                                </a>
+                                <small class="text-muted d-block">ID: {{ enrollment.student.student_id }}</small>
+                            </div>
+                        </div>
+                    </td>
+
+                    <!-- Course Code & Title -->
+                    <td data-label="Course">
+                        <a href="{% url 'courses:course_detail' enrollment.course.pk %}" class="fw-bold text-dark text-decoration-none">
+                            <span class="badge bg-light text-primary border me-1">{{ enrollment.course.code }}</span>
+                            {{ enrollment.course.title }}
+                        </a>
+                    </td>
+
+                    <!-- Score -->
+                    <td class="text-center fw-semibold" data-label="Score">
+                        {% if enrollment.score is not None %}
+                            <span class="badge bg-light text-dark border px-2 py-1">{{ enrollment.score }}</span>
+                        {% else %}
+                            <span class="text-muted small">—</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Grade Badge Component -->
+                    <td class="text-center" data-label="Grade">
+                        {% include "components/_grade_badge.html" with grade=enrollment.grade %}
+                    </td>
+
+                    <!-- Status Badge Component -->
+                    <td class="text-center" data-label="Status">
+                        {% include "components/_status_badge.html" with status=enrollment.status %}
+                    </td>
+
+                    <!-- Enrollment Date -->
+                    <td class="text-center text-muted small" data-label="Date">
+                        {{ enrollment.enrollment_date|date:"d M Y" }}
+                    </td>
+
+                    <!-- Row Action Buttons -->
+                    <td class="text-end pe-3 text-nowrap" data-label="Actions">
+                        <div class="action-btn-group">
+                            <a href="{% url 'enrollments:add_grade' enrollment.id %}" class="action-btn" title="Record Score & Grade" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-award text-warning"></i>
+                            </a>
+                            <a href="{% url 'enrollments:student_transcript' enrollment.student.student_id %}" class="action-btn" title="View Transcript" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-file-invoice"></i>
+                            </a>
+                            <a href="{% url 'enrollments:enrollment_detail' enrollment.id %}" class="action-btn" title="View Enrollment" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <a href="{% url 'enrollments:enrollment_delete' enrollment.id %}" class="action-btn action-btn-danger" title="Delete Enrollment" data-bs-toggle="tooltip">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Component -->
+    <div class="p-3 border-top table-footer-bbu">
+        {% include "components/_pagination.html" with page_obj=page_obj %}
+    </div>
+</div>
+{% else %}
+    <!-- Empty State Component -->
+    {% url 'enrollments:enrollment_create' as create_enr_url %}
+    {% include "components/_empty_state.html" with icon="fa-solid fa-clipboard-question" title="No Enrollments Found / មិនមានការចុះឈ្មោះទេ" text="No enrollment records matched your query. Adjust your filter or enroll a student in a course." cta_url=create_enr_url cta_label="Enroll Student Now" cta_icon="fa-solid fa-circle-plus" %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,2062 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 21,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$lqOqa5P1Fy3b4LajxX86Hx$oe0JJCMjSZ0cJ3pHkC4hdv3pqiCce/RstS5RUY4MUQo=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "prof_sokha",
+      "first_name": "Sokha",
+      "last_name": "Touch",
+      "email": "touch.sokha@bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:35.583Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 22,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$oaTjSCVH1sDYgHHMC2OW6H$aKLV/LTVPdmak9J57XYEOfPsP9m8GW3XUAAinkbDH9s=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "prof_vann",
+      "first_name": "Rithy",
+      "last_name": "Vann",
+      "email": "rithy.vann@bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:35.908Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 23,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$qbIUPdM7vGwf5kepBA7Ld4$iJ5WPLBbVbbQv2kMyxiGS50m37lCojgp+gfyqF8fdr8=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0002",
+      "first_name": "Dara",
+      "last_name": "Sok",
+      "email": "dara.sok@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:36.232Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 24,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$LEcJEgXRX55k0d2rsLiFb9$MGX6o8pUOBMC76jUMd439OsyPrEuvJd8f1oEPhwm7SQ=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0003",
+      "first_name": "Sreypov",
+      "last_name": "Chan",
+      "email": "sreypov.chan@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:36.556Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 25,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$aoFECE4lHnNT0APeGvFJfB$hXYLKh87Oh0fOYLZ+nD2tWuhpLs2eRhtrmXbu0JhWBQ=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0004",
+      "first_name": "Vibol",
+      "last_name": "Vong",
+      "email": "vibol.vong@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:36.880Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 26,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$Uqaibnr70L2UZl8aQpFlin$3dOQcAbVghCtX5+INKIyEelFCUR9xOICYB7XVRO63Ro=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0005",
+      "first_name": "Sopheakra",
+      "last_name": "Lim",
+      "email": "sopheakra.lim@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:37.200Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 27,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$etmo6WyasOAOiuBZT5bgmO$MfOTIqrleHnkg78elIuJ/AQ+btVca+rQ/dcs6TOH+Sk=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0006",
+      "first_name": "Chanthou",
+      "last_name": "Kem",
+      "email": "chanthou.kem@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:37.520Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 28,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$COkBFuemkxV56WjJn4pq5G$kVr0yNOS7ykJdohlgoce15em06tlePu/G6Z6rdSgbsw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0007",
+      "first_name": "Sokunthea",
+      "last_name": "Meas",
+      "email": "sokunthea.meas@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:37.841Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 29,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$wV5yxJMVYGCHVhNvQ4C1N1$qE4vZNiQTAbL24jSU+66Th9jrbQqsoa0tVM2IKN8YqY=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0008",
+      "first_name": "Ratana",
+      "last_name": "Nou",
+      "email": "ratana.nou@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:38.158Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 30,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$3vr7onRHXin5eY5nTaAU1T$rkXbyM8rR5XPLXE42lkoQsqdO6OThMg3diAmOqpqDBU=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0009",
+      "first_name": "Samnang",
+      "last_name": "Pich",
+      "email": "samnang.pich@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:38.475Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 31,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$FhZCuoB2ZhYsQT86fbuU2P$FTXWzTfHpJ9w7hCmLTRVjpeKxNag9ohvcyUvSBlpMjA=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0010",
+      "first_name": "Sovannarith",
+      "last_name": "Heng",
+      "email": "sovannarith.heng@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:38.802Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 32,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$cdZUAamjZ1ydu2J4y1IRod$2kn8DAtE4dAUtTQh/6qw0Cf7h1siNRb+w1wwW6Z8CcY=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0011",
+      "first_name": "Bopha",
+      "last_name": "Keo",
+      "email": "bopha.keo@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:39.122Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 33,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$igixYl6VVfchsxGVpdNqct$psm7xb+sojw09j6EfASkvvBKBemZ4tE2WA9DQWmiNJ4=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0012",
+      "first_name": "Nisay",
+      "last_name": "Sam",
+      "email": "nisay.sam@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:39.458Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 34,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$aEYJ9s7lMdt3Fv1EYKnMtv$FYripNkDGJsB+0T1H8SWS/Lk8fc/eruFevDp/S4J3hw=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0013",
+      "first_name": "Chansopheak",
+      "last_name": "Yim",
+      "email": "chansopheak.yim@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:39.775Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 35,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$8PsuwQJzpgVB0RFaDwSKtO$RkpQX6Lj0k1WNC4LM5WHNw5PB5c52ApYN9XA0Ks2hEs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0014",
+      "first_name": "Theary",
+      "last_name": "Bun",
+      "email": "theary.bun@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:40.093Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 36,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$YD05GHEbIiNxxBo3J0aUtz$K5vjC9RD153eToflUZO3uBegnGaui1ogcgxPrBiGJMs=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0015",
+      "first_name": "Panha",
+      "last_name": "Tep",
+      "email": "panha.tep@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:40.412Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 37,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$SWzw6Jz3tVCA7BS5rGCua1$g+XQK6CqwehToH81lSK2I7Q9aB8DgiPc79wJ3qLbupI=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0016",
+      "first_name": "Sreyleak",
+      "last_name": "Mom",
+      "email": "sreyleak.mom@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:40.736Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 38,
+    "fields": {
+      "password": "pbkdf2_sha256$1500000$h89uH5OKRR1Rax95uTWuLv$vC2fKWIurtIl44szWxfHENnwNErtUIlayMTOzAPEpZM=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "std_stu0017",
+      "first_name": "Soksan",
+      "last_name": "Ith",
+      "email": "soksan.ith@student.bbu.edu.kh",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-10-16T15:13:41.054Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 18,
+    "fields": {
+      "user": 23,
+      "student_id": "STU0002",
+      "khmer_name": "សុខ ដារា",
+      "date_of_birth": "2004-03-12",
+      "gender": "M",
+      "phone_number": "012 345 671",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-10-04",
+      "gpa": "4.00",
+      "is_active": true,
+      "created_at": "2026-09-05T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:36.233Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 19,
+    "fields": {
+      "user": 24,
+      "student_id": "STU0003",
+      "khmer_name": "ចាន់ ស្រីពៅ",
+      "date_of_birth": "2005-07-25",
+      "gender": "F",
+      "phone_number": "010 223 344",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-24",
+      "gpa": "3.06",
+      "is_active": true,
+      "created_at": "2026-10-14T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:36.557Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 20,
+    "fields": {
+      "user": 25,
+      "student_id": "STU0004",
+      "khmer_name": "វង់ វិបុល",
+      "date_of_birth": "2003-11-02",
+      "gender": "M",
+      "phone_number": "092 111 222",
+      "address": "Siem Reap, Cambodia",
+      "city": "Siem Reap",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-27",
+      "gpa": "2.38",
+      "is_active": true,
+      "created_at": "2026-09-30T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:36.881Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 21,
+    "fields": {
+      "user": 26,
+      "student_id": "STU0005",
+      "khmer_name": "លឹម សុភ័ក្ត្រា",
+      "date_of_birth": "2004-05-19",
+      "gender": "F",
+      "phone_number": "012 887 766",
+      "address": "Battambang, Cambodia",
+      "city": "Battambang",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-10-05",
+      "gpa": "2.75",
+      "is_active": true,
+      "created_at": "2026-10-07T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:37.201Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 22,
+    "fields": {
+      "user": 27,
+      "student_id": "STU0006",
+      "khmer_name": "កែម ចន្ធូ",
+      "date_of_birth": "2005-01-30",
+      "gender": "F",
+      "phone_number": "096 554 433",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-07",
+      "gpa": "3.57",
+      "is_active": true,
+      "created_at": "2026-09-02T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:37.520Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 23,
+    "fields": {
+      "user": 28,
+      "student_id": "STU0007",
+      "khmer_name": "មាស សុគន្ធា",
+      "date_of_birth": "2004-09-14",
+      "gender": "F",
+      "phone_number": "011 222 333",
+      "address": "Kampong Cham, Cambodia",
+      "city": "Kampong Cham",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-04",
+      "gpa": "3.00",
+      "is_active": true,
+      "created_at": "2026-10-10T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:37.841Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 24,
+    "fields": {
+      "user": 29,
+      "student_id": "STU0008",
+      "khmer_name": "នូ រតនា",
+      "date_of_birth": "2005-12-05",
+      "gender": "F",
+      "phone_number": "070 445 566",
+      "address": "Kandal, Cambodia",
+      "city": "Kandal",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-10-09",
+      "gpa": "3.00",
+      "is_active": true,
+      "created_at": "2026-09-18T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:38.158Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 25,
+    "fields": {
+      "user": 30,
+      "student_id": "STU0009",
+      "khmer_name": "ពេជ្រ សំណាង",
+      "date_of_birth": "2003-04-28",
+      "gender": "M",
+      "phone_number": "015 667 788",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-10-06",
+      "gpa": "2.67",
+      "is_active": true,
+      "created_at": "2026-10-14T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:38.475Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 26,
+    "fields": {
+      "user": 31,
+      "student_id": "STU0010",
+      "khmer_name": "ហេង សុវណ្ណរិទ្ធ",
+      "date_of_birth": "2004-08-08",
+      "gender": "M",
+      "phone_number": "081 223 445",
+      "address": "Siem Reap, Cambodia",
+      "city": "Siem Reap",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-27",
+      "gpa": "2.95",
+      "is_active": true,
+      "created_at": "2026-10-02T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:38.803Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 27,
+    "fields": {
+      "user": 32,
+      "student_id": "STU0011",
+      "khmer_name": "កែវ បុប្ផា",
+      "date_of_birth": "2005-02-17",
+      "gender": "F",
+      "phone_number": "012 909 808",
+      "address": "Takeo, Cambodia",
+      "city": "Takeo",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-03",
+      "gpa": "3.33",
+      "is_active": true,
+      "created_at": "2026-09-13T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:39.123Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 28,
+    "fields": {
+      "user": 33,
+      "student_id": "STU0012",
+      "khmer_name": "សំ និស័យ",
+      "date_of_birth": "2003-06-21",
+      "gender": "M",
+      "phone_number": "097 334 556",
+      "address": "Battambang, Cambodia",
+      "city": "Battambang",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-06",
+      "gpa": "1.88",
+      "is_active": true,
+      "created_at": "2026-10-14T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:39.459Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 29,
+    "fields": {
+      "user": 34,
+      "student_id": "STU0013",
+      "khmer_name": "យិម ចាន់សុភ័ក្ត្រ",
+      "date_of_birth": "2004-10-11",
+      "gender": "M",
+      "phone_number": "088 556 677",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-07",
+      "gpa": "1.83",
+      "is_active": true,
+      "created_at": "2026-10-03T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:39.775Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 30,
+    "fields": {
+      "user": 35,
+      "student_id": "STU0014",
+      "khmer_name": "ប៊ុន ធារី",
+      "date_of_birth": "2005-04-03",
+      "gender": "F",
+      "phone_number": "071 889 900",
+      "address": "Siem Reap, Cambodia",
+      "city": "Siem Reap",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-27",
+      "gpa": "3.50",
+      "is_active": true,
+      "created_at": "2026-09-19T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:40.093Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 31,
+    "fields": {
+      "user": 36,
+      "student_id": "STU0015",
+      "khmer_name": "ទេព បញ្ញា",
+      "date_of_birth": "2004-01-09",
+      "gender": "M",
+      "phone_number": "012 110 220",
+      "address": "Phnom Penh, Cambodia",
+      "city": "Phnom Penh",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-04",
+      "gpa": "2.19",
+      "is_active": true,
+      "created_at": "2026-09-17T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:40.413Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 32,
+    "fields": {
+      "user": 37,
+      "student_id": "STU0016",
+      "khmer_name": "មុំ ស្រីលក្ខ",
+      "date_of_birth": "2005-09-27",
+      "gender": "F",
+      "phone_number": "093 776 655",
+      "address": "Kratie, Cambodia",
+      "city": "Kratie",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-10-11",
+      "gpa": "3.77",
+      "is_active": true,
+      "created_at": "2026-09-28T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:40.737Z"
+    }
+  },
+  {
+    "model": "students.student",
+    "pk": 33,
+    "fields": {
+      "user": 38,
+      "student_id": "STU0017",
+      "khmer_name": "អ៊ិត សុខសាន្ត",
+      "date_of_birth": "2003-12-15",
+      "gender": "M",
+      "phone_number": "010 998 877",
+      "address": "Kampong Cham, Cambodia",
+      "city": "Kampong Cham",
+      "country": "Cambodia",
+      "profile_picture": "",
+      "enrollment_date": "2026-09-14",
+      "gpa": "1.00",
+      "is_active": true,
+      "created_at": "2026-10-05T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:41.055Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 12,
+    "fields": {
+      "code": "MATH101",
+      "title": "Mathematics for Computing (គណិតវិទ្យាសម្រាប់កុំព្យូទ័រ)",
+      "description": "Mathematics for Computing - semester course module for the BBU IT program.",
+      "instructor": 21,
+      "credits": 3,
+      "level": "100",
+      "capacity": 40,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.908Z",
+      "updated_at": "2026-10-16T15:13:35.908Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 13,
+    "fields": {
+      "code": "ENG102",
+      "title": "Academic English & Communication (ភាសាអង់គ្លេសអប់រំ)",
+      "description": "Academic English & Communication - semester course module for the BBU IT program.",
+      "instructor": 22,
+      "credits": 3,
+      "level": "100",
+      "capacity": 45,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.909Z",
+      "updated_at": "2026-10-16T15:13:35.909Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 14,
+    "fields": {
+      "code": "UX210",
+      "title": "UI/UX & Digital Product Design (រចនាបទពិសោធន៍អ្នកប្រើ)",
+      "description": "UI/UX & Digital Product Design - semester course module for the BBU IT program.",
+      "instructor": 22,
+      "credits": 3,
+      "level": "200",
+      "capacity": 35,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.909Z",
+      "updated_at": "2026-10-16T15:13:35.909Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 15,
+    "fields": {
+      "code": "SE301",
+      "title": "Software Engineering & Agile Methods (វិស្វកម្មសូផ្វវែរ)",
+      "description": "Software Engineering & Agile Methods - semester course module for the BBU IT program.",
+      "instructor": 22,
+      "credits": 3,
+      "level": "300",
+      "capacity": 30,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.909Z",
+      "updated_at": "2026-10-16T15:13:35.909Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 16,
+    "fields": {
+      "code": "AI302",
+      "title": "Introduction to Artificial Intelligence (សេចក្តីផ្តើមបញ្ញាសិប្បនិម្មិត)",
+      "description": "Introduction to Artificial Intelligence - semester course module for the BBU IT program.",
+      "instructor": 21,
+      "credits": 4,
+      "level": "300",
+      "capacity": 25,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.909Z",
+      "updated_at": "2026-10-16T15:13:35.909Z"
+    }
+  },
+  {
+    "model": "courses.course",
+    "pk": 17,
+    "fields": {
+      "code": "ACC110",
+      "title": "Principles of Accounting (គោលការណ៍គណនេយ្យ)",
+      "description": "Principles of Accounting - semester course module for the BBU IT program.",
+      "instructor": 21,
+      "credits": 3,
+      "level": "100",
+      "capacity": 40,
+      "status": "ACTIVE",
+      "start_date": "2025-10-01",
+      "end_date": "2026-03-31",
+      "created_at": "2026-10-16T15:13:35.910Z",
+      "updated_at": "2026-10-16T15:13:35.910Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 86,
+    "fields": {
+      "student": 18,
+      "course": 2,
+      "enrollment_date": "2026-06-07",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "93.27",
+      "attendance_percentage": "78.00",
+      "completed_date": "2026-09-11",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.055Z",
+      "updated_at": "2026-10-16T15:13:41.055Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 87,
+    "fields": {
+      "student": 18,
+      "course": 5,
+      "enrollment_date": "2026-06-18",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "98.76",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-09-30",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.056Z",
+      "updated_at": "2026-10-16T15:13:41.056Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 88,
+    "fields": {
+      "student": 18,
+      "course": 4,
+      "enrollment_date": "2026-10-03",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "88.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.056Z",
+      "updated_at": "2026-10-16T15:13:41.056Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 89,
+    "fields": {
+      "student": 18,
+      "course": 12,
+      "enrollment_date": "2026-06-05",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "92.17",
+      "attendance_percentage": "77.00",
+      "completed_date": "2026-09-10",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.056Z",
+      "updated_at": "2026-10-16T15:13:41.056Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 90,
+    "fields": {
+      "student": 18,
+      "course": 1,
+      "enrollment_date": "2026-10-02",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "78.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.056Z",
+      "updated_at": "2026-10-16T15:13:41.056Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 91,
+    "fields": {
+      "student": 19,
+      "course": 17,
+      "enrollment_date": "2026-06-19",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "76.49",
+      "attendance_percentage": "83.00",
+      "completed_date": "2026-09-27",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.057Z",
+      "updated_at": "2026-10-16T15:13:41.057Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 92,
+    "fields": {
+      "student": 19,
+      "course": 12,
+      "enrollment_date": "2026-04-25",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "93.60",
+      "attendance_percentage": "82.00",
+      "completed_date": "2026-08-05",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.057Z",
+      "updated_at": "2026-10-16T15:13:41.057Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 93,
+    "fields": {
+      "student": 19,
+      "course": 5,
+      "enrollment_date": "2026-06-21",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "72.18",
+      "attendance_percentage": "99.00",
+      "completed_date": "2026-10-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.057Z",
+      "updated_at": "2026-10-16T15:13:41.057Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 94,
+    "fields": {
+      "student": 19,
+      "course": 16,
+      "enrollment_date": "2026-04-28",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "98.96",
+      "attendance_percentage": "77.00",
+      "completed_date": "2026-08-11",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.057Z",
+      "updated_at": "2026-10-16T15:13:41.057Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 95,
+    "fields": {
+      "student": 19,
+      "course": 15,
+      "enrollment_date": "2026-05-25",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "88.69",
+      "attendance_percentage": "90.00",
+      "completed_date": "2026-09-01",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.058Z",
+      "updated_at": "2026-10-16T15:13:41.058Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 96,
+    "fields": {
+      "student": 20,
+      "course": 5,
+      "enrollment_date": "2026-06-15",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "82.08",
+      "attendance_percentage": "93.00",
+      "completed_date": "2026-10-03",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.058Z",
+      "updated_at": "2026-10-16T15:13:41.058Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 97,
+    "fields": {
+      "student": 20,
+      "course": 4,
+      "enrollment_date": "2026-06-13",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "62.15",
+      "attendance_percentage": "76.00",
+      "completed_date": "2026-09-29",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.058Z",
+      "updated_at": "2026-10-16T15:13:41.058Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 98,
+    "fields": {
+      "student": 20,
+      "course": 15,
+      "enrollment_date": "2026-05-21",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "89.46",
+      "attendance_percentage": "87.00",
+      "completed_date": "2026-09-01",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.058Z",
+      "updated_at": "2026-10-16T15:13:41.058Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 99,
+    "fields": {
+      "student": 20,
+      "course": 2,
+      "enrollment_date": "2026-06-21",
+      "status": "SUSPENDED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "47.00",
+      "completed_date": null,
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.059Z",
+      "updated_at": "2026-10-16T15:13:41.059Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 100,
+    "fields": {
+      "student": 20,
+      "course": 12,
+      "enrollment_date": "2026-06-02",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "77.30",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-09-08",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.059Z",
+      "updated_at": "2026-10-16T15:13:41.059Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 101,
+    "fields": {
+      "student": 21,
+      "course": 13,
+      "enrollment_date": "2026-09-28",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "94.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.059Z",
+      "updated_at": "2026-10-16T15:13:41.059Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 102,
+    "fields": {
+      "student": 21,
+      "course": 5,
+      "enrollment_date": "2026-05-14",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "63.24",
+      "attendance_percentage": "78.00",
+      "completed_date": "2026-08-23",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.059Z",
+      "updated_at": "2026-10-16T15:13:41.059Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 103,
+    "fields": {
+      "student": 21,
+      "course": 14,
+      "enrollment_date": "2026-04-25",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "99.06",
+      "attendance_percentage": "99.00",
+      "completed_date": "2026-07-29",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.060Z",
+      "updated_at": "2026-10-16T15:13:41.060Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 104,
+    "fields": {
+      "student": 21,
+      "course": 1,
+      "enrollment_date": "2026-04-28",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "98.83",
+      "attendance_percentage": "90.00",
+      "completed_date": "2026-08-10",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.060Z",
+      "updated_at": "2026-10-16T15:13:41.060Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 105,
+    "fields": {
+      "student": 21,
+      "course": 12,
+      "enrollment_date": "2026-06-18",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "68.10",
+      "attendance_percentage": "82.00",
+      "completed_date": "2026-10-06",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.060Z",
+      "updated_at": "2026-10-16T15:13:41.060Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 106,
+    "fields": {
+      "student": 22,
+      "course": 15,
+      "enrollment_date": "2026-08-14",
+      "status": "DROPPED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "73.00",
+      "completed_date": null,
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.060Z",
+      "updated_at": "2026-10-16T15:13:41.060Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 107,
+    "fields": {
+      "student": 22,
+      "course": 5,
+      "enrollment_date": "2026-10-08",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "87.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.060Z",
+      "updated_at": "2026-10-16T15:13:41.060Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 108,
+    "fields": {
+      "student": 22,
+      "course": 16,
+      "enrollment_date": "2026-05-12",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "92.96",
+      "attendance_percentage": "97.00",
+      "completed_date": "2026-08-26",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.061Z",
+      "updated_at": "2026-10-16T15:13:41.061Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 109,
+    "fields": {
+      "student": 22,
+      "course": 14,
+      "enrollment_date": "2026-06-19",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "82.36",
+      "attendance_percentage": "91.00",
+      "completed_date": "2026-10-02",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.061Z",
+      "updated_at": "2026-10-16T15:13:41.061Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 110,
+    "fields": {
+      "student": 23,
+      "course": 16,
+      "enrollment_date": "2026-04-27",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "82.17",
+      "attendance_percentage": "97.00",
+      "completed_date": "2026-08-01",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.061Z",
+      "updated_at": "2026-10-16T15:13:41.061Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 111,
+    "fields": {
+      "student": 23,
+      "course": 15,
+      "enrollment_date": "2026-09-28",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "77.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.061Z",
+      "updated_at": "2026-10-16T15:13:41.061Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 112,
+    "fields": {
+      "student": 23,
+      "course": 4,
+      "enrollment_date": "2026-04-25",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "91.26",
+      "attendance_percentage": "90.00",
+      "completed_date": "2026-08-13",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.062Z",
+      "updated_at": "2026-10-16T15:13:41.062Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 113,
+    "fields": {
+      "student": 23,
+      "course": 17,
+      "enrollment_date": "2026-06-17",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "71.81",
+      "attendance_percentage": "90.00",
+      "completed_date": "2026-10-03",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.062Z",
+      "updated_at": "2026-10-16T15:13:41.062Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 114,
+    "fields": {
+      "student": 24,
+      "course": 13,
+      "enrollment_date": "2026-06-02",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "93.82",
+      "attendance_percentage": "95.00",
+      "completed_date": "2026-09-08",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.062Z",
+      "updated_at": "2026-10-16T15:13:41.062Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 115,
+    "fields": {
+      "student": 24,
+      "course": 17,
+      "enrollment_date": "2026-06-12",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "81.33",
+      "attendance_percentage": "81.00",
+      "completed_date": "2026-09-23",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.062Z",
+      "updated_at": "2026-10-16T15:13:41.062Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 116,
+    "fields": {
+      "student": 24,
+      "course": 14,
+      "enrollment_date": "2026-05-19",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "88.18",
+      "attendance_percentage": "77.00",
+      "completed_date": "2026-08-25",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.063Z",
+      "updated_at": "2026-10-16T15:13:41.063Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 117,
+    "fields": {
+      "student": 24,
+      "course": 1,
+      "enrollment_date": "2026-04-25",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "79.21",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-08-05",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.063Z",
+      "updated_at": "2026-10-16T15:13:41.063Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 118,
+    "fields": {
+      "student": 24,
+      "course": 12,
+      "enrollment_date": "2026-04-27",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "88.21",
+      "attendance_percentage": "90.00",
+      "completed_date": "2026-08-01",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.063Z",
+      "updated_at": "2026-10-16T15:13:41.063Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 119,
+    "fields": {
+      "student": 25,
+      "course": 13,
+      "enrollment_date": "2026-09-30",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "79.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.063Z",
+      "updated_at": "2026-10-16T15:13:41.063Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 120,
+    "fields": {
+      "student": 25,
+      "course": 1,
+      "enrollment_date": "2026-05-09",
+      "status": "COMPLETED",
+      "grade": "F",
+      "score": "50.28",
+      "attendance_percentage": "98.00",
+      "completed_date": "2026-08-27",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.063Z",
+      "updated_at": "2026-10-16T15:13:41.063Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 121,
+    "fields": {
+      "student": 25,
+      "course": 17,
+      "enrollment_date": "2026-05-07",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "90.56",
+      "attendance_percentage": "84.00",
+      "completed_date": "2026-08-11",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.064Z",
+      "updated_at": "2026-10-16T15:13:41.064Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 122,
+    "fields": {
+      "student": 25,
+      "course": 2,
+      "enrollment_date": "2026-04-26",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "94.53",
+      "attendance_percentage": "76.00",
+      "completed_date": "2026-08-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.064Z",
+      "updated_at": "2026-10-16T15:13:41.064Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 123,
+    "fields": {
+      "student": 26,
+      "course": 15,
+      "enrollment_date": "2026-04-24",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "64.03",
+      "attendance_percentage": "96.00",
+      "completed_date": "2026-08-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.064Z",
+      "updated_at": "2026-10-16T15:13:41.064Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 124,
+    "fields": {
+      "student": 26,
+      "course": 3,
+      "enrollment_date": "2026-05-17",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "83.98",
+      "attendance_percentage": "76.00",
+      "completed_date": "2026-08-30",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.064Z",
+      "updated_at": "2026-10-16T15:13:41.064Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 125,
+    "fields": {
+      "student": 26,
+      "course": 5,
+      "enrollment_date": "2026-06-23",
+      "status": "DROPPED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "60.00",
+      "completed_date": null,
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.065Z",
+      "updated_at": "2026-10-16T15:13:41.065Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 126,
+    "fields": {
+      "student": 26,
+      "course": 16,
+      "enrollment_date": "2026-05-25",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "96.13",
+      "attendance_percentage": "87.00",
+      "completed_date": "2026-09-07",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.065Z",
+      "updated_at": "2026-10-16T15:13:41.065Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 127,
+    "fields": {
+      "student": 27,
+      "course": 1,
+      "enrollment_date": "2026-04-28",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "98.87",
+      "attendance_percentage": "91.00",
+      "completed_date": "2026-08-03",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.065Z",
+      "updated_at": "2026-10-16T15:13:41.065Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 128,
+    "fields": {
+      "student": 27,
+      "course": 14,
+      "enrollment_date": "2026-10-05",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "75.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.066Z",
+      "updated_at": "2026-10-16T15:13:41.066Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 129,
+    "fields": {
+      "student": 27,
+      "course": 3,
+      "enrollment_date": "2026-05-03",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "75.81",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-08-06",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.066Z",
+      "updated_at": "2026-10-16T15:13:41.066Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 130,
+    "fields": {
+      "student": 27,
+      "course": 15,
+      "enrollment_date": "2026-04-24",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "96.30",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-08-01",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.067Z",
+      "updated_at": "2026-10-16T15:13:41.067Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 131,
+    "fields": {
+      "student": 28,
+      "course": 3,
+      "enrollment_date": "2026-05-14",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "71.93",
+      "attendance_percentage": "81.00",
+      "completed_date": "2026-08-25",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.067Z",
+      "updated_at": "2026-10-16T15:13:41.067Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 132,
+    "fields": {
+      "student": 28,
+      "course": 17,
+      "enrollment_date": "2026-06-18",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "67.35",
+      "attendance_percentage": "83.00",
+      "completed_date": "2026-10-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.068Z",
+      "updated_at": "2026-10-16T15:13:41.068Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 133,
+    "fields": {
+      "student": 28,
+      "course": 15,
+      "enrollment_date": "2026-10-14",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "80.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.069Z",
+      "updated_at": "2026-10-16T15:13:41.069Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 134,
+    "fields": {
+      "student": 28,
+      "course": 5,
+      "enrollment_date": "2026-05-26",
+      "status": "COMPLETED",
+      "grade": "F",
+      "score": "42.99",
+      "attendance_percentage": "95.00",
+      "completed_date": "2026-09-11",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.069Z",
+      "updated_at": "2026-10-16T15:13:41.069Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 135,
+    "fields": {
+      "student": 28,
+      "course": 14,
+      "enrollment_date": "2026-04-27",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "98.39",
+      "attendance_percentage": "78.00",
+      "completed_date": "2026-08-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.069Z",
+      "updated_at": "2026-10-16T15:13:41.069Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 136,
+    "fields": {
+      "student": 29,
+      "course": 1,
+      "enrollment_date": "2026-04-29",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "66.97",
+      "attendance_percentage": "86.00",
+      "completed_date": "2026-08-03",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.070Z",
+      "updated_at": "2026-10-16T15:13:41.070Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 137,
+    "fields": {
+      "student": 29,
+      "course": 12,
+      "enrollment_date": "2026-09-23",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "77.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.070Z",
+      "updated_at": "2026-10-16T15:13:41.070Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 138,
+    "fields": {
+      "student": 29,
+      "course": 15,
+      "enrollment_date": "2026-05-28",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "78.40",
+      "attendance_percentage": "86.00",
+      "completed_date": "2026-09-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.070Z",
+      "updated_at": "2026-10-16T15:13:41.070Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 139,
+    "fields": {
+      "student": 29,
+      "course": 5,
+      "enrollment_date": "2026-10-09",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "95.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.071Z",
+      "updated_at": "2026-10-16T15:13:41.071Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 140,
+    "fields": {
+      "student": 29,
+      "course": 4,
+      "enrollment_date": "2026-10-14",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "75.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.071Z",
+      "updated_at": "2026-10-16T15:13:41.071Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 141,
+    "fields": {
+      "student": 29,
+      "course": 3,
+      "enrollment_date": "2026-05-12",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "73.91",
+      "attendance_percentage": "85.00",
+      "completed_date": "2026-08-22",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.071Z",
+      "updated_at": "2026-10-16T15:13:41.071Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 142,
+    "fields": {
+      "student": 30,
+      "course": 5,
+      "enrollment_date": "2026-06-04",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "74.37",
+      "attendance_percentage": "81.00",
+      "completed_date": "2026-09-14",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.071Z",
+      "updated_at": "2026-10-16T15:13:41.071Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 143,
+    "fields": {
+      "student": 30,
+      "course": 3,
+      "enrollment_date": "2026-04-29",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "93.12",
+      "attendance_percentage": "96.00",
+      "completed_date": "2026-08-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.071Z",
+      "updated_at": "2026-10-16T15:13:41.071Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 144,
+    "fields": {
+      "student": 30,
+      "course": 13,
+      "enrollment_date": "2026-08-03",
+      "status": "DROPPED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "72.00",
+      "completed_date": null,
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.072Z",
+      "updated_at": "2026-10-16T15:13:41.072Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 145,
+    "fields": {
+      "student": 30,
+      "course": 1,
+      "enrollment_date": "2026-04-28",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "90.26",
+      "attendance_percentage": "92.00",
+      "completed_date": "2026-08-09",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.072Z",
+      "updated_at": "2026-10-16T15:13:41.072Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 146,
+    "fields": {
+      "student": 30,
+      "course": 15,
+      "enrollment_date": "2026-06-01",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "95.67",
+      "attendance_percentage": "83.00",
+      "completed_date": "2026-09-14",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.072Z",
+      "updated_at": "2026-10-16T15:13:41.072Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 147,
+    "fields": {
+      "student": 31,
+      "course": 16,
+      "enrollment_date": "2026-04-25",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "70.02",
+      "attendance_percentage": "76.00",
+      "completed_date": "2026-08-04",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.073Z",
+      "updated_at": "2026-10-16T15:13:41.073Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 148,
+    "fields": {
+      "student": 31,
+      "course": 15,
+      "enrollment_date": "2026-05-15",
+      "status": "COMPLETED",
+      "grade": "F",
+      "score": "57.03",
+      "attendance_percentage": "77.00",
+      "completed_date": "2026-08-28",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.073Z",
+      "updated_at": "2026-10-16T15:13:41.073Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 149,
+    "fields": {
+      "student": 31,
+      "course": 3,
+      "enrollment_date": "2026-06-04",
+      "status": "COMPLETED",
+      "grade": "C",
+      "score": "72.85",
+      "attendance_percentage": "78.00",
+      "completed_date": "2026-09-20",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.073Z",
+      "updated_at": "2026-10-16T15:13:41.073Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 150,
+    "fields": {
+      "student": 31,
+      "course": 13,
+      "enrollment_date": "2026-05-28",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "91.21",
+      "attendance_percentage": "97.00",
+      "completed_date": "2026-09-12",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.073Z",
+      "updated_at": "2026-10-16T15:13:41.073Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 151,
+    "fields": {
+      "student": 31,
+      "course": 2,
+      "enrollment_date": "2026-05-19",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "82.86",
+      "attendance_percentage": "80.00",
+      "completed_date": "2026-08-22",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.074Z",
+      "updated_at": "2026-10-16T15:13:41.074Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 152,
+    "fields": {
+      "student": 32,
+      "course": 2,
+      "enrollment_date": "2026-04-27",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "94.50",
+      "attendance_percentage": "96.00",
+      "completed_date": "2026-08-05",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.074Z",
+      "updated_at": "2026-10-16T15:13:41.074Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 153,
+    "fields": {
+      "student": 32,
+      "course": 4,
+      "enrollment_date": "2026-06-02",
+      "status": "COMPLETED",
+      "grade": "B",
+      "score": "86.01",
+      "attendance_percentage": "84.00",
+      "completed_date": "2026-09-07",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.074Z",
+      "updated_at": "2026-10-16T15:13:41.074Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 154,
+    "fields": {
+      "student": 32,
+      "course": 13,
+      "enrollment_date": "2026-10-07",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "91.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.074Z",
+      "updated_at": "2026-10-16T15:13:41.074Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 155,
+    "fields": {
+      "student": 32,
+      "course": 12,
+      "enrollment_date": "2026-06-08",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "90.23",
+      "attendance_percentage": "100.00",
+      "completed_date": "2026-09-26",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.075Z",
+      "updated_at": "2026-10-16T15:13:41.075Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 156,
+    "fields": {
+      "student": 32,
+      "course": 16,
+      "enrollment_date": "2026-05-14",
+      "status": "COMPLETED",
+      "grade": "A",
+      "score": "93.94",
+      "attendance_percentage": "99.00",
+      "completed_date": "2026-08-23",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.075Z",
+      "updated_at": "2026-10-16T15:13:41.075Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 157,
+    "fields": {
+      "student": 33,
+      "course": 14,
+      "enrollment_date": "2026-05-05",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "67.64",
+      "attendance_percentage": "99.00",
+      "completed_date": "2026-08-21",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.075Z",
+      "updated_at": "2026-10-16T15:13:41.075Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 158,
+    "fields": {
+      "student": 33,
+      "course": 13,
+      "enrollment_date": "2026-06-20",
+      "status": "COMPLETED",
+      "grade": "F",
+      "score": "49.58",
+      "attendance_percentage": "100.00",
+      "completed_date": "2026-09-30",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.075Z",
+      "updated_at": "2026-10-16T15:13:41.075Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 159,
+    "fields": {
+      "student": 33,
+      "course": 4,
+      "enrollment_date": "2026-09-30",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "74.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.076Z",
+      "updated_at": "2026-10-16T15:13:41.076Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 160,
+    "fields": {
+      "student": 33,
+      "course": 5,
+      "enrollment_date": "2026-09-28",
+      "status": "ENROLLED",
+      "grade": null,
+      "score": null,
+      "attendance_percentage": "87.00",
+      "completed_date": null,
+      "notes": "",
+      "created_at": "2026-10-16T15:13:41.076Z",
+      "updated_at": "2026-10-16T15:13:41.076Z"
+    }
+  },
+  {
+    "model": "enrollments.enrollment",
+    "pk": 161,
+    "fields": {
+      "student": 33,
+      "course": 12,
+      "enrollment_date": "2026-05-08",
+      "status": "COMPLETED",
+      "grade": "D",
+      "score": "65.59",
+      "attendance_percentage": "99.00",
+      "completed_date": "2026-08-24",
+      "notes": "Auto-recorded demo enrollment.",
+      "created_at": "2026-10-16T15:13:41.076Z",
+      "updated_at": "2026-10-16T15:13:41.076Z"
+    }
+  }
+]

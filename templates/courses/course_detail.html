@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.code }} - {{ course.title }} - BBU Courses{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="row mb-3">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-bbu mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1 text-primary"></i> Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}"><i class="fa-solid fa-book-open me-1 text-success"></i> Courses</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><i class="fa-solid fa-bookmark me-1 text-warning"></i> {{ course.code }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Course Specs & Enrolled Students -->
+    <div class="col-lg-8">
+        <!-- Main Course Overview Card with Hero Banner -->
+        <div class="card card-bbu shadow-sm border-0 mb-4 overflow-hidden">
+            <div class="detail-hero-banner p-3 p-md-4 d-flex justify-content-between align-items-center">
+                <span class="badge bg-white bg-opacity-25 text-white fw-semibold px-3 py-1 shadow-sm">
+                    <i class="fa-solid fa-book-open me-1"></i> Course Syllabus & Module Info
+                </span>
+                <span class="badge bg-white text-dark fw-bold px-3 py-1 shadow-sm">
+                    {{ course.code }}
+                </span>
+            </div>
+            <div class="card-body p-4 pt-3">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                    <div>
+                        <span class="badge bg-light text-primary border px-2 py-1 fs-6 mb-2">{{ course.code }}</span>
+                        <h2 class="fw-bold text-dark mb-1">{{ course.title }}</h2>
+                        <span class="text-muted small">
+                            <i class="fa-solid fa-chalkboard-user text-primary me-1"></i>
+                            Instructor: <strong>{{ course.instructor.get_full_name|default:course.instructor.username|default:"Unassigned" }}</strong>
+                        </span>
+                    </div>
+                    <div>
+                        {% include "components/_status_badge.html" with status=course.status %}
+                    </div>
+                </div>
+
+                <p class="text-muted mb-4">{{ course.description }}</p>
+
+                <hr class="my-3">
+
+                <!-- Course Specs 4-KPI Grid -->
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <span class="text-muted small d-block">Credits / ក្រេឌីត</span>
+                            <h4 class="fw-bold text-primary mb-0">{{ course.credits }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <span class="text-muted small d-block">Level / កម្រិត</span>
+                            <h4 class="fw-bold text-dark mb-0">{{ course.get_level_display }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <span class="text-muted small d-block">Capacity / ចំណុះ</span>
+                            <h4 class="fw-bold text-dark mb-0">{{ course.capacity }} <small class="text-muted fs-6">max</small></h4>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <span class="text-muted small d-block">Enrolled / បានចុះ</span>
+                            <h4 class="fw-bold text-success mb-0">{{ course.enrollments.count }}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3 text-muted small">
+                    <div class="col-md-6 mb-1">
+                        <i class="fa-solid fa-calendar-days text-primary me-1"></i> Start Date: <strong>{{ course.start_date|date:"F d, Y" }}</strong>
+                    </div>
+                    <div class="col-md-6 mb-1 text-md-end">
+                        <i class="fa-solid fa-calendar-check text-success me-1"></i> End Date: <strong>{{ course.end_date|date:"F d, Y" }}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Students in Course -->
+        <div class="card card-bbu shadow-sm border-0 mb-4">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-dark">
+                    <i class="fa-solid fa-users text-primary me-2"></i> Enrolled Students / បញ្ជីនិស្សិតសិក្សា ({{ course.enrollments.count }})
+                </h6>
+                <a href="{% url 'enrollments:enrollment_create' %}?course={{ course.id }}" class="btn btn-sm btn-bbu-primary">
+                    <i class="fa-solid fa-plus me-1"></i> Enroll Student
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if course.enrollments.all %}
+                <div class="table-responsive">
+                    <table class="table table-bbu align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Student Name / ឈ្មោះ</th>
+                                <th class="text-center">Score</th>
+                                <th class="text-center">Grade</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enrollment in course.enrollments.all %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'students:student_detail' enrollment.student.pk %}" class="fw-bold text-dark text-decoration-none">
+                                        {{ enrollment.student.student_id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% include "components/_avatar.html" with student=enrollment.student size="sm" %}
+                                        <div>
+                                            <strong class="text-primary d-block">{{ enrollment.student.khmer_name|default:enrollment.student.user.get_full_name }}</strong>
+                                            {% if enrollment.student.khmer_name and enrollment.student.user.get_full_name %}
+                                                <small class="text-muted">{{ enrollment.student.user.get_full_name }}</small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    {% if enrollment.score is not None %}
+                                        <span class="fw-semibold">{{ enrollment.score }}</span>
+                                        <div class="progress-bbu mx-auto w-75">
+                                            <div class="progress-bbu-bar {% if enrollment.score >= 80 %}progress-bbu-bar-success{% elif enrollment.score >= 65 %}progress-bbu-bar-primary{% elif enrollment.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
+                                                 role="progressbar" aria-valuenow="{{ enrollment.score }}" aria-valuemin="0" aria-valuemax="100" data-progress="{{ enrollment.score }}"></div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    {% include "components/_grade_badge.html" with grade=enrollment.grade %}
+                                </td>
+                                <td class="text-center">
+                                    {% include "components/_status_badge.html" with status=enrollment.status %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="action-btn-group">
+                                        <a href="{% url 'enrollments:add_grade' enrollment.pk %}" class="action-btn" title="Record Grade" aria-label="Record Grade">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="{% url 'students:student_detail' enrollment.student.pk %}" class="action-btn" title="View Student" aria-label="View Student">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="p-4">
+                    {% url 'enrollments:enrollment_create' as create_enrollment_url %}
+                    {% include "components/_empty_state.html" with icon="fa-solid fa-user-clock" title="No Students Enrolled" text="No students are currently enrolled in this course section." cta_url=create_enrollment_url cta_label="Enroll Student" cta_icon="fa-solid fa-plus me-1" %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar Sticky Actions -->
+    <div class="col-lg-4">
+        <div class="detail-sticky-sidebar">
+            <div class="card card-bbu shadow-sm border-0 mb-4">
+                <div class="card-bbu-header">
+                    <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-gear me-2 text-primary"></i>Course Actions / សកម្មភាព</h6>
+                </div>
+                <div class="card-body p-3 d-flex flex-column gap-2">
+                    <a href="{% url 'courses:course_update' course.id %}" class="btn btn-bbu-primary w-100 py-2">
+                        <i class="fa-solid fa-pen-to-square me-1"></i> Edit Course Information
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary w-100 py-2" onclick="window.print()">
+                        <i class="fa-solid fa-print me-1"></i> Print Course Syllabus
+                    </button>
+                    <a href="{% url 'enrollments:enrollment_create' %}?course={{ course.id }}" class="btn btn-bbu-gold w-100 py-2">
+                        <i class="fa-solid fa-circle-plus me-1"></i> Enroll Student in Course
+                    </a>
+                    <a href="{% url 'courses:course_delete' course.id %}" class="btn btn-outline-danger w-100 py-2">
+                        <i class="fa-solid fa-trash-can me-1"></i> Delete Course
+                    </a>
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-light border text-muted w-100 py-2">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Back to Courses List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

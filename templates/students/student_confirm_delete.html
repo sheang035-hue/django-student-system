@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Student: {{ student.student_id }} - BBU{% endblock %}
+
+{% block content %}
+{% url 'students:student_detail' student.id as cancel_url %}
+{% include "components/_confirm_delete.html" with title="Delete Student / លុបព័ត៌មាននិស្សិត" record_name=student.get_primary_name record_detail=student.student_id warning_extra="All associated enrollments and academic grades for this student will be permanently deleted." cancel_url=cancel_url %}
+{% endblock %}

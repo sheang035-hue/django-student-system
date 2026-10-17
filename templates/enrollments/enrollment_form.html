@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit Enrollment{% else %}Add New Enrollment{% endif %} - BBU{% endblock %}
+
+{% block extra_css %}
+<!-- Tom Select CSS for Searchable Dropdowns (Styled via style.css) -->
+<link rel="stylesheet" href="{% static 'css/tom-select.bootstrap5.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="row mb-3">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'enrollments:enrollment_list' %}">Enrollments</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{% if form.instance.pk %}Edit{% else %}Create{% endif %}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-bbu shadow-sm border-0 mb-4">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0 fw-bold text-dark">
+                        {% if form.instance.pk %}
+                            <i class="fa-solid fa-pen-to-square text-primary me-2"></i>Edit Enrollment: {{ form.instance.student.student_id }} - {{ form.instance.course.code }}
+                        {% else %}
+                            <i class="fa-solid fa-clipboard-check text-primary me-2"></i>Add New Enrollment / ចុះឈ្មោះមុខវិជ្ជា
+                        {% endif %}
+                    </h4>
+                    <p class="text-muted small mb-0 mt-1">Search and select student and course section effortlessly.</p>
+                </div>
+                <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to List
+                </a>
+            </div>
+            
+            <div class="card-body p-4">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0 mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="fa-solid fa-circle-exclamation me-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Student Selection -->
+                    <div class="mb-4">
+                        <label for="id_student" class="form-label fw-bold">
+                            <i class="fa-solid fa-user-graduate text-primary me-1"></i> និស្សិត (Student) <span class="text-danger">*</span>
+                        </label>
+                        {{ form.student }}
+                        {% if form.student.errors %}
+                            {% for error in form.student.errors %}
+                                <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="search-hint">
+                            <i class="fa-solid fa-circle-info text-primary me-1"></i> <strong>គន្លឹះ៖</strong> វាយបញ្ចូលអត្តលេខ (ID), ឈ្មោះខ្មែរ, ឬឈ្មោះឡាតាំង ដើម្បីស្វែងរកភ្លាមៗ
+                        </div>
+                    </div>
+
+                    <!-- Course Selection -->
+                    <div class="mb-4">
+                        <label for="id_course" class="form-label fw-bold">
+                            <i class="fa-solid fa-book text-primary me-1"></i> មុខវិជ្ជា (Course) <span class="text-danger">*</span>
+                        </label>
+                        {{ form.course }}
+                        {% if form.course.errors %}
+                            {% for error in form.course.errors %}
+                                <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="search-hint">
+                            <i class="fa-solid fa-circle-info text-primary me-1"></i> <strong>គន្លឹះ៖</strong> វាយបញ្ចូលកូដមុខវិជ្ជា (Code), ឈ្មោះមុខវិជ្ជា, ឬឈ្មោះសាស្រ្តាចារ្យ
+                        </div>
+                    </div>
+
+                    <!-- Status Selection -->
+                    <div class="mb-4">
+                        {% include "components/_form_field.html" with field=form.status %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex gap-2 form-mobile-action-bar">
+                        <button type="submit" class="btn btn-bbu-primary px-4 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Enrollment
+                        </button>
+                        <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft px-4 py-2">
+                            <i class="fa-solid fa-xmark me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Tom Select JS for Searchable Dropdowns -->
+<script src="{% static 'js/tom-select.complete.min.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const studentSelect = document.getElementById('id_student');
+        if (studentSelect) {
+            new TomSelect('#id_student', {
+                create: false,
+                maxOptions: 1000,
+                placeholder: 'Type Student ID, Khmer or English name...',
+                allowEmptyOption: true,
+                sortField: {
+                    field: 'text',
+                    direction: 'asc'
+                },
+                render: {
+                    no_results: function (data, escape) {
+                        return '<div class="no-results p-2 text-muted">No student found matching "' + escape(data.input) + '"</div>';
+                    }
+                }
+            });
+        }
+
+        const courseSelect = document.getElementById('id_course');
+        if (courseSelect) {
+            new TomSelect('#id_course', {
+                create: false,
+                maxOptions: 500,
+                placeholder: 'Type Course code, title or instructor...',
+                allowEmptyOption: true,
+                sortField: {
+                    field: 'text',
+                    direction: 'asc'
+                },
+                render: {
+                    no_results: function (data, escape) {
+                        return '<div class="no-results p-2 text-muted">No course found matching "' + escape(data.input) + '"</div>';
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

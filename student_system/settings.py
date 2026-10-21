@@ -164,6 +164,9 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 # WhiteNoise storage configuration for compressed static assets
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
+# Serve static files from source folders if collectstatic was not run
+WHITENOISE_USE_FINDERS = True
+
 # Media Files
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'

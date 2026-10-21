@@ -25,7 +25,7 @@ SECRET_KEY = config('SECRET_KEY', default='1YUIcsoqsJyVJfHo8qe9iiiMHTXC3fTDn1qo-
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = list(config('ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver', cast=Csv()))
 RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default=None)

@@ -2767,8 +2767,8 @@ a:hover {
 }
 
 .landing-float-chip.chip-2 {
-    bottom: 10%;
-    right: -34px;
+    bottom: -18px;
+    right: -22px;
     animation-delay: 1.2s;
 }
 

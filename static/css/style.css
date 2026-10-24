@@ -631,14 +631,17 @@ body,
     background-image: linear-gradient(90deg, transparent, rgba(45, 92, 246, 0.9), rgba(245, 158, 11, 0.9), transparent);
 }
 
-.footer-bbu h6,
-.footer-bbu .text-dark {
+:root .footer-bbu h6,
+:root .footer-bbu .text-dark,
+:root .footer-bbu .text-white {
     color: #ffffff !important;
 }
 
-.footer-bbu p,
-.footer-bbu li a,
-.footer-bbu .text-muted {
+:root .footer-bbu p,
+:root .footer-bbu small,
+:root .footer-bbu li a,
+:root .footer-bbu .text-muted,
+:root .footer-bbu .text-secondary {
     color: #9db0cc !important;
 }
 

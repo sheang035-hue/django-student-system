@@ -5,7 +5,9 @@
 
 {% block content %}
 <!-- Page Header Component -->
-{% url 'courses:course_create' as add_course_url %}
+{% if user.is_staff or user.is_superuser %}
+    {% url 'courses:course_create' as add_course_url %}
+{% endif %}
 {% include "components/_page_header.html" with title="Academic Courses / បញ្ជីមុខវិជ្ជាសិក្សា" subtitle="Manage university curricula, credit weights, class capacities, and instructors" action_url=add_course_url action_label="Add New Course" action_icon="fa-solid fa-circle-plus" %}
 
 <!-- Toolbar Card (Search, Status Filters & CSV Export) -->
@@ -44,11 +46,13 @@
                 </div>
             </form>
         </div>
+        {% if user.is_staff or user.is_superuser %}
         <div class="col-lg-3 d-flex justify-content-lg-end">
             <a href="{% url 'courses:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of academic curriculum">
                 <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
+        {% endif %}
     </div>
 </div>
 
@@ -132,12 +136,14 @@
                             <a href="{% url 'courses:course_detail' course.id %}" class="action-btn" title="View Course Details" data-bs-toggle="tooltip">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
+                            {% if user.is_staff or user.is_superuser %}
                             <a href="{% url 'courses:course_update' course.id %}" class="action-btn" title="Edit Course" data-bs-toggle="tooltip">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                             <a href="{% url 'courses:course_delete' course.id %}" class="action-btn action-btn-danger" title="Delete Course" data-bs-toggle="tooltip">
                                 <i class="fa-solid fa-trash"></i>
                             </a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -153,7 +159,11 @@
 </div>
 {% else %}
     <!-- Empty State Component -->
-    {% url 'courses:course_create' as create_c_url %}
-    {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Found / មិនមានមុខវិជ្ជាទេ" text="No courses matched your query. Adjust your filter or create a new course." cta_url=create_c_url cta_label="Create Course" cta_icon="fa-solid fa-circle-plus" %}
+    {% if user.is_staff or user.is_superuser %}
+        {% url 'courses:course_create' as create_c_url %}
+        {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Found / មិនមានមុខវិជ្ជាទេ" text="No courses matched your query. Adjust your filter or create a new course." cta_url=create_c_url cta_label="Create Course" cta_icon="fa-solid fa-circle-plus" %}
+    {% else %}
+        {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Found / មិនមានមុខវិជ្ជាទេ" text="No courses matched your query. Try a different search or filter." %}
+    {% endif %}
 {% endif %}
 {% endblock %}

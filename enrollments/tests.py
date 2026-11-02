@@ -94,6 +94,16 @@ class EnrollmentViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'CS402')
 
+    def test_add_grade_forbidden_for_non_staff(self):
+        self.client.login(username='student2', password='password123')
+        response = self.client.get(reverse('enrollments:add_grade', kwargs={'pk': self.enrollment.pk}))
+        self.assertEqual(response.status_code, 403)
+
+    def test_add_grade_allowed_for_staff(self):
+        self.client.login(username='admin_user', password='password123')
+        response = self.client.get(reverse('enrollments:add_grade', kwargs={'pk': self.enrollment.pk}))
+        self.assertEqual(response.status_code, 200)
+
     def test_enrollment_create_view_searchable_dropdown(self):
         self.client.login(username='admin_user', password='password123')
         response = self.client.get(reverse('enrollments:enrollment_create'))

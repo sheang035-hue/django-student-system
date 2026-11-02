@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
 from django.urls import reverse_lazy
+from student_system.permissions import StaffRequiredMixin, staff_required
 from .models import Course
 from .forms import CourseForm, CourseFilterForm
 
@@ -51,6 +52,7 @@ def course_list(request):
 
 
 @login_required
+@staff_required
 def export_courses_csv(request):
     """Export filtered or all academic courses to CSV spreadsheet with UTF-8 BOM."""
     courses_qs = Course.objects.select_related('instructor').all()
@@ -123,6 +125,7 @@ def course_detail(request, pk):
 
 #@login_required is a decorator that requires login to access a view
 @login_required
+@staff_required
 # Course Creation View
 def course_create(request):
     """Create a new course"""
@@ -145,6 +148,7 @@ def course_create(request):
     return render(request, 'courses/course_form.html', context)
 
 @login_required
+@staff_required
 # Course Update View
 def course_update(request, pk):
     """Update course information"""
@@ -169,6 +173,7 @@ def course_update(request, pk):
     return render(request, 'courses/course_form.html', context)
 
 @login_required
+@staff_required
 # Course Deletion View
 def course_delete(request, pk):
     """Delete a course"""
@@ -243,21 +248,21 @@ class CourseDetailView(DetailView):
         context['total_students'] = self.object.enrollments.count()
         return context
 
-class CourseCreateView(LoginRequiredMixin, CreateView):
+class CourseCreateView(StaffRequiredMixin, CreateView):
     """Class-based view for creating a new course"""
     model = Course
     form_class = CourseForm
     template_name = 'courses/course_form.html'
     success_url = reverse_lazy('courses:course_list')
 
-class CourseUpdateView(LoginRequiredMixin, UpdateView):
+class CourseUpdateView(StaffRequiredMixin, UpdateView):
     """Class-based view for updating course information"""
     model = Course
     form_class = CourseForm
     template_name = 'courses/course_form.html'
     success_url = reverse_lazy('courses:course_list')
 
-class CourseDeleteView(LoginRequiredMixin, DeleteView):
+class CourseDeleteView(StaffRequiredMixin, DeleteView):
     """Class-based view for deleting a course"""
     model = Course
     template_name = 'courses/course_confirm_delete.html'

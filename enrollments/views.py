@@ -1,13 +1,16 @@
 import csv
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
 from django.urls import reverse_lazy
+from students.academics import summarize_academics
 from .models import Enrollment
+from student_system.permissions import staff_required
 from .forms import EnrollmentForm, GradeForm, EnrollmentFilterForm
 
 # Function-Based Views (FBV)
@@ -163,8 +166,9 @@ def enrollment_delete(request, pk):
     return render(request, 'enrollments/enrollment_confirm_delete.html', context)
 
 @login_required
+@staff_required
 def add_grade(request, pk):
-    """Add or update grade for an enrollment"""
+    """Add or update grade for an enrollment (administrators only)"""
     enrollment = get_object_or_404(Enrollment, pk=pk)
     
     if request.method == 'POST':
@@ -188,100 +192,13 @@ def student_transcript(request, student_id):
         student = Student.objects.filter(pk=int(student_id)).first()
     if not student:
         raise Http404("Student not found")
-        
-    enrollments = list(student.enrollments.select_related('course').all())
-    
-    # Grading points reference mapping (MoEYS Standard)
-    grade_points_map = {
-        'A': 4.00,
-        'B+': 3.50,
-        'B': 3.00,
-        'C+': 2.50,
-        'C': 2.00,
-        'D': 1.50,
-        'F': 0.00,
-    }
-    
-    course_khmer_map = {
-        'CS101': 'សេចក្តីផ្តើមវិទ្យាសាស្ត្រកុំព្យូទ័រ',
-        'WD201': 'មូលដ្ឋានគ្រឹះនៃការអភិវឌ្ឍវេបសាយ',
-        'DB202': 'ប្រព័ន្ធគ្រប់គ្រងមូលដ្ឋានទិន្នន័យ',
-        'PY204': 'ការសរសេរកម្មវិធី Python',
-        'NET203': 'ប្រព័ន្ធបណ្តាញកុំព្យូទ័រ',
-    }
-    
-    # Enrich enrollment items with grade points, credit points, and Khmer titles
-    total_credit_points = 0.0
-    for e in enrollments:
-        # Determine letter grade & grade point
-        grade = (e.grade or '').strip().upper()
-        if not grade and e.score is not None:
-            if e.score >= 85: grade = 'A'
-            elif e.score >= 80: grade = 'B+'
-            elif e.score >= 70: grade = 'B'
-            elif e.score >= 65: grade = 'C+'
-            elif e.score >= 50: grade = 'C'
-            elif e.score >= 45: grade = 'D'
-            else: grade = 'F'
-            e.grade = grade
-            
-        gp = grade_points_map.get(grade, 0.0)
-        e.grade_point = gp
-        credits = e.course.credits if (e.course and e.course.credits) else 0
-        
-        if e.status == 'COMPLETED':
-            cp = round(credits * gp, 2)
-            e.credit_points = cp
-            total_credit_points += cp
-            e.is_passed = grade != 'F' and (e.score is None or e.score >= 50)
-        else:
-            e.credit_points = 0.0
-            e.is_passed = False
-        # Clean separation of English title and Khmer title to avoid duplication
-        raw_title = e.course.title if e.course else ''
-        if '(' in raw_title and ')' in raw_title:
-            en_title = raw_title[:raw_title.find('(')].strip()
-            kh_title = raw_title[raw_title.find('(')+1:raw_title.rfind(')')].strip()
-        else:
-            en_title = raw_title
-            kh_title = course_khmer_map.get(e.course.code, '') if e.course else ''
-        e.clean_en_title = en_title
-        e.clean_kh_title = kh_title
 
-    completed_courses = [e for e in enrollments if e.status == 'COMPLETED' and e.score is not None]
-    average_score = sum(float(e.score) for e in completed_courses) / len(completed_courses) if completed_courses else 0
-    total_credits = sum(e.course.credits for e in enrollments if e.course and e.course.credits)
-    earned_credits = sum(e.course.credits for e in completed_courses if e.course and e.course.credits)
-    
-    # Calculate or confirm GPA
-    calculated_gpa = round(total_credit_points / earned_credits, 2) if earned_credits > 0 else 0.0
-    effective_gpa = float(student.gpa) if float(student.gpa) > 0 else calculated_gpa
-    
-    # Academic Standing Classification
-    if effective_gpa >= 3.80:
-        standing_en = "Highest Distinction (Summa Cum Laude)"
-        standing_kh = "ល្អប្រសើរដាច់គេ"
-        standing_badge = "success"
-    elif effective_gpa >= 3.50:
-        standing_en = "High Distinction (Magna Cum Laude)"
-        standing_kh = "ល្អប្រសើរ"
-        standing_badge = "success"
-    elif effective_gpa >= 3.00:
-        standing_en = "Distinction (Cum Laude)"
-        standing_kh = "ល្អណាស់"
-        standing_badge = "primary"
-    elif effective_gpa >= 2.50:
-        standing_en = "Good Standing"
-        standing_kh = "ល្អបង្គួរ"
-        standing_badge = "info"
-    elif effective_gpa >= 2.00:
-        standing_en = "Satisfactory"
-        standing_kh = "មធ្យម"
-        standing_badge = "secondary"
-    else:
-        standing_en = "Academic Probation"
-        standing_kh = "ក្រោមស្តង់ដារ"
-        standing_badge = "warning"
+    user_student = getattr(request.user, 'student', None)
+    if not (request.user.is_staff or request.user.is_superuser or user_student == student):
+        raise PermissionDenied("You can only view your own transcript.")
+
+    summary = summarize_academics(student)
+    enrollments = summary['enrollments']
     
     import datetime
     today = datetime.date.today()
@@ -299,16 +216,16 @@ def student_transcript(request, student_id):
     context = {
         'student': student,
         'enrollments': enrollments,
-        'average_score': round(average_score, 2),
-        'total_courses': len(enrollments),
-        'completed_courses': len(completed_courses),
-        'total_credits': total_credits,
-        'earned_credits': earned_credits,
-        'total_credit_points': round(total_credit_points, 2),
-        'effective_gpa': f"{effective_gpa:.2f}",
-        'standing_en': standing_en,
-        'standing_kh': standing_kh,
-        'standing_badge': standing_badge,
+        'average_score': summary['avg_score'],
+        'total_courses': summary['total_enrolled'],
+        'completed_courses': summary['completed_count'],
+        'total_credits': summary['total_credits'],
+        'earned_credits': summary['earned_credits'],
+        'total_credit_points': summary['total_credit_points'],
+        'effective_gpa': f"{summary['effective_gpa']:.2f}",
+        'standing_en': summary['standing_en'],
+        'standing_kh': summary['standing_kh'],
+        'standing_badge': summary['standing_badge'],
         'transcript_no': f"BBU-TR-2026-{student.student_id}",
         'issue_date_kh': issue_date_kh,
         'issue_date_en': issue_date_en,

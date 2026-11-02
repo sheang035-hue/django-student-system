@@ -30,7 +30,7 @@
                     <span class="mx-2">•</span>
                     <span><i class="fa-solid fa-building-columns me-1"></i>Faculty of Science & IT</span>
                     <span class="mx-2">•</span>
-                    <span><i class="fa-solid fa-graduation-cap me-1"></i>Bachelor Degree (Year 2)</span>
+                    <span><i class="fa-solid fa-graduation-cap me-1"></i>Bachelor Degree (Year {{ study_year }})</span>
                     <span class="mx-2">•</span>
                     <span class="badge badge-soft-success px-2 py-0 align-self-center"><span class="status-dot status-dot-active me-1"></span>Active Student</span>
                 </div>
@@ -83,7 +83,7 @@
                     <h6 class="text-muted small fw-bold text-uppercase mb-1">Credits Earned</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ earned_credits }} <small class="fs-6 text-muted">/ {{ total_credits }} Cr</small></h3>
                     <small class="text-success fw-semibold">
-                        <span class="status-dot status-dot-active me-1"></span>100% On-Track
+                        <span class="status-dot status-dot-active me-1"></span>{{ credits_pct }}% of credits earned
                     </small>
                 </div>
             </div>
@@ -131,7 +131,11 @@
                     <h6 class="text-muted small fw-bold text-uppercase mb-1">Average Score</h6>
                     <h3 class="fw-bold mb-0 text-dark">{{ avg_score }}%</h3>
                     <small class="text-success fw-semibold">
-                        <i class="fa-solid fa-star text-warning me-1"></i>Grade A Average
+                        {% if completed_count %}
+                        <i class="fa-solid fa-star text-warning me-1"></i>Grade {{ avg_grade }} Average
+                        {% else %}
+                        <i class="fa-solid fa-hourglass-half text-muted me-1"></i>No completed courses yet
+                        {% endif %}
                     </small>
                 </div>
             </div>
@@ -373,7 +377,7 @@
 
                 <div class="d-flex justify-content-between text-muted small px-2 mb-3">
                     <span><strong>Faculty:</strong> Science & IT</span>
-                    <span><strong>Year:</strong> Year 2</span>
+                    <span><strong>Year:</strong> Year {{ study_year }}</span>
                 </div>
 
                 <!-- Dynamic Verification QR Code -->
@@ -430,7 +434,7 @@
                 </div>
                 <div class="mb-2">
                     <strong class="text-dark d-block">Academic Advisor:</strong>
-                    <span>Prof. Touch Sokha (Dean of IT)</span>
+                    <span>Office of the Dean, Faculty of Science &amp; IT</span>
                 </div>
                 <div class="mb-2">
                     <i class="fa-solid fa-envelope text-primary me-1"></i>

@@ -89,14 +89,48 @@ class CourseViewsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Web Development')
 
-    # test_course_create_requires_login method is used to test the course create view
-    # it is used to check if the course create view is correct
+    # test_course_create_requires_login checks anonymous users are redirected
     def test_course_create_requires_login(self):
-        response = self.client.get(reverse('courses:course_create')) #
+        response = self.client.get(reverse('courses:course_create'))
         self.assertEqual(response.status_code, 302)
 
-    # test_course_create_authenticated method is used to test the course create view
-    # it is used to check if the course create view is correct
+    # Non-staff users may browse courses but must not manage them
+    def test_course_create_forbidden_for_non_staff(self):
+        self.client.login(username='teacher', password='password123')
+        response = self.client.get(reverse('courses:course_create'))
+        self.assertEqual(response.status_code, 403)
+
+    # Staff users can open the course creation form
+    def test_course_create_allowed_for_staff(self):
+        self.user.is_staff = True
+        self.user.save()
         self.client.login(username='teacher', password='password123')
         response = self.client.get(reverse('courses:course_create'))
         self.assertEqual(response.status_code, 200)
+
+    # Non-staff users cannot update or delete courses (FBV and CBV)
+    def test_course_update_delete_forbidden_for_non_staff(self):
+        self.client.login(username='teacher', password='password123')
+        routes = [
+            reverse('courses:course_update', kwargs={'pk': self.course.pk}),
+            reverse('courses:course_update_cbv', kwargs={'pk': self.course.pk}),
+            reverse('courses:course_delete', kwargs={'pk': self.course.pk}),
+            reverse('courses:course_delete_cbv', kwargs={'pk': self.course.pk}),
+        ]
+        for url in routes:
+            self.assertEqual(self.client.get(url).status_code, 403)
+
+    # Non-staff users cannot export the course catalog
+    def test_course_export_forbidden_for_non_staff(self):
+        self.client.login(username='teacher', password='password123')
+        response = self.client.get(reverse('courses:export_csv'))
+        self.assertEqual(response.status_code, 403)
+
+    # Staff users can export the course catalog as CSV
+    def test_course_export_allowed_for_staff(self):
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username='teacher', password='password123')
+        response = self.client.get(reverse('courses:export_csv'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'text/csv')

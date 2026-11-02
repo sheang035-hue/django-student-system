@@ -1,0 +1,58 @@
+{% load static %}
+<!-- Footer: 3 Columns (Brand, Quick Links, Copyright) -->
+<footer class="footer-bbu py-5 mt-auto no-print">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Column 1: Brand -->
+            <div class="col-md-5">
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <img src="{% static 'images/bbu-logo.png' %}" alt="Build Bright University Logo" class="bbu-footer-logo">
+                    <div>
+                        <h6 class="fw-bold text-dark mb-0">Build Bright University (BBU)</h6>
+                        <small class="text-muted fs-xs">សាកលវិទ្យាល័យ បៀលប្រាយ</small>
+                    </div>
+                </div>
+                <p class="text-muted small mb-3 footer-desc-width">
+                    Faculty of Science and Information Technology. Dedicated to academic excellence, innovative research, and professional student empowerment.
+                </p>
+
+                <p class="text-muted small mb-3 footer-desc-width">
+                    Developed by = HOCHUE SONGHEANG, ID = SR26872, CLASS = A1IT-B103
+                </p>
+                <span class="badge badge-soft-primary">Semester 1 &bull; Year 2 Final Project</span>
+            </div>
+
+            <!-- Column 2: Quick Links -->
+            <div class="col-md-3 col-6">
+                <h6 class="fw-bold text-dark small text-uppercase mb-3">Quick Navigation</h6>
+                <ul class="list-unstyled small mb-0 d-flex flex-column gap-2">
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Dashboard</a></li>
+                    <li><a href="{% url 'students:student_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Students Directory</a></li>
+                    <li><a href="{% url 'courses:course_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Academic Courses</a></li>
+                    <li><a href="{% url 'enrollments:enrollment_list' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Course Enrollments</a></li>
+                    {% else %}
+                    <li><a href="{% url 'home' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Home</a></li>
+                    <li><a href="{% url 'home' %}#features" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> System Features</a></li>
+                    <li><a href="{% url 'home' %}#how-it-works" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> How It Works</a></li>
+                    <li><a href="{% url 'students:register' %}" class="text-muted"><i class="fa-solid fa-chevron-right me-1 text-primary"></i> Student Registration</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Column 3: Contact & Copyright -->
+            <div class="col-md-4 col-6">
+                <h6 class="fw-bold text-dark small text-uppercase mb-3">Academic Portal</h6>
+                <p class="text-muted small mb-2">
+                    <i class="fa-solid fa-location-dot me-2 text-danger"></i> Phnom Penh &amp; Siem Reap, Cambodia
+                </p>
+                <p class="text-muted small mb-3">
+                    <i class="fa-solid fa-globe me-2 text-primary"></i> Built with Django &amp; Bootstrap 5
+                </p>
+                <p class="text-muted small mb-0">
+                    &copy; 2026 Build Bright University. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>

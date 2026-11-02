@@ -1,0 +1,50 @@
+{% load static %}
+{% if user.is_authenticated %}
+<li class="nav-item d-none d-lg-flex ms-2">
+    {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}
+    <form class="nav-search-form" method="get" action="{% url 'courses:course_list' %}">
+        <div class="nav-search-bar" title="Search academic courses (Press /)">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="search" id="nav-global-search" class="nav-search-input"
+                   placeholder="Search courses... (/)"
+                   value="{{ request.GET.search|default:'' }}"
+                   autocomplete="off" aria-label="Search courses">
+            <kbd class="shortcut-kbd">/</kbd>
+        </div>
+    </form>
+    {% elif 'enrollments' in request.resolver_match.namespaces or 'enrollment' in request.path %}
+    <form class="nav-search-form" method="get" action="{% url 'enrollments:enrollment_list' %}">
+        <div class="nav-search-bar" title="Search enrollment records (Press /)">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="search" id="nav-global-search" class="nav-search-input"
+                   placeholder="Search enrollments... (/)"
+                   value="{{ request.GET.search|default:'' }}"
+                   autocomplete="off" aria-label="Search enrollments">
+            <kbd class="shortcut-kbd">/</kbd>
+        </div>
+    </form>
+    {% elif user.student and not user.is_staff and not user.is_superuser %}
+    <form class="nav-search-form" method="get" action="{% url 'courses:course_list' %}">
+        <div class="nav-search-bar" title="Search academic courses (Press /)">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="search" id="nav-global-search" class="nav-search-input"
+                   placeholder="Search courses... (/)"
+                   value="{{ request.GET.search|default:'' }}"
+                   autocomplete="off" aria-label="Search courses">
+            <kbd class="shortcut-kbd">/</kbd>
+        </div>
+    </form>
+    {% else %}
+    <form class="nav-search-form" method="get" action="{% url 'students:student_list' %}">
+        <div class="nav-search-bar" title="Search students directory (Press /)">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" name="q" id="nav-global-search" class="nav-search-input"
+                   placeholder="Search students... (/)"
+                   value="{{ search_query|default:'' }}"
+                   autocomplete="off" aria-label="Search students">
+            <kbd class="shortcut-kbd">/</kbd>
+        </div>
+    </form>
+    {% endif %}
+</li>
+{% endif %}

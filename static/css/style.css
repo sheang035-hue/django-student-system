@@ -611,6 +611,43 @@ body,
     background-color: #1e293b !important;
 }
 
+/* Bootstrap contextual table rows keep light backgrounds in dark mode by default */
+[data-bs-theme="dark"] .table-light {
+    --bs-table-color: #f8fafc;
+    --bs-table-bg: #162032;
+    --bs-table-border-color: rgba(148, 163, 184, 0.15);
+}
+
+[data-bs-theme="dark"] .table-success {
+    --bs-table-color: #34d399;
+    --bs-table-bg: rgba(16, 185, 129, 0.14);
+    --bs-table-border-color: rgba(16, 185, 129, 0.25);
+}
+
+[data-bs-theme="dark"] .table-primary {
+    --bs-table-color: #60a5fa;
+    --bs-table-bg: rgba(59, 130, 246, 0.14);
+    --bs-table-border-color: rgba(59, 130, 246, 0.25);
+}
+
+[data-bs-theme="dark"] .table-warning {
+    --bs-table-color: #fbbf24;
+    --bs-table-bg: rgba(251, 191, 36, 0.14);
+    --bs-table-border-color: rgba(251, 191, 36, 0.25);
+}
+
+[data-bs-theme="dark"] .table-danger {
+    --bs-table-color: #fb7185;
+    --bs-table-bg: rgba(248, 113, 113, 0.14);
+    --bs-table-border-color: rgba(248, 113, 113, 0.25);
+}
+
+[data-bs-theme="dark"] .table-info {
+    --bs-table-color: #38bdf8;
+    --bs-table-bg: rgba(56, 189, 248, 0.14);
+    --bs-table-border-color: rgba(56, 189, 248, 0.25);
+}
+
 /* Footer & Table Footer Components — Premium Midnight Navy */
 .footer-bbu {
     background:

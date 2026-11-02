@@ -477,11 +477,15 @@
 @media print {
     @page {
         size: A4 portrait;
-        margin: 6mm 8mm;
+        margin: 3mm 6mm;
+    }
+    html {
+        font-size: 11.5px !important;
     }
     body {
         background-color: #ffffff !important;
         color: #000000 !important;
+        font-size: 9.5pt !important;
     }
     .navbar, footer, .no-print, .btn, .breadcrumb, .alert, .theme-toggle, .toast-container-bbu, #back-to-top {
         display: none !important;
@@ -498,12 +502,52 @@
         outline: 0.5px solid #0b1e36 !important;
         outline-offset: -4px !important;
         box-shadow: none !important;
-        padding: 6mm 8mm !important;
+        padding: 2.5mm 4mm !important;
         margin: 0 !important;
         max-width: 100% !important;
         page-break-after: avoid !important;
         zoom: 1 !important;
         animation: none !important;
+    }
+    .transcript-sheet > .text-center.mb-3 {
+        margin-bottom: 2px !important;
+    }
+    #transcript-letterhead {
+        margin-bottom: 4px !important;
+    }
+    #transcript-letterhead img {
+        width: 48px !important;
+        height: auto !important;
+    }
+    #transcript-letterhead + .text-center {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+        padding-bottom: 2px !important;
+    }
+    #transcript-student-info {
+        padding: 4px 8px !important;
+        margin-bottom: 4px !important;
+    }
+    .transcript-course-table td,
+    .transcript-course-table th {
+        padding: 2px 5px !important;
+    }
+    .transcript-summary-box {
+        padding: 4px 10px !important;
+        margin-bottom: 4px !important;
+    }
+    .transcript-section-label {
+        margin-bottom: 3px !important;
+    }
+    .transcript-signatures .text-end {
+        margin-bottom: 4px !important;
+    }
+    .transcript-sig-line {
+        margin: 6px auto 2px auto !important;
+    }
+    .transcript-sheet > .text-center.text-muted.border-top {
+        margin-top: 4px !important;
+        padding-top: 3px !important;
     }
     .transcript-sheet-scroller {
         overflow: visible !important;
@@ -531,6 +575,18 @@
     }
     tr, .transcript-signatures, .transcript-grading-box {
         page-break-inside: avoid !important;
+    }
+    .transcript-verify-row {
+        justify-content: flex-end !important;
+    }
+    .transcript-verify-col {
+        flex: 0 0 360px !important;
+        width: 360px !important;
+        max-width: 360px !important;
+        margin-left: auto !important;
+    }
+    .transcript-verify-col > div {
+        width: 100% !important;
     }
 }
 </style>
@@ -834,8 +890,8 @@
             </div>
 
             <!-- Grading Standard & Digital QR Verification -->
-            <div class="row g-3 mb-3 align-items-center">
-                <div class="col-md-7">
+            <div class="row g-3 mb-3 align-items-center transcript-verify-row">
+                <div class="col-md-7 no-print">
                     <div class="transcript-grading-box" id="transcript-grading">
                         <div class="fw-bold text-dark mb-1" style="font-size: 0.7rem;">
                             <i class="fa-solid fa-scale-balanced me-1 text-primary"></i>
@@ -902,7 +958,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5 transcript-verify-col">
                     <div style="background-color: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; padding: 8px 10px; display: flex; align-items: center; gap: 10px;">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data={{ request.scheme }}://{{ request.get_host }}{% url 'verify_student' student.student_id %}&color=0b1e36" alt="Verify Transcript QR" width="70" height="70" class="border p-1 rounded" style="width: 70px; height: 70px; flex-shrink: 0;">
                         <div style="font-size: 0.7rem; line-height: 1.35;">

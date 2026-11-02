@@ -6,10 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
+from .academics import summarize_academics
 from .models import Student
 from .forms import StudentForm, UserForm, StudentRegistrationForm
 
@@ -105,11 +107,13 @@ def export_students_csv(request):
 def student_detail(request, pk):
     """Display detailed information about a student"""
     student = get_object_or_404(Student, pk=pk)
-    enrollments = student.enrollments.all()
-    
+    user_student = getattr(request.user, 'student', None)
+    if not (request.user.is_staff or request.user.is_superuser or user_student == student):
+        raise PermissionDenied("You can only view your own student profile.")
+
     context = {
         'student': student,
-        'enrollments': enrollments,
+        **summarize_academics(student),
     }
     return render(request, 'students/student_detail.html', context)
 
@@ -250,10 +254,21 @@ class StudentDetailView(LoginRequiredMixin, DetailView):
     model = Student
     template_name = 'students/student_detail.html'
     context_object_name = 'student'
-    
+
+    def get_object(self, queryset=None):
+        student = super().get_object(queryset)
+        user_student = getattr(self.request.user, 'student', None)
+        if not (
+            self.request.user.is_staff
+            or self.request.user.is_superuser
+            or user_student == student
+        ):
+            raise PermissionDenied("You can only view your own student profile.")
+        return student
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['enrollments'] = self.object.enrollments.all()
+        context.update(summarize_academics(self.object))
         return context
 
 class StudentCreateView(LoginRequiredMixin, CreateView):

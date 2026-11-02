@@ -137,9 +137,11 @@
                     <!-- Row Action Buttons -->
                     <td class="text-end pe-3 text-nowrap" data-label="Actions">
                         <div class="action-btn-group">
+                            {% if user.is_staff or user.is_superuser %}
                             <a href="{% url 'enrollments:add_grade' enrollment.id %}" class="action-btn" title="Record Score & Grade" data-bs-toggle="tooltip">
                                 <i class="fa-solid fa-award text-warning"></i>
                             </a>
+                            {% endif %}
                             <a href="{% url 'enrollments:student_transcript' enrollment.student.student_id %}" class="action-btn" title="View Transcript" data-bs-toggle="tooltip">
                                 <i class="fa-solid fa-file-invoice"></i>
                             </a>

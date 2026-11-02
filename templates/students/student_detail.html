@@ -3,6 +3,76 @@
 
 {% block title %}{{ student.get_primary_name }} ({{ student.student_id }}) - BBU Student Detail{% endblock %}
 
+{% block extra_css %}
+<style>
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 8mm;
+    }
+    html {
+        font-size: 12px !important;
+    }
+    .row.g-4 > .col-lg-8 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+    .row.g-4 > .col-lg-4 {
+        display: none !important;
+    }
+    .card-bbu {
+        break-inside: avoid;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+    }
+    .detail-hero-banner {
+        padding: 10px 14px !important;
+    }
+    .student-avatar-thumb.avatar-xl,
+    .student-avatar-placeholder.avatar-xl {
+        width: 64px !important;
+        height: 64px !important;
+        font-size: 1.4rem !important;
+    }
+    .table-bbu-responsive {
+        display: table !important;
+        width: 100% !important;
+    }
+    .table-bbu-responsive thead {
+        display: table-header-group !important;
+    }
+    .table-bbu-responsive tbody {
+        display: table-row-group !important;
+    }
+    .table-bbu-responsive tr {
+        display: table-row !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+    .table-bbu-responsive th,
+    .table-bbu-responsive td {
+        display: table-cell !important;
+        width: auto !important;
+        padding: 4px 6px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+    }
+    .table-bbu-responsive .no-print {
+        display: none !important;
+    }
+    .table-bbu-responsive td::before {
+        content: none !important;
+    }
+    .table-bbu-responsive td:last-child {
+        justify-content: initial !important;
+    }
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Breadcrumb Header -->
 <div class="row mb-3">
@@ -77,21 +147,24 @@
                 <!-- 3 Quick KPI Metric Stat Chips -->
                 <div class="row g-3 mb-3">
                     <div class="col-4">
-                        <div class="p-3 bg-light rounded text-center border">
+                        <div class="p-3 bg-light rounded text-center border h-100">
                             <span class="text-muted small d-block"><i class="fa-solid fa-chart-line text-primary me-1"></i>Cumulative GPA</span>
-                            <h4 class="fw-bold text-primary mb-0">{{ student.gpa|default:"0.00" }} <small class="fs-6 text-muted">/ 4.0</small></h4>
+                            <h4 class="fw-bold text-primary mb-0">{{ effective_gpa|floatformat:"2u" }} <small class="fs-6 text-muted">/ 4.0</small></h4>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="p-3 bg-light rounded text-center border">
+                        <div class="p-3 bg-light rounded text-center border h-100">
                             <span class="text-muted small d-block"><i class="fa-solid fa-book-open text-primary me-1"></i>Enrolled Courses</span>
-                            <h4 class="fw-bold text-dark mb-0">{{ student.enrollments.count }} <small class="fs-6 text-muted">courses</small></h4>
+                            <h4 class="fw-bold text-dark mb-0">{{ total_enrolled }} <small class="fs-6 text-muted">courses</small></h4>
+                            <small class="text-muted">{{ completed_count }} completed</small>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="p-3 bg-light rounded text-center border">
+                        <div class="p-3 bg-light rounded text-center border h-100">
                             <span class="text-muted small d-block"><i class="fa-solid fa-chart-simple text-success me-1"></i>Academic Standing</span>
-                            <h4 class="fw-bold text-success mb-0">Good <i class="fa-solid fa-star text-warning ms-1"></i></h4>
+                            <h4 class="fw-bold text-{{ standing_badge }} mb-0" title="{{ standing_en }}">
+                                {{ standing_short }} <i class="fa-solid fa-star text-warning ms-1"></i>
+                            </h4>
                         </div>
                     </div>
                 </div>
@@ -140,14 +213,14 @@
                                 <tr>
                                     <td class="text-muted">Cumulative GPA:</td>
                                     <td>
-                                        <span class="badge {% if student.gpa >= 3.5 %}badge-soft-success{% elif student.gpa >= 2.5 %}badge-soft-primary{% else %}badge-soft-warning{% endif %} px-2">
-                                            {{ student.gpa }} / 4.00
+                                        <span class="badge {% if effective_gpa >= 3.5 %}badge-soft-success{% elif effective_gpa >= 2.5 %}badge-soft-primary{% else %}badge-soft-warning{% endif %} px-2">
+                                            {{ effective_gpa|floatformat:"2u" }} / 4.00
                                         </span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Total Courses:</td>
-                                    <td><strong>{{ student.enrollments.count }}</strong> courses enrolled</td>
+                                    <td><strong>{{ total_enrolled }}</strong> enrolled &bull; {{ earned_credits }}/{{ total_credits }} credits</td>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">Address:</td>
@@ -166,12 +239,14 @@
                 <h6 class="fw-bold mb-0 text-dark">
                     <i class="fa-solid fa-book-open text-primary me-2"></i> Enrolled Courses / មុខវិជ្ជាបានចុះឈ្មោះ
                 </h6>
+                {% if user.is_staff or user.is_superuser %}
                 <a href="{% url 'enrollments:enrollment_create' %}?student={{ student.id }}" class="btn btn-sm btn-bbu-primary">
                     <i class="fa-solid fa-plus me-1"></i> Enroll Course
                 </a>
+                {% endif %}
             </div>
             <div class="card-body p-0">
-                {% if student.enrollments.all %}
+                {% if enrollments %}
                 <div class="table-responsive">
                     <table class="table table-bbu table-bbu-responsive align-middle mb-0">
                         <thead>
@@ -181,11 +256,11 @@
                                 <th class="text-center">Score</th>
                                 <th class="text-center">Grade</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-end">Action</th>
+                                <th class="text-end no-print">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for enrollment in student.enrollments.all %}
+                            {% for enrollment in enrollments %}
                             <tr>
                                 <td data-label="Course">
                                     <a href="{% url 'courses:course_detail' enrollment.course.pk %}" class="fw-bold text-decoration-none text-dark">
@@ -211,7 +286,7 @@
                                 <td class="text-center" data-label="Status">
                                     {% include "components/_status_badge.html" with status=enrollment.status %}
                                 </td>
-                                <td class="text-end" data-label="Action">
+                                <td class="text-end no-print" data-label="Action">
                                     <div class="action-btn-group">
                                         {% if user.is_staff or user.is_superuser %}
                                         <a href="{% url 'enrollments:add_grade' enrollment.pk %}" class="action-btn" title="Record Grade" aria-label="Record Grade">
@@ -230,8 +305,12 @@
                 </div>
                 {% else %}
                 <div class="p-4">
-                    {% url 'enrollments:enrollment_create' as create_enrollment_url %}
-                    {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Enrolled" text="This student is not currently enrolled in any courses. Click below to add an enrollment." cta_url=create_enrollment_url cta_label="Enroll in Course" cta_icon="fa-solid fa-plus me-1" %}
+                    {% if user.is_staff or user.is_superuser %}
+                        {% url 'enrollments:enrollment_create' as create_enrollment_url %}
+                        {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Enrolled" text="This student is not currently enrolled in any courses. Click below to add an enrollment." cta_url=create_enrollment_url cta_label="Enroll in Course" cta_icon="fa-solid fa-plus me-1" %}
+                    {% else %}
+                        {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Courses Enrolled" text="You are not currently enrolled in any courses. Contact the Office of the Dean if you need help with enrollment." %}
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
@@ -273,8 +352,8 @@
                     </div>
 
                     <div class="d-flex justify-content-between text-muted small px-2 mb-3">
-                        <span><strong>Faculty:</strong> Science & IT</span>
-                        <span><strong>Year:</strong> Year 2</span>
+                        <span><strong>Faculty:</strong> Science &amp; IT</span>
+                        <span><strong>Year:</strong> Year {{ study_year }}</span>
                     </div>
 
                     <!-- Dynamic Verification QR Code -->
@@ -286,7 +365,7 @@
             </div>
 
             <!-- Management Actions Card -->
-            <div class="card card-bbu shadow-sm border-0 mb-4">
+            <div class="card card-bbu shadow-sm border-0 mb-4 no-print">
                 <div class="card-bbu-header">
                     <h6 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-gear me-2 text-primary"></i>Actions / សកម្មភាព</h6>
                 </div>

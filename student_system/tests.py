@@ -129,5 +129,5 @@ class SystemAPITests(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_enrollment.refresh_from_db()
-        self.assertEqual(new_enrollment.grade, 'B')
+        self.assertEqual(new_enrollment.grade, 'A')
         self.assertEqual(float(new_enrollment.score), 88.0)

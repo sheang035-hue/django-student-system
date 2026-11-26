@@ -8,14 +8,15 @@
 {% if user.is_staff or user.is_superuser %}
     {% url 'courses:course_create' as add_course_url %}
 {% endif %}
-{% include "components/_page_header.html" with title="Academic Courses / បញ្ជីមុខវិជ្ជាសិក្សា" subtitle="Manage university curricula, credit weights, class capacities, and instructors" action_url=add_course_url action_label="Add New Course" action_icon="fa-solid fa-circle-plus" %}
+{% url 'courses:semester_overview' as semester_url %}
+{% include "components/_page_header.html" with title="Academic Courses / បញ្ជីមុខវិជ្ជាសិក្សា" subtitle="Manage university curricula, credit weights, class capacities, and instructors" secondary_url=semester_url secondary_label="Subjects by Semester" secondary_icon="fa-solid fa-calendar-days" secondary_class="btn-bbu-soft" action_url=add_course_url action_label="Add New Course" action_icon="fa-solid fa-circle-plus" %}
 
 <!-- Toolbar Card (Search, Status Filters & CSV Export) -->
 <div class="toolbar-card">
     <div class="row g-2 align-items-center">
         <div class="col-lg-9">
             <form method="get" class="row g-2 align-items-center">
-                <div class="col-md-6 col-lg-6">
+                <div class="col-md-6 col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="search" class="form-control border-start-0 ps-0" 
@@ -26,7 +27,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-md-3 col-lg-2">
                     <select name="status" class="form-select">
                         <option value="">All Statuses / ទាំងអស់</option>
                         <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active / សកម្ម</option>
@@ -34,11 +35,19 @@
                         <option value="ARCHIVED" {% if request.GET.status == 'ARCHIVED' %}selected{% endif %}>Archived / រក្សាទុក</option>
                     </select>
                 </div>
-                <div class="col-md-3 col-lg-3 d-flex gap-2">
+                <div class="col-md-3 col-lg-2">
+                    <select name="semester" class="form-select">
+                        <option value="">All Semesters</option>
+                        {% for value, label in semester_choices %}
+                        <option value="{{ value }}" {% if selected_semester == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-12 col-lg-4 d-flex gap-2">
                     <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
                         <i class="fa-solid fa-filter me-1"></i> Filter
                     </button>
-                    {% if request.GET.search or request.GET.status %}
+                    {% if request.GET.search or request.GET.status or selected_semester %}
                     <a href="{% url 'courses:course_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
                         <i class="fa-solid fa-rotate-left me-1"></i> Reset
                     </a>
@@ -48,7 +57,7 @@
         </div>
         {% if user.is_staff or user.is_superuser %}
         <div class="col-lg-3 d-flex justify-content-lg-end">
-            <a href="{% url 'courses:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of academic curriculum">
+            <a href="{% url 'courses:export_csv' %}?search={{ request.GET.search|default:''|urlencode }}&amp;status={{ request.GET.status|default:''|urlencode }}&amp;semester={{ selected_semester|default:''|urlencode }}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of academic curriculum">
                 <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
@@ -85,6 +94,7 @@
                     <th>Instructor / សាស្ត្រាចារ្យ</th>
                     <th class="text-center col-w-100">Credits</th>
                     <th class="text-center col-w-120">Level</th>
+                    <th class="text-center col-w-120">Semester</th>
                     <th class="text-center col-w-110">Status</th>
                     <th class="text-end pe-3 col-min-140">Actions</th>
                 </tr>
@@ -123,6 +133,15 @@
                     <!-- Level -->
                     <td class="text-center" data-label="Level">
                         <span class="badge badge-soft-secondary">{{ course.get_level_display }}</span>
+                    </td>
+
+                    <!-- Semester -->
+                    <td class="text-center" data-label="Semester">
+                        {% if course.semester %}
+                        <span class="badge badge-soft-info">{{ course.get_semester_display }}</span>
+                        {% else %}
+                        <span class="badge badge-soft-secondary">Not scheduled</span>
+                        {% endif %}
                     </td>
 
                     <!-- Status -->

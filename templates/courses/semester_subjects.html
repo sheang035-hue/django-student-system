@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }} — BBU Student Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .semester-year-card {
+        overflow: hidden;
+    }
+    .semester-year-header {
+        background: linear-gradient(120deg, var(--bbu-navy) 0%, var(--bbu-navy-2) 100%);
+        color: #fff;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+    }
+    .semester-year-header .year-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        font-weight: 700;
+        letter-spacing: .02em;
+    }
+    .semester-year-header .year-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem;
+        font-size: .8rem;
+        color: rgba(255, 255, 255, .75);
+    }
+    .semester-block + .semester-block {
+        border-top: 1px solid var(--bbu-border);
+    }
+    .semester-block-header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        padding: .85rem 1.25rem;
+        background: var(--bbu-surface-subtle);
+        border-left: 4px solid var(--bbu-primary);
+    }
+    .semester-block-header.is-summer {
+        border-left-color: var(--bbu-gold);
+    }
+    .semester-block-title {
+        display: flex;
+        align-items: center;
+        gap: .6rem;
+        font-weight: 700;
+        color: var(--bbu-text);
+        margin: 0;
+    }
+    .semester-block-title .semester-icon {
+        width: 2rem;
+        height: 2rem;
+        border-radius: .6rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bbu-primary-soft);
+        color: var(--bbu-primary);
+        font-size: .85rem;
+    }
+    .semester-block-header.is-summer .semester-icon {
+        background: var(--bbu-gold-soft);
+        color: var(--bbu-gold-dark);
+    }
+    .semester-block-meta {
+        font-size: .8rem;
+        color: var(--bbu-muted);
+        font-weight: 600;
+    }
+    .semester-block .table-bbu thead th {
+        background: var(--bbu-surface);
+    }
+    .semester-course-code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: .8rem;
+        letter-spacing: .02em;
+    }
+    .semester-course-title {
+        font-weight: 600;
+        color: var(--bbu-text);
+        line-height: 1.35;
+    }
+    .semester-empty-note {
+        padding: 1rem 1.25rem;
+        color: var(--bbu-muted);
+        font-size: .875rem;
+        background: var(--bbu-surface);
+    }
+    .unscheduled-card {
+        border: 1px dashed var(--bbu-warning);
+    }
+    @media (max-width: 767.98px) {
+        .semester-block-header,
+        .semester-year-header {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% url 'courses:course_list' as catalog_url %}
+{% if manage_mode %}
+    {% url 'courses:semester_overview' as curriculum_url %}
+    {% include "components/_page_header.html" with title=page_title subtitle=page_subtitle secondary_url=curriculum_url secondary_label="View Curriculum" secondary_icon="fa-solid fa-eye" secondary_class="btn-bbu-soft" action_url=catalog_url action_label="Course Catalog" action_icon="fa-solid fa-book-open" action_class="btn-bbu-soft" %}
+{% else %}
+    {% if is_staff_view %}
+        {% url 'courses:semester_manage' as manage_url %}
+        {% include "components/_page_header.html" with title=page_title subtitle=page_subtitle secondary_url=catalog_url secondary_label="Course Catalog" secondary_icon="fa-solid fa-book-open" secondary_class="btn-bbu-soft" action_url=manage_url action_label="Manage Subjects" action_icon="fa-solid fa-pen-to-square" %}
+    {% else %}
+        {% include "components/_page_header.html" with title=page_title subtitle=page_subtitle secondary_url=catalog_url secondary_label="Course Catalog" secondary_icon="fa-solid fa-book-open" secondary_class="btn-bbu-soft" %}
+    {% endif %}
+{% endif %}
+
+<!-- Toolbar (Search + Year/Semester filters) -->
+<div class="toolbar-card">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" name="search" class="form-control border-start-0 ps-0"
+                       placeholder="Search subject code or title..."
+                       value="{{ search_query }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="year" class="form-select">
+                <option value="">All Study Years</option>
+                {% for value, label in level_choices %}
+                <option value="{{ value }}" {% if selected_year == value %}selected{% endif %}>Year {{ forloop.counter }} (Level {{ value }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="semester" class="form-select">
+                <option value="">All Semesters</option>
+                {% for value, label in semester_choices %}
+                <option value="{{ value }}" {% if selected_semester == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
+                <i class="fa-solid fa-filter me-1"></i> Filter
+            </button>
+            {% if search_query or selected_year or selected_semester %}
+            <a href="{{ request.path }}" class="btn btn-bbu-soft text-nowrap" title="Clear filters">
+                <i class="fa-solid fa-rotate-left"></i>
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Stat chips -->
+<div class="stat-chips-row">
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-book-open me-1 text-primary"></i>Total Subjects: <strong>{{ total_subjects }}</strong></span>
+    </div>
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-calendar-check me-1 text-success"></i>Scheduled: <strong>{{ scheduled_count }}</strong></span>
+    </div>
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-layer-group me-1 text-info"></i>Total Credits: <strong>{{ total_credits }}</strong></span>
+    </div>
+    {% if student_view %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-user-graduate me-1 text-warning"></i>Your progress is shown per subject</span>
+    </div>
+    {% endif %}
+</div>
+
+{% if curriculum %}
+    {% for year in curriculum %}
+    <div class="card card-bbu semester-year-card mb-4">
+        <div class="semester-year-header">
+            <div class="year-badge">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>{{ year.label }}</span>
+            </div>
+            <div class="year-meta">
+                <span><i class="fa-solid fa-book me-1"></i>{{ year.total_courses }} subject{{ year.total_courses|pluralize }}</span>
+                <span><i class="fa-solid fa-layer-group me-1"></i>{{ year.total_credits }} credits</span>
+            </div>
+        </div>
+
+        {% for semester in year.semesters %}
+        <div class="semester-block">
+            <div class="semester-block-header {% if semester.code == 'SUM' %}is-summer{% endif %}">
+                <h6 class="semester-block-title">
+                    <span class="semester-icon"><i class="fa-solid fa-calendar-days"></i></span>
+                    {{ semester.label }}
+                </h6>
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="semester-block-meta">
+                        {{ semester.count }} subject{{ semester.count|pluralize }} &bull; {{ semester.credits }} credits
+                    </span>
+                    {% if manage_mode %}
+                    <a href="{% url 'courses:course_create' %}?semester={{ semester.code }}&amp;level={{ year.level_code }}&amp;next={{ request.get_full_path|urlencode }}"
+                       class="btn btn-sm btn-bbu-primary rounded-pill px-3">
+                        <i class="fa-solid fa-circle-plus me-1"></i> Add Subject
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bbu table-bbu-responsive align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-3 col-w-130">Code</th>
+                            <th>Subject Title / មុខវិជ្ជា</th>
+                            <th class="text-center col-w-100">Credits</th>
+                            <th>Instructor / សាស្ត្រាចារ្យ</th>
+                            {% if student_view %}
+                            <th class="text-center col-w-150">My Status</th>
+                            {% endif %}
+                            {% if manage_mode %}
+                            <th class="text-end pe-3 col-min-140">Actions</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in semester.courses %}
+                        <tr>
+                            <td class="ps-3" data-label="Code">
+                                <a href="{% url 'courses:course_detail' course.id %}" class="badge bg-light text-primary border px-2 py-1 text-decoration-none semester-course-code">
+                                    {{ course.code }}
+                                </a>
+                            </td>
+                            <td data-label="Subject">
+                                <a href="{% url 'courses:course_detail' course.id %}" class="text-decoration-none semester-course-title d-block">
+                                    {{ course.title }}
+                                </a>
+                                {% if course.status != 'ACTIVE' %}
+                                <span class="badge badge-soft-secondary mt-1">{{ course.get_status_display }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center" data-label="Credits">
+                                <span class="badge bg-light text-dark border">{{ course.credits }} Cr</span>
+                            </td>
+                            <td data-label="Instructor">
+                                <span class="text-secondary small">
+                                    <i class="fa-solid fa-user-tie text-muted me-1"></i>
+                                    {{ course.instructor.get_full_name|default:course.instructor.username|default:"Unassigned" }}
+                                </span>
+                            </td>
+                            {% if student_view %}
+                            <td class="text-center" data-label="My Status">
+                                {% if course.student_enrollment %}
+                                    {% with enrollment=course.student_enrollment %}
+                                        {% if enrollment.status == 'COMPLETED' %}
+                                            <span class="badge badge-soft-success">Completed</span>
+                                            {% if enrollment.grade %}
+                                            <span class="badge badge-soft-primary ms-1">{{ enrollment.grade }}</span>
+                                            {% endif %}
+                                        {% elif enrollment.status == 'ENROLLED' %}
+                                            <span class="badge badge-soft-info">Enrolled</span>
+                                        {% elif enrollment.status == 'DROPPED' %}
+                                            <span class="badge badge-soft-danger">Dropped</span>
+                                        {% else %}
+                                            <span class="badge badge-soft-warning">{{ enrollment.get_status_display }}</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% else %}
+                                    <span class="badge badge-soft-secondary">Not taken</span>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                            {% if manage_mode %}
+                            <td class="text-end pe-3 text-nowrap" data-label="Actions">
+                                <div class="action-btn-group">
+                                    <a href="{% url 'courses:course_update' course.id %}?next={{ request.get_full_path|urlencode }}"
+                                       class="action-btn" title="Edit Subject" data-bs-toggle="tooltip">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="{% url 'courses:course_delete' course.id %}?next={{ request.get_full_path|urlencode }}"
+                                       class="action-btn action-btn-danger" title="Delete Subject" data-bs-toggle="tooltip">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+{% else %}
+    {% include "components/_empty_state.html" with icon="fa-solid fa-book-open-reader" title="No Subjects Found / មិនមានមុខវិជ្ជាទេ" text="No subjects matched your filters. Try a different year, semester, or search term." %}
+{% endif %}
+
+{% if manage_mode and unscheduled_courses %}
+<div class="card card-bbu unscheduled-card mb-4">
+    <div class="card-bbu-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h6 class="fw-bold mb-0 text-dark">
+                <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>
+                Unscheduled Subjects / មុខវិជ្ជាមិនទាន់កំណត់ឆមាស
+            </h6>
+            <small class="text-muted">Assign a semester to each subject so students can see it in the curriculum.</small>
+        </div>
+        <span class="badge badge-soft-warning">{{ unscheduled_courses|length }} subject{{ unscheduled_courses|length|pluralize }}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bbu align-middle mb-0">
+            <thead>
+                <tr>
+                    <th class="ps-3">Code</th>
+                    <th>Subject Title</th>
+                    <th class="text-center">Year</th>
+                    <th class="text-center">Credits</th>
+                    <th class="text-end pe-3">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in unscheduled_courses %}
+                <tr>
+                    <td class="ps-3"><span class="badge bg-light text-primary border px-2 py-1 semester-course-code">{{ course.code }}</span></td>
+                    <td><span class="semester-course-title">{{ course.title }}</span></td>
+                    <td class="text-center"><span class="badge badge-soft-secondary">{{ course.study_year_label }}</span></td>
+                    <td class="text-center">{{ course.credits }} Cr</td>
+                    <td class="text-end pe-3">
+                        <a href="{% url 'courses:course_update' course.id %}?next={{ request.get_full_path|urlencode }}"
+                           class="btn btn-sm btn-bbu-soft">
+                            <i class="fa-solid fa-calendar-plus me-1"></i> Assign Semester
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

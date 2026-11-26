@@ -12,7 +12,7 @@
             <div class="col-lg-8">
                 <div class="d-flex align-items-center gap-3 mb-3">
                     <img src="{% static 'images/bbu-logo.png' %}" alt="BBU Official Logo" class="bbu-hero-logo">
-                    <div>
+                    <div class="min-w-0">
                         <span class="badge badge-soft-warning px-3 py-1 fw-semibold shadow-sm">
                             <i class="fa-solid fa-graduation-cap me-1"></i> Build Bright University • Student Academic Portal
                         </span>
@@ -42,6 +42,9 @@
                     </a>
                     <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-bbu-primary px-3 py-2 shadow-sm">
                         <i class="fa-solid fa-id-card me-1"></i> My Student ID Card
+                    </a>
+                    <a href="{% url 'courses:semester_overview' %}" class="btn btn-outline-light px-3 py-2">
+                        <i class="fa-solid fa-calendar-days me-1"></i> Subjects by Semester
                     </a>
                 </div>
             </div>
@@ -151,95 +154,168 @@
     <!-- Left Column: Courses Table & Academic Grade Distribution (8 cols) -->
     <div class="col-lg-8" id="enrolled-courses">
         <!-- Enrolled Courses & Academic Grades Card -->
-        <div class="card card-bbu mb-4">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-book-open-reader me-2 text-primary"></i>My Enrolled Courses & Grades</h5>
-                    <small class="text-muted">មុខវិជ្ជា និងលទ្ធផលសិក្សារបស់និស្សិត</small>
+        <div class="card card-bbu mb-4 portal-grades-card">
+            <div class="card-bbu-header portal-grades-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 min-w-0">
+                    <span class="portal-grades-icon">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h5 class="fw-bold mb-0 text-dark">My Enrolled Courses & Grades</h5>
+                        <small class="text-muted">មុខវិជ្ជា និងលទ្ធផលសិក្សាតាមឆមាស</small>
+                    </div>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span class="badge badge-soft-primary">{{ total_enrolled }} Total Enrolled</span>
+                    <span class="badge badge-soft-success">{{ semester_count }} Semester{{ semester_count|pluralize }}</span>
                     <a href="{% url 'courses:course_list' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
                         <i class="fa-solid fa-book-open me-1"></i> Catalog
                     </a>
                 </div>
             </div>
 
-            <div class="card-body p-0">
-                {% if enrollments %}
-                <div class="table-responsive">
-                    <table class="table table-bbu table-bbu-responsive table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th class="pct-44">Course & Subject Title / មុខវិជ្ជា</th>
-                                <th class="text-center pct-14">Credits</th>
-                                <th class="text-center pct-18">Score / ពិន្ទុ</th>
-                                <th class="text-center pct-12">Grade</th>
-                                <th class="text-center pct-12">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for e in enrollments %}
-                            <tr>
-                                <td data-label="Course / មុខវិជ្ជា">
-                                    <div class="d-flex align-items-start gap-2">
-                                        <span class="badge bg-light text-dark border fw-bold px-2 py-1 mt-1">
-                                            {{ e.course.code }}
-                                        </span>
-                                        <div>
-                                            <a href="{% url 'courses:course_detail' e.course.pk %}" class="fw-bold text-decoration-none text-dark d-block">
-                                                {{ e.clean_en_title }}
-                                            </a>
-                                            {% if e.clean_kh_title %}
-                                            <small class="text-muted khmer-text d-block">{{ e.clean_kh_title }}</small>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-center align-middle" data-label="Credits">
-                                    <span class="badge badge-soft-primary px-2 py-1">
-                                        {{ e.course.credits }} Cr
-                                    </span>
-                                </td>
-                                <td class="text-center align-middle" data-label="Score / ពិន្ទុ">
-                                    {% if e.score is not None %}
-                                        <div class="fw-bold text-dark mb-1">{{ e.score }}%</div>
-                                        <div class="progress-bbu progress-bbu-sm mx-auto">
-                                            <div class="progress-bbu-bar {% if e.score >= 80 %}progress-bbu-bar-success{% elif e.score >= 65 %}progress-bbu-bar-primary{% elif e.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
-                                                 role="progressbar" 
-                                                 style="width: {{ e.score }}%;"
-                                                 aria-valuenow="{{ e.score }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    {% else %}
-                                        <span class="text-muted small">In Progress</span>
-                                    {% endif %}
-                                </td>
-                                <td class="text-center align-middle" data-label="Grade">
-                                    {% include "components/_grade_badge.html" with grade=e.grade %}
-                                </td>
-                                <td class="text-center align-middle" data-label="Status">
-                                    {% include "components/_status_badge.html" with status=e.status %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                        <tfoot>
-                            <tr class="table-light fw-bold">
-                                <td>Total / សរុប</td>
-                                <td class="text-center" data-label="Credits Earned"><span class="badge badge-soft-success">{{ earned_credits }} Cr</span></td>
-                                <td class="text-center" data-label="Average Score">{{ avg_score }}% Avg</td>
-                                <td class="text-center text-primary fs-6" data-label="Cumulative GPA">{{ effective_gpa|floatformat:"2u" }} GPA</td>
-                                <td class="text-center" data-label="Result"><span class="badge badge-soft-success">Passed</span></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                {% else %}
-                <div class="p-4 text-center">
-                    <p class="text-muted mb-0">No enrolled courses found for this student account.</p>
-                </div>
-                {% endif %}
+            {% if enrollments %}
+            <!-- Term quick navigation -->
+            <div class="portal-term-nav" aria-label="Jump to semester">
+                {% for term in term_groups %}
+                <a href="#{{ term.anchor }}" class="portal-term-pill {% if forloop.first %}is-active{% endif %}" data-term-target="{{ term.anchor }}" {% if forloop.first %}aria-current="true"{% endif %}>
+                    <span class="portal-term-pill-dot"></span>
+                    <span class="portal-term-pill-label">{{ term.semester_label }}</span>
+                    <small>{{ term.academic_year }}</small>
+                    <span class="portal-term-pill-count">{{ term.count }}</span>
+                </a>
+                {% endfor %}
             </div>
+
+            <!-- One block per semester; repeated subjects appear again in a later term -->
+            <div class="portal-term-list">
+                {% for term in term_groups %}
+                <section class="portal-term-section" id="{{ term.anchor }}">
+                    <header class="portal-term-header">
+                        <div class="portal-term-heading">
+                            <span class="portal-term-icon">
+                                <i class="fa-regular fa-calendar-check"></i>
+                            </span>
+                            <div>
+                                <div class="d-flex align-items-center flex-wrap gap-2">
+                                    <h6 class="portal-term-title">{{ term.semester_label }}</h6>
+                                    <span class="badge badge-soft-primary">{{ term.academic_year }}</span>
+                                    {% if forloop.first %}
+                                    <span class="badge badge-soft-success">Latest</span>
+                                    {% endif %}
+                                </div>
+                                <span class="portal-term-meta">
+                                    {{ term.count }} subject{{ term.count|pluralize }} &bull;
+                                    {{ term.credits }} credits &bull;
+                                    {{ term.completed_count }} completed{% if term.in_progress_count %}, {{ term.in_progress_count }} in progress{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="portal-term-stats">
+                            <div class="portal-term-stat">
+                                <span>Term GPA</span>
+                                <strong>{% if term.gpa is not None %}{{ term.gpa|floatformat:"2u" }}{% else %}—{% endif %}</strong>
+                            </div>
+                            <div class="portal-term-stat">
+                                <span>Avg Score</span>
+                                <strong>{% if term.avg_score is not None %}{{ term.avg_score }}%{% else %}—{% endif %}</strong>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="table-responsive">
+                        <table class="table table-bbu table-bbu-responsive table-hover mb-0 portal-term-table">
+                            <thead>
+                                <tr>
+                                    <th class="pct-44">Course & Subject Title / មុខវិជ្ជា</th>
+                                    <th class="text-center pct-14">Credits</th>
+                                    <th class="text-center pct-18">Score / ពិន្ទុ</th>
+                                    <th class="text-center pct-12">Grade</th>
+                                    <th class="text-center pct-12">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for e in term.enrollments %}
+                                <tr>
+                                    <td data-label="Course / មុខវិជ្ជា">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <span class="badge portal-course-code fw-bold px-2 py-1 mt-1">
+                                                {{ e.course.code }}
+                                            </span>
+                                            <div>
+                                                <a href="{% url 'courses:course_detail' e.course.pk %}" class="fw-bold text-decoration-none text-dark d-block">
+                                                    {{ e.clean_en_title }}
+                                                </a>
+                                                {% if e.clean_kh_title %}
+                                                <small class="text-muted khmer-text d-block">{{ e.clean_kh_title }}</small>
+                                                {% endif %}
+                                                {% if e.is_superseded %}
+                                                <span class="badge badge-soft-secondary portal-retake-badge mt-2" title="A later attempt now counts toward your GPA">
+                                                    <i class="fa-solid fa-clock-rotate-left me-1"></i>Earlier attempt
+                                                </span>
+                                                {% elif e.is_retake %}
+                                                <span class="badge badge-soft-warning portal-retake-badge mt-2" title="This retake counts toward your GPA">
+                                                    <i class="fa-solid fa-rotate-right me-1"></i>Retake &middot; Attempt {{ e.attempt_number }}
+                                                </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle" data-label="Credits">
+                                        <span class="badge badge-soft-primary px-2 py-1">
+                                            {{ e.course.credits }} Cr
+                                        </span>
+                                    </td>
+                                    <td class="text-center align-middle" data-label="Score / ពិន្ទុ">
+                                        {% if e.score is not None %}
+                                            <div class="fw-bold text-dark mb-1">{{ e.score|stringformat:"s" }}%</div>
+                                            <div class="progress-bbu progress-bbu-sm mx-auto">
+                                                <div class="progress-bbu-bar {% if e.score >= 80 %}progress-bbu-bar-success{% elif e.score >= 65 %}progress-bbu-bar-primary{% elif e.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
+                                                     role="progressbar"
+                                                     style="width: {{ e.score }}%;"
+                                                     aria-valuenow="{{ e.score }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted small">In Progress</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center align-middle" data-label="Grade">
+                                        {% include "components/_grade_badge.html" with grade=e.grade %}
+                                    </td>
+                                    <td class="text-center align-middle" data-label="Status">
+                                        {% include "components/_status_badge.html" with status=e.status %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                {% endfor %}
+            </div>
+
+            <div class="portal-grades-footer">
+                <span>
+                    <i class="fa-solid fa-circle-info me-1"></i>
+                    Retakes keep the earlier attempt; the latest counts toward GPA.
+                </span>
+                <span class="portal-grades-footer-total">
+                    <i class="fa-solid fa-graduation-cap me-1"></i>
+                    {{ earned_credits }} credits earned &bull; {{ effective_gpa|floatformat:"2u" }} cumulative GPA
+                </span>
+            </div>
+            {% else %}
+            <div class="card-body">
+                <div class="portal-grades-empty">
+                    <span class="portal-grades-empty-icon"><i class="fa-solid fa-book-open"></i></span>
+                    <h6 class="fw-bold text-dark mb-1">No enrolled courses yet</h6>
+                    <p class="text-muted mb-3">Your registered subjects and grades will appear here, grouped by semester.</p>
+                    <a href="{% url 'courses:course_list' %}" class="btn btn-bbu-primary btn-sm rounded-pill px-3">
+                        <i class="fa-solid fa-book-open me-1"></i> Browse Course Catalog
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Academic Performance & Grading Reference Card -->
@@ -451,5 +527,36 @@
 {% endlocalize %}
 {% endblock %}
 
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const pills = Array.from(document.querySelectorAll('[data-term-target]'));
+    const sections = pills
+        .map(function (pill) { return document.getElementById(pill.dataset.termTarget); })
+        .filter(Boolean);
 
+    if (!pills.length || !sections.length) return;
 
+    function setActive(anchor) {
+        pills.forEach(function (pill) {
+            pill.classList.toggle('is-active', pill.dataset.termTarget === anchor);
+        });
+    }
+
+    pills.forEach(function (pill) {
+        pill.addEventListener('click', function () { setActive(pill.dataset.termTarget); });
+    });
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+            const visible = entries
+                .filter(function (entry) { return entry.isIntersecting; })
+                .sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; })[0];
+            if (visible) setActive(visible.target.id);
+        }, { rootMargin: '-140px 0px -55% 0px', threshold: [0.1, 0.35, 0.6] });
+
+        sections.forEach(function (section) { observer.observe(section); });
+    }
+});
+</script>
+{% endblock %}

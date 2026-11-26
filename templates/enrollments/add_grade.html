@@ -32,6 +32,12 @@
                             <span>ID: <strong>{{ enrollment.student.student_id }}</strong></span> &bull; 
                             <span class="badge bg-light text-primary border">{{ enrollment.course.code }}</span> {{ enrollment.course.title }}
                         </div>
+                        <div class="mt-2 d-flex flex-wrap gap-2">
+                            <span class="badge badge-soft-primary">
+                                <i class="fa-regular fa-calendar-days me-1"></i>{{ enrollment.get_semester_display }} &bull; {{ enrollment.academic_year }}
+                            </span>
+                            <span class="badge badge-soft-secondary">Credits: {{ enrollment.course.credits }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,7 +81,7 @@
                                     <div class="invalid-feedback d-block"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
                                 {% endfor %}
                             {% endif %}
-                            <small class="form-text text-muted d-block mt-1">Live grading scale: A (90-100), B (80-89), C (70-79), D (60-69), F (&lt;60)</small>
+                            <small class="form-text text-muted d-block mt-1">Live grading scale: A (85–100), B+ (80–84), B (70–79), C+ (65–69), C (50–64), D (45–49), F (&lt;45)</small>
                         </div>
 
                         <!-- Attendance Percentage Field -->
@@ -108,7 +114,7 @@
                 <div class="row g-2 text-center text-md-start">
                     <div class="col-sm-3">
                         <small class="text-muted d-block">Score:</small>
-                        <strong class="text-primary">{{ enrollment.score|default:"Not set" }}</strong>
+                        <strong class="text-primary">{{ enrollment.score|default:"Not set"|stringformat:"s" }}</strong>
                     </div>
                     <div class="col-sm-3">
                         <small class="text-muted d-block">Grade:</small>
@@ -127,4 +133,31 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const scoreInput = document.getElementById('id_score');
+    const preview = document.getElementById('live-grade-preview');
+    if (!scoreInput || !preview) return;
+
+    function gradeFor(value) {
+        if (value === '' || value === null) return '—';
+        const score = parseFloat(value);
+        if (Number.isNaN(score)) return '—';
+        if (score >= 85) return 'A';
+        if (score >= 80) return 'B+';
+        if (score >= 70) return 'B';
+        if (score >= 65) return 'C+';
+        if (score >= 50) return 'C';
+        if (score >= 45) return 'D';
+        return 'F';
+    }
+
+    scoreInput.addEventListener('input', function () {
+        preview.textContent = gradeFor(scoreInput.value);
+    });
+});
+</script>
 {% endblock %}

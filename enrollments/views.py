@@ -1,19 +1,38 @@
 import csv
+import os
+import shutil
+import subprocess
+import tempfile
+from pathlib import Path
+
+from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404, HttpResponse
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Avg
 from django.urls import reverse_lazy
-from students.academics import summarize_academics
-from .models import Enrollment
+from students.academics import summarize_academics, grade_from_score
+from .models import Enrollment, current_academic_year, current_semester
 from student_system.permissions import staff_required
-from .forms import EnrollmentForm, GradeForm, EnrollmentFilterForm
+from .forms import EnrollmentForm, GradeForm, EnrollmentFilterForm, GradeEntryForm
 
 # Function-Based Views (FBV)
+
+
+def _academic_year_suggestions():
+    """Existing years plus the active year, newest first."""
+    years = set(
+        Enrollment.objects.exclude(academic_year='')
+        .values_list('academic_year', flat=True)
+    )
+    years.add(current_academic_year())
+    return sorted(years, reverse=True)
 
 @login_required
 def enrollment_list(request):
@@ -23,6 +42,8 @@ def enrollment_list(request):
     
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
+    academic_year = request.GET.get('academic_year', '').strip()
+    semester = request.GET.get('semester', '').strip()
     
     if search:
         enrollments_qs = enrollments_qs.filter(
@@ -38,10 +59,29 @@ def enrollment_list(request):
         enrollments_qs = enrollments_qs.filter(status=status)
     elif form.is_valid() and form.cleaned_data.get('status'):
         enrollments_qs = enrollments_qs.filter(status=form.cleaned_data['status'])
+
+    if academic_year:
+        enrollments_qs = enrollments_qs.filter(academic_year=academic_year)
+    if semester:
+        enrollments_qs = enrollments_qs.filter(semester=semester)
         
-    enrollments_qs = enrollments_qs.order_by('-enrollment_date')
+    enrollments_qs = enrollments_qs.order_by(
+        '-academic_year', '-semester', '-enrollment_date', '-id'
+    )
     total_count = Enrollment.objects.count()
     completed_count = Enrollment.objects.filter(status='COMPLETED').count()
+    in_progress_count = Enrollment.objects.filter(status='ENROLLED').count()
+    graded_count = (
+        Enrollment.objects.exclude(grade__isnull=True)
+        .exclude(grade='')
+        .count()
+    )
+    academic_years = (
+        Enrollment.objects.exclude(academic_year='')
+        .values_list('academic_year', flat=True)
+        .distinct()
+        .order_by('-academic_year')
+    )
     
     paginator = Paginator(enrollments_qs, 15)
     page_number = request.GET.get('page')
@@ -53,6 +93,12 @@ def enrollment_list(request):
         'form': form,
         'total_count': total_count,
         'completed_count': completed_count,
+        'in_progress_count': in_progress_count,
+        'graded_count': graded_count,
+        'academic_years': academic_years,
+        'semester_choices': Enrollment.SEMESTER_CHOICES,
+        'selected_academic_year': academic_year,
+        'selected_semester': semester,
     }
     return render(request, 'enrollments/enrollment_list.html', context)
 
@@ -63,6 +109,8 @@ def export_enrollments_csv(request):
     enrollments_qs = Enrollment.objects.select_related('student__user', 'course')
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
+    academic_year = request.GET.get('academic_year', '').strip()
+    semester = request.GET.get('semester', '').strip()
     
     if search:
         enrollments_qs = enrollments_qs.filter(
@@ -75,8 +123,14 @@ def export_enrollments_csv(request):
         )
     if status:
         enrollments_qs = enrollments_qs.filter(status=status)
+    if academic_year:
+        enrollments_qs = enrollments_qs.filter(academic_year=academic_year)
+    if semester:
+        enrollments_qs = enrollments_qs.filter(semester=semester)
         
-    enrollments_qs = enrollments_qs.order_by('-enrollment_date')
+    enrollments_qs = enrollments_qs.order_by(
+        '-academic_year', '-semester', '-enrollment_date', '-id'
+    )
 
     response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = 'attachment; filename="bbu_course_enrollments.csv"'
@@ -92,6 +146,8 @@ def export_enrollments_csv(request):
         'Course Code',
         'Course Title',
         'Credits',
+        'Academic Year',
+        'Semester',
         'Score',
         'Grade',
         'Attendance (%)',
@@ -107,6 +163,8 @@ def export_enrollments_csv(request):
             e.course.code,
             e.course.title,
             e.course.credits,
+            e.academic_year,
+            e.get_semester_display(),
             e.score if e.score is not None else '',
             e.grade or '',
             e.attendance_percentage or '',
@@ -134,7 +192,11 @@ def enrollment_create(request):
     else:
         form = EnrollmentForm()
     
-    context = {'form': form, 'title': 'Create Enrollment'}
+    context = {
+        'form': form,
+        'title': 'Create Enrollment',
+        'academic_year_suggestions': _academic_year_suggestions(),
+    }
     return render(request, 'enrollments/enrollment_form.html', context)
 
 @login_required
@@ -150,7 +212,12 @@ def enrollment_update(request, pk):
     else:
         form = EnrollmentForm(instance=enrollment)
     
-    context = {'form': form, 'enrollment': enrollment, 'title': 'Update Enrollment'}
+    context = {
+        'form': form,
+        'enrollment': enrollment,
+        'title': 'Update Enrollment',
+        'academic_year_suggestions': _academic_year_suggestions(),
+    }
     return render(request, 'enrollments/enrollment_form.html', context)
 
 @login_required
@@ -182,11 +249,77 @@ def add_grade(request, pk):
     context = {'form': form, 'enrollment': enrollment}
     return render(request, 'enrollments/add_grade.html', context)
 
+
 @login_required
-def student_transcript(request, student_id):
-    """Generate transcript for a student showing all enrollments and grades"""
+@staff_required
+def grade_entry(request):
+    """
+    Admin-only grade entry hub.
+
+    Student, subject, academic year, semester and score are entered in one
+    place. If the student already has the subject in the selected term, that
+    record is updated instead of creating a duplicate.
+    """
+    if request.method == 'POST':
+        form = GradeEntryForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            enrollment = Enrollment.objects.filter(
+                student=data['student'],
+                course=data['course'],
+                academic_year=data['academic_year'],
+                semester=data['semester'],
+            ).first()
+            created = enrollment is None
+            if created:
+                enrollment = Enrollment(
+                    student=data['student'],
+                    course=data['course'],
+                    academic_year=data['academic_year'],
+                    semester=data['semester'],
+                )
+
+            enrollment.status = data['status']
+            enrollment.score = data['score']
+            enrollment.attendance_percentage = data.get('attendance_percentage') or 0
+            enrollment.notes = data.get('notes') or ''
+            enrollment.grade = grade_from_score(data['score']) or None
+            enrollment.save()
+
+            student_name = enrollment.student.get_primary_name()
+            term = f"{enrollment.get_semester_display()} {enrollment.academic_year}"
+            if created:
+                messages.success(
+                    request,
+                    f"Recorded {enrollment.course.code} — {student_name} ({term}).",
+                )
+            else:
+                messages.info(
+                    request,
+                    f"Updated the existing {enrollment.course.code} record for "
+                    f"{student_name} ({term}).",
+                )
+            return redirect('enrollments:grade_entry')
+    else:
+        form = GradeEntryForm()
+
+    recent_entries = (
+        Enrollment.objects.select_related('student__user', 'course')
+        .order_by('-updated_at', '-id')[:8]
+    )
+
+    context = {
+        'form': form,
+        'recent_entries': recent_entries,
+        'academic_year_suggestions': _academic_year_suggestions(),
+        'default_academic_year': current_academic_year(),
+        'default_semester': current_semester(),
+    }
+    return render(request, 'enrollments/grade_entry.html', context)
+
+def _get_transcript_student(request, student_id):
     from students.models import Student
-    
+
     student = Student.objects.filter(student_id=student_id).first()
     if not student and str(student_id).isdigit():
         student = Student.objects.filter(pk=int(student_id)).first()
@@ -196,10 +329,13 @@ def student_transcript(request, student_id):
     user_student = getattr(request.user, 'student', None)
     if not (request.user.is_staff or request.user.is_superuser or user_student == student):
         raise PermissionDenied("You can only view your own transcript.")
+    return student
 
+
+def _build_transcript_context(student):
     summary = summarize_academics(student)
     enrollments = summary['enrollments']
-    
+
     import datetime
     today = datetime.date.today()
     khmer_months = [
@@ -212,8 +348,8 @@ def student_transcript(request, student_id):
     ]
     issue_date_kh = f"ថ្ងៃទី {today.day:02d} ខែ {khmer_months[today.month]} ឆ្នាំ {today.year}"
     issue_date_en = f"{today.day:02d} {english_months[today.month]} {today.year}"
-    
-    context = {
+
+    return {
         'student': student,
         'enrollments': enrollments,
         'average_score': summary['avg_score'],
@@ -230,7 +366,100 @@ def student_transcript(request, student_id):
         'issue_date_kh': issue_date_kh,
         'issue_date_en': issue_date_en,
     }
+
+
+@login_required
+def student_transcript(request, student_id):
+    """Generate transcript for a student showing all enrollments and grades"""
+    student = _get_transcript_student(request, student_id)
+    context = _build_transcript_context(student)
     return render(request, 'enrollments/student_transcript.html', context)
+
+
+def _chrome_executable():
+    candidates = [
+        os.environ.get('CHROME_PATH'),
+        shutil.which('chrome'),
+        shutil.which('google-chrome'),
+        shutil.which('chromium'),
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    ]
+    for candidate in candidates:
+        if candidate and Path(candidate).exists():
+            return candidate
+    return None
+
+
+def _localize_asset_urls(html):
+    static_dir = settings.STATICFILES_DIRS[0] if settings.STATICFILES_DIRS else settings.STATIC_ROOT
+    static_uri = Path(static_dir).resolve().as_uri().rstrip('/')
+    media_uri = Path(settings.MEDIA_ROOT).resolve().as_uri().rstrip('/')
+    html = html.replace('="/static/', f'="{static_uri}/').replace("='/static/", f"='{static_uri}/")
+    html = html.replace('="/media/', f'="{media_uri}/').replace("='/media/", f"='{media_uri}/")
+    return html
+
+
+@login_required
+def student_transcript_pdf(request, student_id):
+    """Generate an exact A4 PDF of the transcript using headless Chrome."""
+    student = _get_transcript_student(request, student_id)
+    context = _build_transcript_context(student)
+    html = render_to_string('enrollments/student_transcript.html', context, request=request)
+    html = _localize_asset_urls(html)
+
+    chrome = _chrome_executable()
+    if not chrome:
+        return HttpResponse(
+            "PDF generation is not available on this server.",
+            status=503,
+            content_type="text/plain; charset=utf-8",
+        )
+
+    with tempfile.TemporaryDirectory(prefix='bbu_transcript_') as temp_dir:
+        temp_path = Path(temp_dir)
+        html_path = temp_path / 'transcript.html'
+        pdf_path = temp_path / 'transcript.pdf'
+        html_path.write_text(html, encoding='utf-8')
+
+        command = [
+            chrome,
+            '--headless=new',
+            '--disable-gpu',
+            '--no-pdf-header-footer',
+            '--allow-file-access-from-files',
+            '--virtual-time-budget=5000',
+            f'--print-to-pdf={pdf_path}',
+            html_path.as_uri(),
+        ]
+        creationflags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
+        try:
+            subprocess.run(
+                command,
+                capture_output=True,
+                timeout=90,
+                check=True,
+                creationflags=creationflags,
+            )
+        except (subprocess.SubprocessError, OSError):
+            return HttpResponse(
+                "Could not generate the transcript PDF.",
+                status=503,
+                content_type="text/plain; charset=utf-8",
+            )
+
+        if not pdf_path.exists():
+            return HttpResponse(
+                "Could not generate the transcript PDF.",
+                status=503,
+                content_type="text/plain; charset=utf-8",
+            )
+        pdf_bytes = pdf_path.read_bytes()
+
+    response = HttpResponse(pdf_bytes, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="transcript_{student.student_id}.pdf"'
+    return response
 
 # Class-Based Views (CBV)
 

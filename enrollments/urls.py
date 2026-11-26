@@ -9,10 +9,12 @@ urlpatterns = [
     path('export/csv/', views.export_enrollments_csv, name='export_csv'),
     path('<int:pk>/', views.enrollment_detail, name='enrollment_detail'),
     path('create/', views.enrollment_create, name='enrollment_create'),
+    path('grade-entry/', views.grade_entry, name='grade_entry'),
     path('<int:pk>/update/', views.enrollment_update, name='enrollment_update'),
     path('<int:pk>/delete/', views.enrollment_delete, name='enrollment_delete'),
     path('<int:pk>/grade/', views.add_grade, name='add_grade'),
     path('transcript/<str:student_id>/', views.student_transcript, name='student_transcript'),
+    path('transcript/<str:student_id>/pdf/', views.student_transcript_pdf, name='student_transcript_pdf'),
     
     # CBV URLs
     path('cbv/list/', views.EnrollmentListView.as_view(), name='enrollment_list_cbv'),

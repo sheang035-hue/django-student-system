@@ -5,14 +5,14 @@ from .models import Enrollment
 class EnrollmentAdmin(admin.ModelAdmin):
     """Admin interface for Enrollment model"""
     
-    list_display = ['get_student_id', 'get_course_code', 'status', 'grade', 'score', 'attendance_percentage', 'enrollment_date']
-    list_filter = ['status', 'enrollment_date', 'grade']
+    list_display = ['get_student_id', 'get_course_code', 'academic_year', 'semester', 'status', 'grade', 'score', 'attendance_percentage', 'enrollment_date']
+    list_filter = ['academic_year', 'semester', 'status', 'grade']
     search_fields = ['student__student_id', 'course__code', 'student__user__username']
     readonly_fields = ['enrollment_date', 'created_at', 'updated_at']
     
     fieldsets = (
         ('Enrollment Information', {
-            'fields': ('student', 'course', 'status')
+            'fields': ('student', 'course', 'academic_year', 'semester', 'status')
         }),
         ('Grade Information', {
             'fields': ('score', 'grade', 'attendance_percentage')

@@ -16,12 +16,22 @@
         <p class="page-header-subtitle">{{ subtitle }}</p>
         {% endif %}
     </div>
-    {% if action_url and action_label %}
-    <div class="text-md-end flex-shrink-0">
+    {% if action_url or secondary_url %}
+    <div class="text-md-end flex-shrink-0 d-flex flex-wrap gap-2 justify-content-md-end">
+        {% if secondary_url and secondary_label %}
+            {% if not secondary_staff_only or user.is_staff or user.is_superuser %}
+            <a href="{{ secondary_url }}" class="btn {{ secondary_class|default:'btn-bbu-soft' }} shadow-sm">
+                {% if secondary_icon %}<i class="{{ secondary_icon }}"></i>{% endif %}
+                {{ secondary_label }}
+            </a>
+            {% endif %}
+        {% endif %}
+        {% if action_url and action_label %}
         <a href="{{ action_url }}" class="btn {{ action_class|default:'btn-bbu-primary' }} shadow-sm">
             {% if action_icon %}<i class="{{ action_icon }}"></i>{% endif %}
             {{ action_label }}
         </a>
+        {% endif %}
     </div>
     {% endif %}
 </div>

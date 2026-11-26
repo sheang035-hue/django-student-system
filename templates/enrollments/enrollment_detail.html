@@ -79,6 +79,11 @@
                                 <i class="fa-solid fa-layer-group me-1 text-muted"></i>
                                 Credits: {{ enrollment.course.credits }} &bull; Level: {{ enrollment.course.get_level_display }}
                             </span>
+                            <div class="mt-2">
+                                <span class="badge badge-soft-primary">
+                                    <i class="fa-regular fa-calendar-days me-1"></i>{{ enrollment.get_semester_display }} &bull; {{ enrollment.academic_year }}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -116,7 +121,7 @@
                             <span class="text-muted small d-block mb-1">Score / ពិន្ទុ</span>
                             <h3 class="fw-bold text-dark mb-1">
                                 {% if enrollment.score is not None %}
-                                    {{ enrollment.score }} <small class="text-muted fs-6">/100</small>
+                                    {{ enrollment.score|stringformat:"s" }} <small class="text-muted fs-6">/100</small>
                                 {% else %}
                                     <span class="text-muted fs-5">—</span>
                                 {% endif %}

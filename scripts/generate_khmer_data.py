@@ -590,6 +590,10 @@ def run_seed(num_students=1000):
                 enrollment = Enrollment(
                     student=student,
                     course=course,
+                    academic_year=random.choice(
+                        ["2025-2026", "2025-2026", "2026-2027"]
+                    ),
+                    semester=random.choice(["S2", "SUM", "S1"]),
                     status=status,
                     score=score,
                     grade=grade,

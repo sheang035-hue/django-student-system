@@ -26,15 +26,41 @@ class Course(models.Model):
         ('INACTIVE', 'Inactive'),
         ('ARCHIVED', 'Archived'),
     ]
+    # semester in which this subject is taught in the curriculum
+    SEMESTER_CHOICES = [
+        ('S1', 'Semester 1'),
+        ('S2', 'Semester 2'),
+        ('SUM', 'Summer'),
+    ]
+    # map the academic level (100-400) to a study year (1-4)
+    LEVEL_TO_YEAR = {
+        '100': 1,
+        '200': 2,
+        '300': 3,
+        '400': 4,
+    }
+    YEAR_LABELS = {
+        1: 'Year 1',
+        2: 'Year 2',
+        3: 'Year 3',
+        4: 'Year 4',
+    }
     
     code = models.CharField(max_length=10, unique=True, help_text="Course Code (e.g., CS101)")
     title = models.CharField(max_length=200)
     description = models.TextField()
-    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='taught_courses')
+    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='taught_courses')
     credits = models.PositiveIntegerField(help_text="Credit hours for this course")
     level = models.CharField(max_length=3, choices=LEVEL_CHOICES)
     capacity = models.PositiveIntegerField(help_text="Maximum number of students")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='ACTIVE')
+    semester = models.CharField(
+        max_length=3,
+        choices=SEMESTER_CHOICES,
+        blank=True,
+        default='',
+        help_text="Semester in which this subject is taught (leave blank if not scheduled)",
+    )
     start_date = models.DateField()
     end_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -47,6 +73,7 @@ class Course(models.Model):
         indexes = [
             models.Index(fields=['code']),
             models.Index(fields=['status']),
+            models.Index(fields=['level', 'semester']),
         ]
 
     # __str__ method is used to return the string representation of the model
@@ -66,3 +93,18 @@ class Course(models.Model):
     def is_available(self):
         """Check if course is currently available for enrollment"""
         return self.status == 'ACTIVE'
+
+    @property
+    def study_year(self):
+        """Return the study year (1-4) that matches the course level."""
+        return self.LEVEL_TO_YEAR.get(str(self.level), 1)
+
+    @property
+    def study_year_label(self):
+        """Human-friendly study year label, e.g. ``Year 1``."""
+        return self.YEAR_LABELS.get(self.study_year, 'Year 1')
+
+    @property
+    def semester_label(self):
+        """Human-friendly semester label, or a clear placeholder when unassigned."""
+        return self.get_semester_display() if self.semester else 'Not scheduled'

@@ -181,12 +181,17 @@
 <!-- Demo Setup Checklist (auto-hides once the data is populated) -->
 {% if total_students < 5 or total_courses < 3 or total_enrollments < 10 %}
 <div class="card card-bbu border-0 shadow-sm mb-4 reveal">
-    <div class="card-bbu-header d-flex justify-content-between align-items-center">
-        <h6 class="fw-bold mb-0 text-dark">
-            <i class="fa-solid fa-list-check text-primary me-2"></i> Demo Setup Checklist
-            <span class="khmer-text card-header-kh d-block">បញ្ជីត្រៀមទិន្នន័យបង្ហាញ</span>
-        </h6>
-        <span class="badge badge-soft-primary">Getting Started</span>
+    <div class="analytics-card-header">
+        <div class="analytics-heading">
+            <span class="analytics-icon analytics-icon-primary">
+                <i class="fa-solid fa-list-check"></i>
+            </span>
+            <div class="min-w-0">
+                <h6 class="analytics-title">Demo Setup Checklist</h6>
+                <span class="analytics-subtitle">បញ្ជីត្រៀមទិន្នន័យបង្ហាញ</span>
+            </div>
+        </div>
+        <span class="badge badge-soft-primary analytics-badge">Getting Started</span>
     </div>
     <div class="card-body p-3 p-md-4">
         <div class="row g-3">
@@ -263,19 +268,50 @@
 
 <div class="row g-4 mb-4">
     <div class="col-lg-4 reveal">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-chart-column text-primary me-2"></i> Grade Distribution
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-primary">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Grade Distribution</h6>
+                        <span class="analytics-subtitle">ការបែងចែកចំណាត់ថ្នាក់</span>
+                    </div>
+                </div>
+                {% if graded_total > 0 %}
+                <span class="badge badge-soft-primary analytics-badge">{{ graded_total }} Graded</span>
+                {% else %}
+                <span class="badge badge-soft-secondary analytics-badge">No data</span>
+                {% endif %}
             </div>
-            <div class="card-body p-4">
-                {% if total_enrollments > 0 %}
-                <div class="chart-container-bbu">
-                    <canvas id="gradeChart"></canvas>
+            <div class="analytics-card-body">
+                {% if graded_total > 0 %}
+                <div class="analytics-chart analytics-chart-grade">
+                    <canvas id="gradeChart" role="img" aria-label="Grade distribution by letter grade"></canvas>
+                </div>
+                <div class="analytics-stat-strip">
+                    <div class="analytics-stat">
+                        <span class="analytics-stat-icon analytics-stat-icon-primary">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </span>
+                        <span class="min-w-0">
+                            <span class="analytics-stat-label">Graded</span>
+                            <span class="analytics-stat-value">{{ graded_total }}</span>
+                        </span>
+                    </div>
+                    <div class="analytics-stat">
+                        <span class="analytics-stat-icon analytics-stat-icon-success">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </span>
+                        <span class="min-w-0">
+                            <span class="analytics-stat-label">Pass rate</span>
+                            <span class="analytics-stat-value is-success">{{ pass_rate }}%</span>
+                        </span>
+                    </div>
                 </div>
                 {% else %}
-                <div class="text-center py-3">
+                <div class="analytics-empty">
                     <div class="empty-chart-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-chart-simple fa-lg"></i>
                     </div>
@@ -291,77 +327,113 @@
     </div>
 
     <div class="col-lg-4 reveal reveal-delay-1">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-chart-pie text-success me-2"></i> Top Courses
-                    <span class="khmer-text card-header-kh d-block">វគ្គពេញនិយម</span>
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-success">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Top Courses</h6>
+                        <span class="analytics-subtitle">វគ្គពេញនិយម</span>
+                    </div>
+                </div>
                 {% if total_enrollments > 0 %}
-                    <span class="badge badge-soft-success">{{ total_enrollments }} Enrolled</span>
+                <span class="badge badge-soft-success analytics-badge" title="Total enrollments across all courses">{{ total_enrollments }} Enrolled</span>
                 {% else %}
-                    <span class="badge badge-soft-secondary">0 Enrolled</span>
+                <span class="badge badge-soft-secondary analytics-badge">0 Enrolled</span>
                 {% endif %}
             </div>
-            <div class="card-body p-4 d-flex flex-column justify-content-center">
+            <div class="analytics-card-body">
                 {% if total_enrollments > 0 and course_counts %}
-                    <div class="chart-container-bbu">
-                        <canvas id="courseChart"></canvas>
+                <div class="analytics-chart analytics-chart-donut">
+                    <canvas id="courseChart" role="img" aria-label="Enrollment share by top courses"></canvas>
+                    <div class="donut-center">
+                        <span class="donut-center-value" id="courseCenterValue">{{ top_course_total }}</span>
+                        <span class="donut-center-label">In top 5</span>
                     </div>
+                </div>
+                <div class="course-legend-list" id="courseLegend"></div>
                 {% else %}
-                    <div class="text-center py-3 my-auto">
-                        <div class="empty-chart-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
-                            <i class="fa-solid fa-book-open fa-lg"></i>
-                        </div>
-                        <h6 class="fw-bold text-dark mb-1">No Course Enrollments Yet</h6>
-                        <p class="text-muted small mb-3">Add courses and enroll students to see course volume analytics.</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-outline-success">
-                                <i class="fa-solid fa-book-medical"></i> Add Course
-                            </a>
-                            <a href="{% url 'enrollments:enrollment_create' %}" class="btn btn-sm btn-bbu-primary">
-                                <i class="fa-solid fa-clipboard-check"></i> Enroll
-                            </a>
-                        </div>
+                <div class="analytics-empty">
+                    <div class="empty-chart-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                        <i class="fa-solid fa-book-open fa-lg"></i>
                     </div>
+                    <h6 class="fw-bold text-dark mb-1">No Course Enrollments Yet</h6>
+                    <p class="text-muted small mb-3">Add courses and enroll students to see course volume analytics.</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{% url 'courses:course_create' %}" class="btn btn-sm btn-outline-success">
+                            <i class="fa-solid fa-book-medical"></i> Add Course
+                        </a>
+                        <a href="{% url 'enrollments:enrollment_create' %}" class="btn btn-sm btn-bbu-primary">
+                            <i class="fa-solid fa-clipboard-check"></i> Enroll
+                        </a>
+                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
     <div class="col-lg-4 reveal reveal-delay-2">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-venus-mars text-info me-2"></i> Gender Ratio
-                    <span class="khmer-text card-header-kh d-block">សមាមាត្រភេទ</span>
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-info">
+                        <i class="fa-solid fa-venus-mars"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Gender Ratio</h6>
+                        <span class="analytics-subtitle">សមាមាត្រភេទ</span>
+                    </div>
+                </div>
                 {% if total_students > 0 %}
-                <span class="badge badge-soft-info">{{ male_pct }}% M • {{ female_pct }}% F</span>
+                <span class="analytics-ratio-badge">
+                    <span class="analytics-ratio-item"><span class="analytics-ratio-dot" style="background:#2d5cf6"></span>{{ male_pct }}%</span>
+                    <span class="analytics-ratio-divider"></span>
+                    <span class="analytics-ratio-item"><span class="analytics-ratio-dot" style="background:#ec4899"></span>{{ female_pct }}%</span>
+                </span>
                 {% else %}
-                <span class="badge badge-soft-secondary">No data</span>
+                <span class="badge badge-soft-secondary analytics-badge">No data</span>
                 {% endif %}
             </div>
-            <div class="card-body p-4 d-flex flex-column justify-content-between">
+            <div class="analytics-card-body">
                 {% if total_students > 0 %}
-                <div class="chart-container-bbu">
-                    <canvas id="genderChart"></canvas>
-                </div>
-                <!-- Percentage Stat Pills -->
-                <div class="d-flex justify-content-center gap-2 mt-3 pt-2 border-top">
-                    <div class="px-2 py-2 rounded bg-light text-center flex-fill border">
-                        <small class="text-secondary d-block fw-semibold small"><i class="fa-solid fa-mars text-primary me-1"></i>ប្រុស (Male)</small>
-                        <span class="fw-bold fs-6 text-primary">{{ male_pct }}%</span>
-                        <small class="text-secondary">({{ male_students }})</small>
+                <div class="analytics-chart analytics-chart-donut">
+                    <canvas id="genderChart" role="img" aria-label="Student gender ratio"></canvas>
+                    <div class="donut-center">
+                        <span class="donut-center-value" id="genderCenterValue">{{ male_students|add:female_students }}</span>
+                        <span class="donut-center-label">Students</span>
                     </div>
-                    <div class="px-2 py-2 rounded bg-light text-center flex-fill border">
-                        <small class="text-secondary d-block fw-semibold small"><i class="fa-solid fa-venus text-danger me-1"></i>ស្រី (Female)</small>
-                        <span class="fw-bold fs-6 text-danger">{{ female_pct }}%</span>
-                        <small class="text-secondary">({{ female_students }})</small>
+                </div>
+                <div class="gender-breakdown">
+                    <div class="gender-row">
+                        <span class="gender-icon gender-icon-male"><i class="fa-solid fa-mars"></i></span>
+                        <div class="gender-main">
+                            <div class="gender-line">
+                                <span class="gender-label">Male <span class="gender-label-kh">ប្រុស</span></span>
+                                <span class="gender-value">{{ male_pct }}% <span class="gender-count">· {{ male_students }}</span></span>
+                            </div>
+                            <div class="gender-track">
+                                <span class="gender-fill gender-fill-male" style="width: {{ male_pct }}%"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="gender-row">
+                        <span class="gender-icon gender-icon-female"><i class="fa-solid fa-venus"></i></span>
+                        <div class="gender-main">
+                            <div class="gender-line">
+                                <span class="gender-label">Female <span class="gender-label-kh">ស្រី</span></span>
+                                <span class="gender-value">{{ female_pct }}% <span class="gender-count">· {{ female_students }}</span></span>
+                            </div>
+                            <div class="gender-track">
+                                <span class="gender-fill gender-fill-female" style="width: {{ female_pct }}%"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {% else %}
-                <div class="text-center py-3 my-auto">
+                <div class="analytics-empty">
                     <div class="empty-chart-icon rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
                         <i class="fa-solid fa-venus-mars fa-lg"></i>
                     </div>
@@ -380,16 +452,21 @@
 <!-- Quick Insights Row: Needs Attention / Dean's List / Recent Enrollments -->
 <div class="row g-4 mb-4">
     <div class="col-lg-4 reveal">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> Needs Attention
-                    <span class="khmer-text card-header-kh d-block">ត្រូវដោះស្រាយ</span>
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-warning">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Needs Attention</h6>
+                        <span class="analytics-subtitle">ត្រូវដោះស្រាយ</span>
+                    </div>
+                </div>
                 {% if attention_total == 0 %}
-                <span class="badge badge-soft-success">All Clear</span>
+                <span class="badge badge-soft-success analytics-badge">All Clear</span>
                 {% else %}
-                <span class="badge badge-soft-warning">{{ attention_total }} Item{{ attention_total|pluralize }}</span>
+                <span class="badge badge-soft-warning analytics-badge">{{ attention_total }} Item{{ attention_total|pluralize }}</span>
                 {% endif %}
             </div>
             <div class="card-body p-3 d-flex flex-column">
@@ -457,14 +534,19 @@
     </div>
 
     <div class="col-lg-4 reveal reveal-delay-1">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-medal text-primary me-2"></i> Dean's List
-                    <span class="khmer-text card-header-kh d-block">និស្សិតពិន្ទុខ្ពស់</span>
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-gold">
+                        <i class="fa-solid fa-medal"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Dean's List</h6>
+                        <span class="analytics-subtitle">និស្សិតពិន្ទុខ្ពស់</span>
+                    </div>
+                </div>
                 {% if top_students %}
-                <span class="badge badge-soft-primary">Top {{ top_students|length }} by GPA</span>
+                <span class="badge badge-soft-primary analytics-badge">Top {{ top_students|length }} by GPA</span>
                 {% endif %}
             </div>
             <div class="card-body p-3 d-flex flex-column">
@@ -494,12 +576,17 @@
     </div>
 
     <div class="col-lg-4 reveal reveal-delay-2">
-        <div class="card card-bbu h-100 shadow-sm border-0">
-            <div class="card-bbu-header d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-dark">
-                    <i class="fa-solid fa-clock-rotate-left text-success me-2"></i> Recent Enrollments
-                    <span class="khmer-text card-header-kh d-block">ចុះឈ្មោះថ្មីៗ</span>
-                </h6>
+        <div class="card card-bbu analytics-card h-100">
+            <div class="analytics-card-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-success">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Recent Enrollments</h6>
+                        <span class="analytics-subtitle">ចុះឈ្មោះថ្មីៗ</span>
+                    </div>
+                </div>
                 {% if recent_enrollments %}
                 <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-sm btn-outline-success">View All</a>
                 {% endif %}
@@ -535,11 +622,16 @@
 
 <!-- Recently Registered Students Table -->
 <div class="card card-bbu shadow-sm border-0 mb-4 reveal">
-    <div class="card-bbu-header d-flex justify-content-between align-items-center">
-        <h6 class="fw-bold mb-0 text-dark">
-            <i class="fa-solid fa-clock-rotate-left text-primary me-2"></i> Recently Registered Students
-            <span class="khmer-text card-header-kh d-block">និស្សិតចុះឈ្មោះថ្មីៗ</span>
-        </h6>
+    <div class="analytics-card-header">
+        <div class="analytics-heading">
+            <span class="analytics-icon analytics-icon-primary">
+                <i class="fa-solid fa-user-clock"></i>
+            </span>
+            <div class="min-w-0">
+                <h6 class="analytics-title">Recently Registered Students</h6>
+                <span class="analytics-subtitle">និស្សិតចុះឈ្មោះថ្មីៗ</span>
+            </div>
+        </div>
         <a href="{% url 'students:student_list' %}" class="btn btn-sm btn-bbu-primary">
             View All Students <i class="fa-solid fa-chevron-right ms-1"></i>
         </a>
@@ -650,6 +742,72 @@
         }
     }
 
+    const COURSE_COLORS = ['#2d5cf6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+    }
+
+    // Draws the count at the end of each horizontal grade bar.
+    const barValuePlugin = {
+        id: 'barValueLabels',
+        afterDatasetsDraw: function (chart) {
+            const meta = chart.getDatasetMeta(0);
+            if (!meta || !meta.data) return;
+
+            const values = chart.data.datasets[0].data;
+            const theme = getChartTheme();
+            const ctx = chart.ctx;
+
+            ctx.save();
+            ctx.fillStyle = theme.textColor;
+            ctx.font = "700 11px 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+
+            meta.data.forEach(function (bar, index) {
+                const value = Number(values[index]) || 0;
+                if (value <= 0) return;
+                ctx.fillText(String(value), bar.x + 7, bar.y);
+            });
+
+            ctx.restore();
+        }
+    };
+
+    function renderCourseLegend(labels, data) {
+        const container = document.getElementById('courseLegend');
+        if (!container) return;
+
+        const values = data.map(function (value) { return Number(value) || 0; });
+        const total = values.reduce(function (a, b) { return a + b; }, 0);
+        const maxValue = Math.max.apply(null, values.concat([1]));
+        const colors = labels.map(function (_, i) {
+            return COURSE_COLORS[i % COURSE_COLORS.length];
+        });
+
+        container.innerHTML = labels.map(function (label, i) {
+            const value = values[i] || 0;
+            const color = colors[i];
+            const pct = total > 0 ? ((value / total) * 100).toFixed(1) : '0.0';
+            const width = Math.max((value / maxValue) * 100, value > 0 ? 5 : 0);
+            const safeLabel = escapeHtml(label);
+
+            return '<div class="course-legend-row">' +
+                '<span class="course-legend-dot" style="background:' + color + '"></span>' +
+                '<span class="course-legend-name" title="' + safeLabel + '">' + safeLabel + '</span>' +
+                '<span class="course-legend-track" aria-hidden="true">' +
+                    '<span class="course-legend-fill" style="width:' + width + '%;background:' + color + '"></span>' +
+                '</span>' +
+                '<span class="course-legend-value"><strong>' + value + '</strong><span>' + pct + '%</span></span>' +
+                '</div>';
+        }).join('');
+
+        return colors;
+    }
+
     function initCharts() {
         if (typeof Chart === 'undefined') {
             console.warn('Chart.js library is not loaded or unreachable.');
@@ -670,10 +828,11 @@
 
             gradeChart = new Chart(gradeCtx, {
                 type: 'bar',
+                plugins: [barValuePlugin],
                 data: {
-                    labels: ['Grade A (85-100)', 'Grade B (70-84)', 'Grade C (50-69)', 'Grade D (45-49)', 'Grade F (<45)'],
+                    labels: ['A · 85–100', 'B · 70–84', 'C · 50–69', 'D · 45–49', 'F · <45'],
                     datasets: [{
-                        label: 'Students Count',
+                        label: 'Students',
                         data: [
                             readChartData('chart-grade-a', 0),
                             readChartData('chart-grade-b', 0),
@@ -681,30 +840,22 @@
                             readChartData('chart-grade-d', 0),
                             readChartData('chart-grade-f', 0)
                         ],
-                        backgroundColor: [
-                            '#10b981', // Green A
-                            '#2d5cf6', // Blue B
-                            '#f59e0b', // Amber C
-                            '#d97706', // Orange D
-                            '#ef4444'  // Red F
-                        ],
-                        hoverBackgroundColor: [
-                            '#34d399',
-                            '#5b7ffa',
-                            '#fbbf24',
-                            '#f59e0b',
-                            '#f87171'
-                        ],
-                        borderRadius: 10,
-                        borderSkipped: false
+                        backgroundColor: ['#10b981', '#2d5cf6', '#f59e0b', '#ea580c', '#ef4444'],
+                        hoverBackgroundColor: ['#34d399', '#5b7ffa', '#fbbf24', '#f97316', '#f87171'],
+                        borderRadius: 8,
+                        borderSkipped: false,
+                        barThickness: 18
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: { padding: { right: 26 } },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
+                            displayColors: false,
                             callbacks: {
                                 label: function (context) {
                                     return ` ${context.raw || 0} student(s)`;
@@ -714,13 +865,24 @@
                     },
                     scales: {
                         x: {
-                            ticks: { color: theme.textColor },
-                            grid: { display: false }
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0,
+                                color: theme.mutedColor,
+                                maxTicksLimit: 5,
+                                padding: 6
+                            },
+                            grid: { color: theme.gridColor, drawTicks: false },
+                            border: { display: false }
                         },
                         y: {
-                            beginAtZero: true,
-                            ticks: { precision: 0, color: theme.textColor },
-                            grid: { color: theme.gridColor }
+                            ticks: {
+                                color: theme.textColor,
+                                padding: 4,
+                                font: { size: 11.5, weight: '600' }
+                            },
+                            grid: { display: false },
+                            border: { display: false }
                         }
                     }
                 }
@@ -740,55 +902,29 @@
             const totalCoursesEnrolled = data.reduce((a, b) => a + b, 0);
 
             if (labels.length > 0 && totalCoursesEnrolled > 0) {
+                const courseColors = renderCourseLegend(labels, data) || [];
+                const centerValue = document.getElementById('courseCenterValue');
+                if (centerValue) centerValue.textContent = totalCoursesEnrolled;
+
                 courseChart = new Chart(courseCtx, {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
                             data: data,
-                            backgroundColor: [
-                                '#2d5cf6',
-                                '#10b981',
-                                '#f59e0b',
-                                '#0a1830',
-                                '#8b5cf6'
-                            ],
-                            borderWidth: 2,
+                            backgroundColor: courseColors,
+                            borderWidth: 3,
                             borderColor: theme.borderColor,
-                            hoverOffset: 8
+                            hoverOffset: 6,
+                            spacing: 2
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '62%',
+                        cutout: '68%',
                         plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: theme.textColor,
-                                    usePointStyle: true,
-                                    padding: 10,
-                                    generateLabels: function (chart) {
-                                        const curTheme = getChartTheme();
-                                        const d = chart.data.datasets[0].data;
-                                        const tot = d.reduce((a, b) => a + b, 0);
-                                        return chart.data.labels.map((label, i) => {
-                                            const val = d[i] || 0;
-                                            const pct = tot > 0 ? ((val / tot) * 100).toFixed(1) : '0.0';
-                                            return {
-                                                text: `${label}: ${pct}% (${val})`,
-                                                fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                                strokeStyle: curTheme.borderColor,
-                                                fontColor: curTheme.textColor,
-                                                lineWidth: 1,
-                                                hidden: false,
-                                                index: i
-                                            };
-                                        });
-                                    }
-                                }
-                            },
+                            legend: { display: false },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
@@ -818,6 +954,9 @@
             const totalGenderCount = genderData.reduce((a, b) => a + b, 0);
 
             if (totalGenderCount > 0) {
+                const centerValue = document.getElementById('genderCenterValue');
+                if (centerValue) centerValue.textContent = totalGenderCount;
+
                 genderChart = new Chart(genderCtx, {
                     type: 'doughnut',
                     data: {
@@ -825,42 +964,18 @@
                         datasets: [{
                             data: genderData,
                             backgroundColor: ['#2d5cf6', '#ec4899'],
-                            borderWidth: 2,
+                            borderWidth: 3,
                             borderColor: theme.borderColor,
-                            hoverOffset: 8
+                            hoverOffset: 6,
+                            spacing: 2
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        cutout: '62%',
+                        cutout: '70%',
                         plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    color: theme.textColor,
-                                    usePointStyle: true,
-                                    padding: 12,
-                                    generateLabels: function (chart) {
-                                        const curTheme = getChartTheme();
-                                        const d = chart.data.datasets[0].data;
-                                        const total = d.reduce((a, b) => a + b, 0);
-                                        return chart.data.labels.map((label, i) => {
-                                            const val = d[i] || 0;
-                                            const pct = total > 0 ? ((val / total) * 100).toFixed(1) : '0.0';
-                                            return {
-                                                text: `${label}: ${pct}% (${val})`,
-                                                fillStyle: chart.data.datasets[0].backgroundColor[i],
-                                                strokeStyle: curTheme.borderColor,
-                                                fontColor: curTheme.textColor,
-                                                lineWidth: 1,
-                                                hidden: false,
-                                                index: i
-                                            };
-                                        });
-                                    }
-                                }
-                            },
+                            legend: { display: false },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
@@ -885,35 +1000,23 @@
         Chart.defaults.color = newTheme.textColor;
 
         if (gradeChart && gradeChart.options && gradeChart.options.scales) {
-            if (gradeChart.options.scales.x && gradeChart.options.scales.x.ticks) {
-                gradeChart.options.scales.x.ticks.color = newTheme.textColor;
+            if (gradeChart.options.scales.x) {
+                if (gradeChart.options.scales.x.ticks) gradeChart.options.scales.x.ticks.color = newTheme.mutedColor;
+                if (gradeChart.options.scales.x.grid) gradeChart.options.scales.x.grid.color = newTheme.gridColor;
             }
-            if (gradeChart.options.scales.y) {
-                if (gradeChart.options.scales.y.ticks) gradeChart.options.scales.y.ticks.color = newTheme.textColor;
-                if (gradeChart.options.scales.y.grid) gradeChart.options.scales.y.grid.color = newTheme.gridColor;
+            if (gradeChart.options.scales.y && gradeChart.options.scales.y.ticks) {
+                gradeChart.options.scales.y.ticks.color = newTheme.textColor;
             }
             gradeChart.update();
         }
 
-        if (courseChart && courseChart.options && courseChart.options.plugins) {
-            if (courseChart.options.plugins.legend && courseChart.options.plugins.legend.labels) {
-                courseChart.options.plugins.legend.labels.color = newTheme.textColor;
+        [courseChart, genderChart].forEach(function (chart) {
+            if (!chart) return;
+            if (chart.data.datasets[0]) {
+                chart.data.datasets[0].borderColor = newTheme.borderColor;
             }
-            if (courseChart.data.datasets[0]) {
-                courseChart.data.datasets[0].borderColor = newTheme.borderColor;
-            }
-            courseChart.update();
-        }
-
-        if (genderChart && genderChart.options && genderChart.options.plugins) {
-            if (genderChart.options.plugins.legend && genderChart.options.plugins.legend.labels) {
-                genderChart.options.plugins.legend.labels.color = newTheme.textColor;
-            }
-            if (genderChart.data.datasets[0]) {
-                genderChart.data.datasets[0].borderColor = newTheme.borderColor;
-            }
-            genderChart.update();
-        }
+            chart.update();
+        });
     });
 
     // Execute immediately if DOM is already ready, or listen to DOMContentLoaded

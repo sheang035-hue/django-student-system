@@ -34,9 +34,13 @@
                     <div>
                         <span class="badge bg-light text-primary border px-2 py-1 fs-6 mb-2">{{ course.code }}</span>
                         <h2 class="fw-bold text-dark mb-1">{{ course.title }}</h2>
-                        <span class="text-muted small">
+                        <span class="text-muted small d-block">
                             <i class="fa-solid fa-chalkboard-user text-primary me-1"></i>
                             Instructor: <strong>{{ course.instructor.get_full_name|default:course.instructor.username|default:"Unassigned" }}</strong>
+                        </span>
+                        <span class="badge badge-soft-info mt-2">
+                            <i class="fa-solid fa-calendar-days me-1"></i>
+                            {{ course.study_year_label }} &bull; {{ course.semester_label }}
                         </span>
                     </div>
                     <div>
@@ -133,7 +137,7 @@
                                 </td>
                                 <td class="text-center">
                                     {% if enrollment.score is not None %}
-                                        <span class="fw-semibold">{{ enrollment.score }}</span>
+                                        <span class="fw-semibold">{{ enrollment.score|stringformat:"s" }}</span>
                                         <div class="progress-bbu mx-auto w-75">
                                             <div class="progress-bbu-bar {% if enrollment.score >= 80 %}progress-bbu-bar-success{% elif enrollment.score >= 65 %}progress-bbu-bar-primary{% elif enrollment.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
                                                  role="progressbar" aria-valuenow="{{ enrollment.score }}" aria-valuemin="0" aria-valuemax="100" data-progress="{{ enrollment.score }}"></div>

@@ -1,0 +1,372 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Grade Entry — BBU Student Management System{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tom-select.bootstrap5.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+{% include "components/_page_header.html" with title="Grade Entry / បញ្ចូលពិន្ទុ" subtitle="Administrator workspace — record a student's subject, semester and score in one place" %}
+
+<div class="row g-4">
+    <!-- Entry Form -->
+    <div class="col-lg-8">
+        <div class="card card-bbu grade-entry-card">
+            <div class="card-bbu-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-gold">
+                        <i class="fa-solid fa-award"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h5 class="analytics-title">Record a Subject Result</h5>
+                        <span class="analytics-subtitle">បញ្ចូលពិន្ទុមុខវិជ្ជា តាមឆមាស</span>
+                    </div>
+                </div>
+                <span class="badge badge-soft-warning analytics-badge">
+                    <i class="fa-solid fa-lock me-1"></i>Admin only
+                </span>
+            </div>
+
+            <div class="card-body p-3 p-md-4">
+                <form method="post" novalidate id="grade-entry-form">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0 mb-4">
+                        {% for error in form.non_field_errors %}
+                            <div><i class="fa-solid fa-circle-exclamation me-1"></i> {{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Step 1: Student & Subject -->
+                    <section class="grade-entry-section">
+                        <div class="grade-entry-section-title">
+                            <span class="grade-entry-step">1</span>
+                            <div>
+                                <strong>Student &amp; Subject</strong>
+                                <small>និស្សិត និងមុខវិជ្ជា</small>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.student.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fa-solid fa-user-graduate text-primary me-1"></i> Student Name / និស្សិត <span class="text-danger">*</span>
+                                </label>
+                                {{ form.student }}
+                                {% if form.student.errors %}
+                                    {% for error in form.student.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="search-hint">
+                                    <i class="fa-solid fa-circle-info text-primary me-1"></i> Type an ID, Khmer name, or Latin name.
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.course.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fa-solid fa-book text-primary me-1"></i> Subject / មុខវិជ្ជា <span class="text-danger">*</span>
+                                </label>
+                                {{ form.course }}
+                                {% if form.course.errors %}
+                                    {% for error in form.course.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="search-hint">
+                                    <i class="fa-solid fa-circle-info text-primary me-1"></i> Course code, title, or instructor.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Step 2: Term & Status -->
+                    <section class="grade-entry-section">
+                        <div class="grade-entry-section-title">
+                            <span class="grade-entry-step">2</span>
+                            <div>
+                                <strong>Semester &amp; Status</strong>
+                                <small>ឆមាស និងស្ថានភាពសិក្សា</small>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="{{ form.academic_year.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fa-regular fa-calendar-days text-primary me-1"></i> Academic Year <span class="text-danger">*</span>
+                                </label>
+                                {{ form.academic_year }}
+                                <datalist id="academic-year-options">
+                                    {% for year in academic_year_suggestions %}
+                                    <option value="{{ year }}"></option>
+                                    {% endfor %}
+                                </datalist>
+                                {% if form.academic_year.errors %}
+                                    {% for error in form.academic_year.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="form-text text-muted small">Format: 2026-2027</div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="{{ form.semester.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fa-solid fa-layer-group text-primary me-1"></i> Semester <span class="text-danger">*</span>
+                                </label>
+                                {{ form.semester }}
+                                {% if form.semester.errors %}
+                                    {% for error in form.semester.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="form-text text-muted small">Repeats are allowed in other semesters.</div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="{{ form.status.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fa-solid fa-list-check text-primary me-1"></i> Status
+                                </label>
+                                {{ form.status }}
+                                {% if form.status.errors %}
+                                    {% for error in form.status.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Step 3: Result -->
+                    <section class="grade-entry-section">
+                        <div class="grade-entry-section-title">
+                            <span class="grade-entry-step">3</span>
+                            <div>
+                                <strong>Score &amp; Attendance</strong>
+                                <small>ពិន្ទុ និងវត្តមាន</small>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+                                    <label for="{{ form.score.id_for_label }}" class="form-label fw-bold mb-0">
+                                        Score / ពិន្ទុ (0–100) <span class="text-danger">*</span>
+                                    </label>
+                                    <span class="badge badge-soft-primary px-3 py-1 fs-6 grade-entry-preview" id="grade-entry-preview">—</span>
+                                </div>
+                                {{ form.score }}
+                                {% if form.score.errors %}
+                                    {% for error in form.score.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="form-text text-muted small">
+                                    A 85–100 &bull; B+ 80–84 &bull; B 70–79 &bull; C+ 65–69 &bull; C 50–64 &bull; D 45–49 &bull; F &lt; 45
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.attendance_percentage.id_for_label }}" class="form-label fw-bold">
+                                    Attendance / វត្តមាន (%)
+                                </label>
+                                {{ form.attendance_percentage }}
+                                {% if form.attendance_percentage.errors %}
+                                    {% for error in form.attendance_percentage.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                                <div class="form-text text-muted small">Optional — defaults to 0 if left blank.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">
+                                    Notes / កំណត់សម្គាល់
+                                </label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                    {% for error in form.notes.errors %}
+                                        <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="grade-entry-update-note">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>If this student already has the selected subject in this semester, the existing record is updated instead of duplicated.</span>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top form-mobile-action-bar">
+                        <button type="submit" class="btn btn-bbu-primary px-4 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Grade
+                        </button>
+                        <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft px-4 py-2">
+                            <i class="fa-solid fa-arrow-left me-1"></i> Back to Enrollments
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card card-bbu mb-4">
+            <div class="card-bbu-header">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-primary">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">One Place, Three Steps</h6>
+                        <span class="analytics-subtitle">របៀបបញ្ចូលពិន្ទុ</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-3 p-md-4">
+                <ol class="grade-entry-steps">
+                    <li>
+                        <span class="grade-entry-step">1</span>
+                        <div><strong>Pick student &amp; subject</strong><small>Search by name, ID, or course code.</small></div>
+                    </li>
+                    <li>
+                        <span class="grade-entry-step">2</span>
+                        <div><strong>Choose the semester</strong><small>Each semester holds its own record.</small></div>
+                    </li>
+                    <li>
+                        <span class="grade-entry-step">3</span>
+                        <div><strong>Enter the score</strong><small>The letter grade is calculated automatically.</small></div>
+                    </li>
+                </ol>
+                <div class="grade-entry-tip">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <span>Use this page to record grades only. To register a student without a score, use <a href="{% url 'enrollments:enrollment_create' %}">New Enrollment</a>.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-bbu">
+            <div class="card-bbu-header d-flex justify-content-between align-items-center">
+                <div class="analytics-heading">
+                    <span class="analytics-icon analytics-icon-success">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </span>
+                    <div class="min-w-0">
+                        <h6 class="analytics-title">Recently Updated</h6>
+                        <span class="analytics-subtitle">កំណត់ត្រាថ្មីៗ</span>
+                    </div>
+                </div>
+                <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-2 p-md-3">
+                {% if recent_entries %}
+                <div class="grade-recent-list">
+                    {% for entry in recent_entries %}
+                    <a href="{% url 'enrollments:enrollment_detail' entry.id %}" class="grade-recent-item">
+                        <span class="grade-recent-avatar">{{ entry.student.get_primary_name|slice:":1"|upper }}</span>
+                        <div class="grade-recent-main">
+                            <strong>{{ entry.student.get_primary_name }}</strong>
+                            <small>{{ entry.course.code }} &bull; {{ entry.get_semester_display }} {{ entry.academic_year }}</small>
+                        </div>
+                        <div class="grade-recent-result">
+                            {% include "components/_grade_badge.html" with grade=entry.grade %}
+                            {% if entry.score is not None %}
+                            <small>{{ entry.score|stringformat:"s" }}%</small>
+                            {% endif %}
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted small py-4">
+                    <i class="fa-solid fa-inbox d-block fs-4 mb-2 text-muted"></i>
+                    No grade records yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/tom-select.complete.min.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const studentSelect = document.getElementById('id_student');
+    if (studentSelect) {
+        new TomSelect('#id_student', {
+            create: false,
+            maxOptions: 1000,
+            placeholder: 'Type Student ID, Khmer or English name...',
+            allowEmptyOption: true,
+            sortField: { field: 'text', direction: 'asc' },
+            render: {
+                no_results: function (data, escape) {
+                    return '<div class="no-results p-2 text-muted">No student found matching "' + escape(data.input) + '"</div>';
+                }
+            }
+        });
+    }
+
+    const courseSelect = document.getElementById('id_course');
+    if (courseSelect) {
+        new TomSelect('#id_course', {
+            create: false,
+            maxOptions: 500,
+            placeholder: 'Type Course code, title or instructor...',
+            allowEmptyOption: true,
+            sortField: { field: 'text', direction: 'asc' },
+            render: {
+                no_results: function (data, escape) {
+                    return '<div class="no-results p-2 text-muted">No course found matching "' + escape(data.input) + '"</div>';
+                }
+            }
+        });
+    }
+
+    const scoreInput = document.getElementById('id_score');
+    const preview = document.getElementById('grade-entry-preview');
+
+    function gradeFor(value) {
+        if (value === '' || value === null) return '—';
+        const score = parseFloat(value);
+        if (Number.isNaN(score)) return '—';
+        if (score >= 85) return 'A';
+        if (score >= 80) return 'B+';
+        if (score >= 70) return 'B';
+        if (score >= 65) return 'C+';
+        if (score >= 50) return 'C';
+        if (score >= 45) return 'D';
+        return 'F';
+    }
+
+    function updatePreview() {
+        if (!scoreInput || !preview) return;
+        const grade = gradeFor(scoreInput.value);
+        preview.textContent = grade;
+        const tone = {
+            A: 'success',
+            'B+': 'primary',
+            B: 'primary',
+            'C+': 'warning',
+            C: 'warning',
+            D: 'danger',
+            F: 'danger',
+        }[grade] || 'primary';
+        preview.className = 'badge badge-soft-' + tone + ' px-3 py-1 fs-6 grade-entry-preview';
+    }
+
+    if (scoreInput) {
+        scoreInput.addEventListener('input', updatePreview);
+        updatePreview();
+    }
+});
+</script>
+{% endblock %}

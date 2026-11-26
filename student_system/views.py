@@ -92,6 +92,14 @@ def home(request):
 
     course_labels = [c.code for c in top_courses]
     course_counts = [c.enrollment_count for c in top_courses]
+    top_course_total = sum(course_counts)
+
+    # Grade distribution summary
+    graded_total = sum(grade_counts.values())
+    pass_rate = (
+        round(((graded_total - grade_counts['F']) / graded_total) * 100, 1)
+        if graded_total else 0
+    )
 
     # Gender ratio and percentages
     male_students = Student.objects.filter(gender='M').count()
@@ -156,8 +164,11 @@ def home(request):
         'grade_c': grade_counts['C'],
         'grade_d': grade_counts['D'],
         'grade_f': grade_counts['F'],
+        'graded_total': graded_total,
+        'pass_rate': pass_rate,
         'course_labels': course_labels,
         'course_counts': course_counts,
+        'top_course_total': top_course_total,
         'male_students': male_students,
         'female_students': female_students,
         'male_pct': male_pct,

@@ -5,8 +5,8 @@ from .models import Course
 class CourseAdmin(admin.ModelAdmin):
     """Admin interface for Course model"""
     
-    list_display = ['code', 'title', 'get_instructor_name', 'level', 'capacity', 'status', 'start_date']
-    list_filter = ['status', 'level', 'start_date']
+    list_display = ['code', 'title', 'get_instructor_name', 'level', 'semester', 'capacity', 'status', 'start_date']
+    list_filter = ['status', 'level', 'semester', 'start_date']
     search_fields = ['code', 'title', 'instructor__username']
     readonly_fields = ['created_at', 'updated_at']
     
@@ -15,7 +15,7 @@ class CourseAdmin(admin.ModelAdmin):
             'fields': ('code', 'title', 'description')
         }),
         ('Course Details', {
-            'fields': ('instructor', 'credits', 'level', 'capacity', 'status')
+            'fields': ('instructor', 'credits', 'level', 'semester', 'capacity', 'status')
         }),
         ('Dates', {
             'fields': ('start_date', 'end_date')

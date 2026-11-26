@@ -85,6 +85,43 @@
                         </div>
                     </div>
 
+                    <!-- Term Selection -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="{{ form.academic_year.id_for_label }}" class="form-label fw-bold">
+                                <i class="fa-regular fa-calendar-days text-primary me-1"></i> Academic Year / ឆ្នាំសិក្សា <span class="text-danger">*</span>
+                            </label>
+                            {{ form.academic_year }}
+                            <datalist id="academic-year-options">
+                                {% for year in academic_year_suggestions %}
+                                <option value="{{ year }}"></option>
+                                {% endfor %}
+                            </datalist>
+                            {% if form.academic_year.errors %}
+                                {% for error in form.academic_year.errors %}
+                                    <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="search-hint">
+                                <i class="fa-solid fa-circle-info text-primary me-1"></i> Format: <strong>2026-2027</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.semester.id_for_label }}" class="form-label fw-bold">
+                                <i class="fa-solid fa-layer-group text-primary me-1"></i> Semester / ឆមាស <span class="text-danger">*</span>
+                            </label>
+                            {{ form.semester }}
+                            {% if form.semester.errors %}
+                                {% for error in form.semester.errors %}
+                                    <div class="invalid-feedback d-block mt-1"><i class="fa-solid fa-circle-exclamation me-1"></i>{{ error }}</div>
+                                {% endfor %}
+                            {% endif %}
+                            <div class="search-hint">
+                                <i class="fa-solid fa-circle-info text-primary me-1"></i> The same subject can be taken again in a different semester.
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Status Selection -->
                     <div class="mb-4">
                         {% include "components/_form_field.html" with field=form.status %}

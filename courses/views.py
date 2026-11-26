@@ -1,4 +1,5 @@
 import csv
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator
@@ -6,10 +7,179 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, Count
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from student_system.permissions import StaffRequiredMixin, staff_required
 from .models import Course
 from .forms import CourseForm, CourseFilterForm
+
+# Order used when rendering semesters inside a study year.
+SEMESTER_ORDER = ['S1', 'S2', 'SUM']
+
+
+def _safe_next(request, fallback):
+    """Return a validated ``next`` URL from the request, or the fallback."""
+    target = request.POST.get('next') or request.GET.get('next')
+    if target and url_has_allowed_host_and_scheme(
+        target,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return target
+    return fallback
+
+
+def _student_enrollment_map(student):
+    """Map ``course_id`` to the most relevant enrollment for a student.
+
+    A completed attempt wins over an in-progress attempt so the curriculum
+    shows the best outcome for a repeated subject.
+    """
+    if not student:
+        return {}
+
+    latest = {}
+    for enrollment in student.enrollments.select_related('course').all():
+        current = latest.get(enrollment.course_id)
+        if current is None:
+            latest[enrollment.course_id] = enrollment
+        elif enrollment.status == 'COMPLETED' and current.status != 'COMPLETED':
+            latest[enrollment.course_id] = enrollment
+    return latest
+
+
+def _build_curriculum(courses):
+    """Group courses into ``Year -> Semester -> subjects`` buckets."""
+    year_map = {}
+    unscheduled = []
+
+    for course in courses:
+        if not course.semester:
+            unscheduled.append(course)
+            continue
+
+        year = course.study_year
+        year_bucket = year_map.setdefault(year, {
+            'year': year,
+            'label': course.study_year_label,
+            'level_code': str(year * 100),
+            'semesters': {},
+        })
+        semester_bucket = year_bucket['semesters'].setdefault(course.semester, {
+            'code': course.semester,
+            'label': course.get_semester_display(),
+            'courses': [],
+            'credits': 0,
+        })
+        semester_bucket['courses'].append(course)
+        semester_bucket['credits'] += course.credits or 0
+
+    curriculum = []
+    for year in sorted(year_map):
+        year_bucket = year_map[year]
+        semesters = [
+            year_bucket['semesters'][code]
+            for code in SEMESTER_ORDER
+            if code in year_bucket['semesters']
+        ]
+        for semester in semesters:
+            semester['courses'].sort(key=lambda c: c.code)
+            semester['count'] = len(semester['courses'])
+        year_bucket['semesters'] = semesters
+        year_bucket['total_courses'] = sum(s['count'] for s in semesters)
+        year_bucket['total_credits'] = sum(s['credits'] for s in semesters)
+        curriculum.append(year_bucket)
+
+    unscheduled.sort(key=lambda c: c.code)
+    return curriculum, unscheduled
+
+
+def _semester_context(request, manage_mode=False):
+    """Build the shared context for the read-only and admin semester views."""
+    is_staff = request.user.is_staff or request.user.is_superuser
+    student = None if is_staff else getattr(request.user, 'student', None)
+
+    courses_qs = Course.objects.select_related('instructor').all()
+
+    year_filter = request.GET.get('year', '').strip()
+    semester_filter = request.GET.get('semester', '').strip()
+    search = request.GET.get('search', '').strip()
+
+    if year_filter in Course.LEVEL_TO_YEAR:
+        courses_qs = courses_qs.filter(level=year_filter)
+    if semester_filter in dict(Course.SEMESTER_CHOICES):
+        courses_qs = courses_qs.filter(semester=semester_filter)
+    if search:
+        courses_qs = courses_qs.filter(
+            Q(code__icontains=search) | Q(title__icontains=search)
+        )
+
+    courses_qs = courses_qs.order_by('level', 'semester', 'code')
+    enrollment_map = _student_enrollment_map(student)
+    curriculum, unscheduled = _build_curriculum(courses_qs)
+
+    for year_bucket in curriculum:
+        for semester in year_bucket['semesters']:
+            for course in semester['courses']:
+                course.student_enrollment = enrollment_map.get(course.pk)
+    for course in unscheduled:
+        course.student_enrollment = enrollment_map.get(course.pk)
+
+    scheduled_count = sum(
+        semester['count']
+        for year_bucket in curriculum
+        for semester in year_bucket['semesters']
+    )
+
+    return {
+        'curriculum': curriculum,
+        'unscheduled_courses': unscheduled,
+        'scheduled_count': scheduled_count,
+        'total_subjects': scheduled_count + len(unscheduled),
+        'total_credits': sum(
+            course.credits or 0
+            for year_bucket in curriculum
+            for semester in year_bucket['semesters']
+            for course in semester['courses']
+        ) + sum(course.credits or 0 for course in unscheduled),
+        'semester_choices': Course.SEMESTER_CHOICES,
+        'level_choices': Course.LEVEL_CHOICES,
+        'selected_year': year_filter,
+        'selected_semester': semester_filter,
+        'search_query': search,
+        'student_view': bool(student),
+        'manage_mode': manage_mode,
+        'is_staff_view': is_staff,
+    }
+
+
+def semester_overview(request):
+    """Read-only curriculum grouped by study year and semester."""
+    context = _semester_context(request, manage_mode=False)
+    context.update({
+        'page_title': 'Subjects by Semester / មុខវិជ្ជាតាមឆមាស',
+        'page_subtitle': (
+            'Browse every subject in the university curriculum, organised by '
+            'study year and semester.'
+        ),
+    })
+    return render(request, 'courses/semester_subjects.html', context)
+
+
+@login_required
+@staff_required
+def semester_manage(request):
+    """Administrator view for adding and changing the subjects of each semester."""
+    context = _semester_context(request, manage_mode=True)
+    context.update({
+        'page_title': 'Manage Semester Subjects / គ្រប់គ្រងមុខវិជ្ជាតាមឆមាស',
+        'page_subtitle': (
+            'Add a subject to a semester, move it to another semester, or edit '
+            'its details. Changes are visible to students immediately.'
+        ),
+    })
+    return render(request, 'courses/semester_subjects.html', context)
+
 
 # Function-Based Views (FBV)
 
@@ -22,6 +192,7 @@ def course_list(request):
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
     level = request.GET.get('level', '').strip()
+    semester = request.GET.get('semester', '').strip()
     
     if search:
         courses_qs = courses_qs.filter(
@@ -32,6 +203,8 @@ def course_list(request):
         courses_qs = courses_qs.filter(status=status)
     if level:
         courses_qs = courses_qs.filter(level=level)
+    if semester:
+        courses_qs = courses_qs.filter(semester=semester)
 
     courses_qs = courses_qs.order_by('code')
     total_count = Course.objects.count()
@@ -47,6 +220,8 @@ def course_list(request):
         'form': form,
         'total_count': total_count,
         'active_count': active_count,
+        'semester_choices': Course.SEMESTER_CHOICES,
+        'selected_semester': semester,
     }
     return render(request, 'courses/course_list.html', context)
 
@@ -59,6 +234,7 @@ def export_courses_csv(request):
     search = request.GET.get('search', '').strip()
     status = request.GET.get('status', '').strip()
     level = request.GET.get('level', '').strip()
+    semester = request.GET.get('semester', '').strip()
     
     if search:
         courses_qs = courses_qs.filter(
@@ -69,6 +245,8 @@ def export_courses_csv(request):
         courses_qs = courses_qs.filter(status=status)
     if level:
         courses_qs = courses_qs.filter(level=level)
+    if semester:
+        courses_qs = courses_qs.filter(semester=semester)
         
     courses_qs = courses_qs.order_by('code')
 
@@ -85,6 +263,7 @@ def export_courses_csv(request):
         'Instructor',
         'Credits',
         'Level',
+        'Semester',
         'Capacity',
         'Status',
         'Start Date',
@@ -99,6 +278,7 @@ def export_courses_csv(request):
             instructor_name,
             c.credits,
             c.get_level_display(),
+            c.semester_label,
             c.capacity,
             c.get_status_display(),
             c.start_date.strftime('%Y-%m-%d') if c.start_date else '',
@@ -129,6 +309,7 @@ def course_detail(request, pk):
 # Course Creation View
 def course_create(request):
     """Create a new course"""
+    next_url = request.POST.get('next') or request.GET.get('next', '')
     # Check if the request method is POST
     if request.method == 'POST':
         # Create a new form with the POST data
@@ -136,14 +317,23 @@ def course_create(request):
         # Check if the form is valid
         if form.is_valid():
             # Save the form
-            form.save()
-            # Redirect to the course list
-            return redirect('courses:course_list')
+            course = form.save()
+            messages.success(request, f"Course {course.code} saved successfully.")
+            # Return to the semester manager when the form was opened there.
+            return redirect(_safe_next(request, course.get_absolute_url()))
     else:
+        # Pre-select the year/semester when coming from the semester manager.
+        initial = {}
+        semester = request.GET.get('semester', '').strip()
+        level = request.GET.get('level', '').strip()
+        if semester in dict(Course.SEMESTER_CHOICES):
+            initial['semester'] = semester
+        if level in dict(Course.LEVEL_CHOICES):
+            initial['level'] = level
         # Create a new form
-        form = CourseForm()
+        form = CourseForm(initial=initial)
     # Context for the template
-    context = {'form': form, 'title': 'Create Course'}
+    context = {'form': form, 'title': 'Create Course', 'next_url': next_url}
     # Render the template
     return render(request, 'courses/course_form.html', context)
 
@@ -154,6 +344,7 @@ def course_update(request, pk):
     """Update course information"""
     # Get the course by primary key
     course = get_object_or_404(Course, pk=pk)
+    next_url = request.POST.get('next') or request.GET.get('next', '')
     # Check if the request method is POST
     if request.method == 'POST':
         # Create a new form with the POST data
@@ -162,13 +353,19 @@ def course_update(request, pk):
         if form.is_valid():
             # Save the form
             form.save()
-            # Redirect to the course detail
-            return redirect('courses:course_detail', pk=course.pk)
+            messages.success(request, f"Course {course.code} updated successfully.")
+            # Return to the semester manager when the form was opened there.
+            return redirect(_safe_next(request, course.get_absolute_url()))
     else:
         # Create a new form with the instance
         form = CourseForm(instance=course)
     # Context for the template
-    context = {'form': form, 'course': course, 'title': 'Update Course'}
+    context = {
+        'form': form,
+        'course': course,
+        'title': 'Update Course',
+        'next_url': next_url,
+    }
     # Render the template
     return render(request, 'courses/course_form.html', context)
 
@@ -181,10 +378,12 @@ def course_delete(request, pk):
     course = get_object_or_404(Course, pk=pk)
     # Check if the request method is POST
     if request.method == 'POST':
+        code = course.code
         # Delete the course
         course.delete()
-        # Redirect to the course list
-        return redirect('courses:course_list')
+        messages.success(request, f"Course {code} deleted successfully.")
+        # Return to the semester manager when the deletion started there.
+        return redirect(_safe_next(request, reverse('courses:course_list')))
     # Context for the template
     context = {'course': course}
     # Render the template

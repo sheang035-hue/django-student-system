@@ -11,7 +11,7 @@
         margin: 8mm;
     }
     html {
-        font-size: 12px !important;
+        font-size: 14px !important;
     }
     .row.g-4 > .col-lg-8 {
         flex: 0 0 100% !important;
@@ -271,7 +271,7 @@
                                 <td class="text-center" data-label="Credits">{{ enrollment.course.credits }}</td>
                                 <td class="text-center" data-label="Score">
                                     {% if enrollment.score is not None %}
-                                        <span class="fw-bold">{{ enrollment.score }}</span>
+                                        <span class="fw-bold">{{ enrollment.score|stringformat:"s" }}</span>
                                         <div class="progress-bbu mx-auto w-75">
                                             <div class="progress-bbu-bar {% if enrollment.score >= 80 %}progress-bbu-bar-success{% elif enrollment.score >= 65 %}progress-bbu-bar-primary{% elif enrollment.score >= 50 %}progress-bbu-bar-warning{% else %}progress-bbu-bar-danger{% endif %}"
                                                  role="progressbar" aria-valuenow="{{ enrollment.score }}" aria-valuemin="0" aria-valuemax="100" data-progress="{{ enrollment.score }}"></div>

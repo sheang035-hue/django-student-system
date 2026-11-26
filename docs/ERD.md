@@ -53,6 +53,7 @@ erDiagram
         char level "100 / 200 / 300 / 400"
         int capacity
         char status "ACTIVE / INACTIVE / ARCHIVED"
+        char semester "S1 / S2 / SUM (blank = not scheduled)"
         date start_date
         date end_date
         datetime created_at

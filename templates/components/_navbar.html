@@ -36,19 +36,25 @@
                     <li class="nav-item">
                         <a class="nav-link nav-link-bbu {% if 'student_transcript' in request.path %}active{% endif %}" href="{% url 'enrollments:student_transcript' user.student.student_id %}">
                             <i class="fa-solid fa-certificate nav-link-icon text-warning"></i>
-                            <span>My Transcript</span>
+                            <span>Transcript</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nav-link-bbu {% if 'student' in request.path and not 'student_transcript' in request.path %}active{% endif %}" href="{% url 'students:student_detail' user.student.pk %}">
                             <i class="fa-solid fa-id-card nav-link-icon text-info"></i>
-                            <span>My ID Card</span>
+                            <span>ID Card</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link nav-link-bbu {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}active{% endif %}" href="{% url 'courses:course_list' %}">
                             <i class="fa-solid fa-book-open nav-link-icon text-success"></i>
                             <span>Courses</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'semester_overview' %}active{% endif %}" href="{% url 'courses:semester_overview' %}">
+                            <i class="fa-solid fa-calendar-days nav-link-icon text-info"></i>
+                            <span>Semesters</span>
                         </a>
                     </li>
                 {% elif user.is_authenticated %}
@@ -69,6 +75,12 @@
                         <a class="nav-link nav-link-bbu {% if 'courses' in request.resolver_match.namespaces or 'course' in request.path %}active{% endif %}" href="{% url 'courses:course_list' %}">
                             <i class="fa-solid fa-book-open nav-link-icon text-success"></i>
                             <span>Courses</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-bbu {% if request.resolver_match.url_name == 'semester_manage' %}active{% endif %}" href="{% url 'courses:semester_manage' %}">
+                            <i class="fa-solid fa-calendar-days nav-link-icon text-info"></i>
+                            <span>Semester Subjects</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -132,8 +144,18 @@
                                 </a>
                             </li>
                             <li>
+                                <a class="dropdown-item py-2" href="{% url 'courses:semester_manage' %}">
+                                    <i class="fa-solid fa-calendar-days text-info me-2"></i> Manage Semester Subjects
+                                </a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item py-2" href="{% url 'enrollments:enrollment_create' %}">
                                     <i class="fa-solid fa-file-circle-plus text-warning me-2"></i> New Enrollment
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2" href="{% url 'enrollments:grade_entry' %}">
+                                    <i class="fa-solid fa-award text-danger me-2"></i> Grade Entry
                                 </a>
                             </li>
                         </ul>
@@ -198,6 +220,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="dropdown-item py-2" href="{% url 'courses:semester_manage' %}">
+                                        <i class="fa-solid fa-calendar-days me-2 text-info"></i> Semester Subjects
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item py-2" href="{% url 'enrollments:enrollment_list' %}">
                                         <i class="fa-solid fa-clipboard-check me-2 text-warning"></i> Enrollments Records
                                     </a>
@@ -226,6 +253,11 @@
                                 <li>
                                     <a class="dropdown-item py-2" href="{% url 'courses:course_list' %}">
                                         <i class="fa-solid fa-book-open me-2 text-success"></i> Course Catalog
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item py-2" href="{% url 'courses:semester_overview' %}">
+                                        <i class="fa-solid fa-calendar-days me-2 text-info"></i> Subjects by Semester
                                     </a>
                                 </li>
                             {% endif %}

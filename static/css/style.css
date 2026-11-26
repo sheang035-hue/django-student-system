@@ -927,6 +927,7 @@ a:hover {
     align-items: center;
     gap: 8px;
     border: 1px solid transparent;
+    white-space: nowrap;
 }
 
 .nav-link-icon {
@@ -974,6 +975,40 @@ a:hover {
     box-shadow: 0 2px 12px rgba(59, 130, 246, 0.15);
 }
 
+/* Compact the navbar on laptop widths so every link stays visible */
+@media (max-width: 1399.98px) {
+    .navbar-bbu-astra .nav-link,
+    .nav-link-bbu {
+        font-size: 0.86rem;
+        padding: 0.42rem 0.68rem !important;
+        gap: 6px;
+    }
+
+    .nav-search-input {
+        width: 118px;
+    }
+
+    .nav-search-input:focus {
+        width: 118px;
+    }
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-bbu-astra .nav-search-form {
+        display: none;
+    }
+
+    .navbar-bbu-astra .nav-link-icon {
+        display: none;
+    }
+
+    .navbar-bbu-astra .nav-link,
+    .nav-link-bbu {
+        font-size: 0.82rem;
+        padding: 0.4rem 0.54rem !important;
+    }
+}
+
 /* Navbar Search Bar & Input */
 .nav-search-form {
     display: inline-flex;
@@ -1017,7 +1052,7 @@ a:hover {
 }
 
 .nav-search-input:focus {
-    width: 195px;
+    width: 145px;
 }
 
 .nav-search-input::placeholder {
@@ -2614,6 +2649,10 @@ a:hover {
 
 /* Mobile Sticky Action Bar for Forms */
 @media (max-width: 767.98px) {
+    body:has(.form-mobile-action-bar) {
+        padding-bottom: 5.25rem;
+    }
+
     .form-mobile-action-bar {
         position: fixed;
         bottom: 0;
@@ -3795,4 +3834,1303 @@ section[id] {
 
 [data-bs-theme="dark"] .verify-seal {
     background: #1a2233;
+}
+
+/* ------------------------------------------------------------------------------
+   Dashboard Analytics Cards — Grade Distribution / Top Courses / Gender Ratio
+   ------------------------------------------------------------------------------ */
+.analytics-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.analytics-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1.05rem 1.25rem;
+    background: var(--bbu-surface);
+    border-bottom: 1px solid var(--bbu-border);
+}
+
+.analytics-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.analytics-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 1rem;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.analytics-icon-primary {
+    background: var(--bbu-primary-soft);
+    color: var(--bbu-primary);
+}
+
+.analytics-icon-success {
+    background: var(--bbu-success-soft);
+    color: var(--bbu-success);
+}
+
+.analytics-icon-info {
+    background: var(--bbu-info-soft);
+    color: var(--bbu-info);
+}
+
+.analytics-title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--bbu-navy);
+}
+
+[data-bs-theme="dark"] .analytics-title {
+    color: #ffffff;
+}
+
+.analytics-subtitle {
+    display: block;
+    margin-top: 2px;
+    font-family: var(--font-khmer);
+    font-size: 0.715rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--bbu-muted);
+    letter-spacing: normal;
+}
+
+.analytics-badge {
+    flex: 0 0 auto;
+    padding: 0.36rem 0.65rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.analytics-ratio-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 0 0 auto;
+    padding: 0.32rem 0.6rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: var(--radius-pill);
+    background: var(--bbu-surface-subtle);
+    color: var(--bbu-secondary);
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.analytics-ratio-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.analytics-ratio-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.analytics-ratio-divider {
+    width: 1px;
+    height: 11px;
+    display: inline-block;
+    background: var(--bbu-border);
+}
+
+.analytics-card-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding: 1rem 1.25rem 1.25rem;
+}
+
+.analytics-chart {
+    position: relative;
+    width: 100%;
+}
+
+.analytics-chart-grade {
+    flex: 1 1 auto;
+    min-height: 218px;
+}
+
+.analytics-chart-donut {
+    flex: 0 0 195px;
+    height: 195px;
+    position: relative;
+}
+
+.donut-center {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.donut-center-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--bbu-navy);
+    font-variant-numeric: tabular-nums;
+}
+
+[data-bs-theme="dark"] .donut-center-value {
+    color: #ffffff;
+}
+
+.donut-center-label {
+    margin-top: 0.2rem;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--bbu-muted);
+}
+
+.analytics-stat-strip {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.9rem;
+}
+
+.analytics-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0.55rem 0.65rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: 0.75rem;
+    background: var(--bbu-surface-subtle);
+}
+
+.analytics-stat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+}
+
+.analytics-stat-icon-primary {
+    background: var(--bbu-primary-soft);
+    color: var(--bbu-primary);
+}
+
+.analytics-stat-icon-success {
+    background: var(--bbu-success-soft);
+    color: var(--bbu-success);
+}
+
+.analytics-stat-label {
+    display: block;
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--bbu-muted);
+}
+
+.analytics-stat-value {
+    display: block;
+    font-size: 1.02rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--bbu-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.analytics-stat-value.is-success {
+    color: var(--bbu-success);
+}
+
+.course-legend-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.95rem;
+}
+
+.course-legend-row {
+    display: grid;
+    grid-template-columns: 8px minmax(50px, auto) minmax(28px, 1fr) auto;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.course-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 3px;
+}
+
+.course-legend-name {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--bbu-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-legend-track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--bbu-border);
+}
+
+.course-legend-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.7s ease;
+}
+
+.course-legend-value {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--bbu-text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.course-legend-value span {
+    color: var(--bbu-muted);
+    font-weight: 600;
+}
+
+.gender-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    margin-top: auto;
+    padding-top: 0.95rem;
+}
+
+.gender-row {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: 0.8rem;
+    background: var(--bbu-surface-subtle);
+}
+
+.gender-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+}
+
+.gender-icon-male {
+    background: rgba(45, 92, 246, 0.14);
+    color: #2d5cf6;
+}
+
+.gender-icon-female {
+    background: rgba(236, 72, 153, 0.14);
+    color: #ec4899;
+}
+
+.gender-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.gender-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.gender-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--bbu-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gender-label-kh {
+    font-family: var(--font-khmer);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--bbu-muted);
+}
+
+.gender-value {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--bbu-text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.gender-count {
+    font-weight: 600;
+    color: var(--bbu-muted);
+}
+
+.gender-track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--bbu-border);
+}
+
+.gender-fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.7s ease;
+}
+
+.gender-fill-male {
+    background: linear-gradient(90deg, #60a5fa, #2d5cf6);
+}
+
+.gender-fill-female {
+    background: linear-gradient(90deg, #f9a8d4, #ec4899);
+}
+
+.analytics-empty {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 0.5rem;
+    text-align: center;
+}
+
+@media (max-width: 419.98px) {
+    .analytics-card-header {
+        padding: 0.9rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .analytics-card-body {
+        padding: 0.85rem 1rem 1rem;
+    }
+
+    .analytics-ratio-badge {
+        padding: 0.28rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+    .analytics-badge {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.55rem;
+    }
+
+    .analytics-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        font-size: 0.92rem;
+    }
+}
+
+/* ------------------------------------------------------------------------------
+   Student Portal — Semester-grouped Gradebook
+   ------------------------------------------------------------------------------ */
+.portal-grades-card {
+    overflow: hidden;
+}
+
+.portal-grades-header {
+    padding: 1.05rem 1.25rem;
+    background: var(--bbu-surface);
+    border-bottom: 1px solid var(--bbu-border);
+}
+
+.portal-grades-header > div:first-child {
+    min-width: 0;
+}
+
+.portal-grades-header h5 {
+    overflow-wrap: anywhere;
+}
+
+.portal-grades-header .badge {
+    white-space: nowrap;
+}
+
+.portal-grades-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: var(--bbu-primary-soft);
+    color: var(--bbu-primary);
+    font-size: 1.08rem;
+}
+
+.portal-term-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--bbu-border);
+    background: var(--bbu-surface);
+    scrollbar-width: thin;
+}
+
+.portal-term-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: var(--radius-pill);
+    background: var(--bbu-surface-subtle);
+    color: var(--bbu-muted);
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.portal-term-pill small {
+    color: var(--bbu-subtle);
+    font-size: 0.66rem;
+    font-weight: 600;
+}
+
+.portal-term-pill-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bbu-border);
+}
+
+.portal-term-pill-count {
+    padding: 0 0.35rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: var(--radius-pill);
+    background: var(--bbu-surface);
+    color: var(--bbu-muted);
+    font-size: 0.64rem;
+    font-weight: 700;
+}
+
+.portal-term-pill:hover {
+    border-color: var(--bbu-primary);
+    color: var(--bbu-primary);
+}
+
+.portal-term-pill.is-active {
+    border-color: var(--bbu-primary);
+    background: var(--bbu-primary);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(45, 92, 246, 0.24);
+}
+
+.portal-term-pill.is-active small,
+.portal-term-pill.is-active .portal-term-pill-count {
+    color: #ffffff;
+}
+
+.portal-term-pill.is-active .portal-term-pill-count {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.portal-term-pill.is-active .portal-term-pill-dot {
+    background: #ffffff;
+}
+
+.portal-term-list {
+    background: var(--bbu-surface);
+}
+
+.portal-term-section {
+    scroll-margin-top: 96px;
+    border-bottom: 1px solid var(--bbu-border);
+}
+
+.portal-term-section:last-child {
+    border-bottom: 0;
+}
+
+.portal-term-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.9rem;
+    padding: 1rem 1.25rem 0.85rem;
+    border-bottom: 1px solid var(--bbu-border);
+    background: linear-gradient(180deg, var(--bbu-primary-tint), var(--bbu-surface));
+}
+
+.portal-term-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-width: 0;
+}
+
+.portal-term-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border: 1px solid var(--bbu-border);
+    border-radius: 11px;
+    background: var(--bbu-surface);
+    color: var(--bbu-primary);
+}
+
+.portal-term-title {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--bbu-text);
+}
+
+.portal-term-meta {
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.74rem;
+    color: var(--bbu-muted);
+}
+
+.portal-term-stats {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.portal-term-stat {
+    min-width: 82px;
+    padding: 0.38rem 0.6rem;
+    border: 1px solid var(--bbu-border);
+    border-radius: 11px;
+    background: var(--bbu-surface);
+    text-align: center;
+}
+
+.portal-term-stat span {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--bbu-subtle);
+}
+
+.portal-term-stat strong {
+    font-size: 0.92rem;
+    color: var(--bbu-text);
+}
+
+.portal-term-table thead th {
+    border-bottom: 1px solid var(--bbu-border);
+    background: var(--bbu-surface-subtle);
+    color: var(--bbu-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.portal-retake-badge {
+    font-size: 0.63rem;
+    font-weight: 600;
+}
+
+.portal-grades-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--bbu-border);
+    background: var(--bbu-surface-subtle);
+    color: var(--bbu-muted);
+    font-size: 0.74rem;
+}
+
+.portal-grades-footer-total {
+    font-weight: 700;
+    color: var(--bbu-text);
+}
+
+.portal-grades-empty {
+    padding: 2.4rem 1rem;
+    text-align: center;
+}
+
+.portal-grades-empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    margin-bottom: 0.75rem;
+    border-radius: 50%;
+    background: var(--bbu-primary-soft);
+    color: var(--bbu-primary);
+    font-size: 1.3rem;
+}
+
+/* ------------------------------------------------------------------------------
+   Admin Grade Entry
+   ------------------------------------------------------------------------------ */
+.grade-entry-section {
+    padding: 1rem 0;
+    border-bottom: 1px dashed var(--bbu-border);
+}
+
+.grade-entry-section:first-of-type {
+    padding-top: 0.15rem;
+}
+
+.grade-entry-section:last-of-type {
+    padding-bottom: 0.15rem;
+    border-bottom: 0;
+}
+
+.grade-entry-section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.85rem;
+}
+
+.grade-entry-section-title strong {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--bbu-text);
+}
+
+.grade-entry-section-title small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--bbu-muted);
+}
+
+.grade-entry-step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bbu-primary);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.grade-entry-update-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    background: var(--bbu-info-soft);
+    color: var(--bbu-info);
+    font-size: 0.77rem;
+    line-height: 1.5;
+}
+
+.grade-entry-update-note i {
+    margin-top: 0.15rem;
+}
+
+.grade-entry-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.grade-entry-steps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+}
+
+.grade-entry-steps strong {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--bbu-text);
+}
+
+.grade-entry-steps small {
+    display: block;
+    font-size: 0.71rem;
+    line-height: 1.4;
+    color: var(--bbu-muted);
+}
+
+.grade-entry-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-top: 1rem;
+    padding: 0.7rem 0.85rem;
+    border-radius: 12px;
+    background: var(--bbu-gold-soft);
+    color: var(--bbu-gold-dark);
+    font-size: 0.73rem;
+    line-height: 1.5;
+}
+
+.grade-entry-tip a {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.grade-recent-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.grade-recent-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.6rem 0.55rem;
+    border-radius: 12px;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.18s ease;
+}
+
+.grade-recent-item:hover {
+    background: var(--bbu-surface-subtle);
+    color: inherit;
+}
+
+.grade-recent-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--bbu-primary-soft);
+    color: var(--bbu-primary);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.grade-recent-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.grade-recent-main strong {
+    max-width: 155px;
+    overflow: hidden;
+    color: var(--bbu-text);
+    font-size: 0.77rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.grade-recent-main small {
+    overflow: hidden;
+    color: var(--bbu-muted);
+    font-size: 0.67rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.grade-recent-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+    margin-left: auto;
+}
+
+.grade-recent-result small {
+    color: var(--bbu-muted);
+    font-size: 0.65rem;
+}
+
+[data-bs-theme="dark"] .portal-term-header {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.08), var(--bbu-surface));
+}
+
+[data-bs-theme="dark"] .portal-term-pill {
+    background: var(--bbu-surface-subtle);
+}
+
+[data-bs-theme="dark"] .portal-term-pill.is-active {
+    background: var(--bbu-primary);
+    color: #07101f;
+}
+
+[data-bs-theme="dark"] .portal-grades-footer {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+[data-bs-theme="dark"] .portal-term-stat {
+    background: var(--bbu-surface);
+}
+
+@media (max-width: 575.98px) {
+    .portal-grades-header,
+    .portal-term-header,
+    .portal-grades-footer {
+        padding-right: 0.9rem;
+        padding-left: 0.9rem;
+    }
+
+    .portal-term-nav {
+        padding: 0.75rem 0.9rem;
+    }
+
+    .portal-term-stats {
+        width: 100%;
+    }
+
+    .portal-term-stat {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .grade-recent-main strong {
+        max-width: 115px;
+    }
+}
+
+/* ------------------------------------------------------------------------------
+   Student Portal — Mobile grade cards, hero wrapping & interaction polish
+   ------------------------------------------------------------------------------ */
+.portal-course-code {
+    border: 1px solid var(--bbu-border);
+    border-radius: 8px;
+    background: var(--bbu-surface-subtle);
+    color: var(--bbu-text);
+    font-size: 0.64rem;
+    letter-spacing: 0.03em;
+}
+
+.hero-banner .btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff !important;
+}
+
+.hero-banner .btn-outline-light:hover {
+    border-color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff !important;
+}
+
+.portal-term-pill.is-active .portal-term-pill-label {
+    font-weight: 800;
+}
+
+.portal-term-pill.is-active small,
+.portal-term-pill.is-active .portal-term-pill-count {
+    font-weight: 700;
+}
+
+.portal-term-section {
+    transition: background 0.2s ease;
+}
+
+[data-bs-theme="dark"] .portal-term-pill.is-active small,
+[data-bs-theme="dark"] .portal-term-pill.is-active .portal-term-pill-count {
+    color: #07101f;
+}
+
+[data-bs-theme="dark"] .portal-term-pill.is-active .portal-term-pill-count {
+    border-color: rgba(7, 16, 31, 0.16);
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Grade entry live preview + mobile breathing room */
+.grade-entry-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.6rem;
+    text-align: center;
+}
+
+@media (max-width: 767.98px) {
+    .grade-entry-card {
+        margin-bottom: 4.5rem;
+    }
+
+    .grade-entry-section {
+        padding: 0.85rem 0;
+    }
+
+    .grade-entry-section-title {
+        margin-bottom: 0.7rem;
+    }
+
+    /* Compact card layout for term tables instead of one long row per field */
+    .portal-term-table,
+    .portal-term-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .portal-term-table thead {
+        display: none;
+    }
+
+    .portal-term-table tbody {
+        display: grid;
+        gap: 0.7rem;
+        padding: 0.8rem;
+    }
+
+    .portal-term-table tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem 0.85rem;
+        width: 100%;
+        margin: 0;
+        padding: 0.85rem 0.9rem;
+        border: 1px solid var(--bbu-border);
+        border-radius: 14px;
+        background: var(--bbu-surface);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .portal-term-table tr:last-child {
+        margin-bottom: 0;
+    }
+
+    .portal-term-table td {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        text-align: left !important;
+    }
+
+    .portal-term-table td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 0.18rem;
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--bbu-subtle);
+    }
+
+    .portal-term-table td[data-label="Course / មុខវិជ្ជា"] {
+        grid-column: 1 / -1;
+        padding-bottom: 0.55rem;
+        border-bottom: 1px dashed var(--bbu-border);
+    }
+
+    .portal-term-table td[data-label="Course / មុខវិជ្ជា"]::before {
+        display: none;
+    }
+
+    .portal-term-table td[data-label="Course / មុខវិជ្ជា"] > div,
+    .portal-term-table td[data-label="Course / មុខវិជ្ជា"] > div > div {
+        min-width: 0;
+    }
+
+    .portal-term-table td[data-label="Course / មុខវិជ្ជា"] a {
+        overflow-wrap: anywhere;
+    }
+
+    .portal-term-table .progress-bbu-sm {
+        max-width: 130px;
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+
+    .portal-term-table td[data-label="Credits"],
+    .portal-term-table td[data-label="Score / ពិន្ទុ"],
+    .portal-term-table td[data-label="Grade"],
+    .portal-term-table td[data-label="Status"] {
+        align-self: start;
+    }
+
+    .portal-term-pill {
+        scroll-snap-align: start;
+    }
+
+    .portal-term-nav {
+        scroll-snap-type: x proximity;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hero-banner .card-body {
+        padding: 1.25rem 1.1rem !important;
+    }
+
+    .hero-banner .display-6 {
+        font-size: 1.7rem;
+        line-height: 1.32;
+    }
+
+    .hero-banner .lead {
+        font-size: 0.98rem;
+    }
+
+    .hero-banner .badge {
+        white-space: normal;
+        text-align: left;
+        line-height: 1.4;
+    }
+
+    .hero-banner .d-flex.align-items-center.gap-3.mb-3 {
+        align-items: flex-start !important;
+    }
+
+    .hero-banner .bbu-hero-logo {
+        width: 48px;
+        height: 48px;
+    }
+
+    .hero-banner .d-flex.flex-wrap.gap-2.text-white-50.small > span {
+        white-space: normal;
+    }
+
+    .portal-term-table tbody {
+        gap: 0.6rem;
+        padding: 0.65rem;
+    }
+
+    .portal-term-table tr {
+        gap: 0.55rem 0.7rem;
+        padding: 0.8rem;
+    }
+
+    /* Keep the four headline metrics readable on narrow phones */
+    .kpi-card .card-body {
+        padding: 0.8rem !important;
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.4rem;
+    }
+
+    .kpi-card .kpi-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        margin-right: 0 !important;
+        margin-bottom: 0.1rem;
+    }
+
+    .kpi-card h6 {
+        font-size: 0.6rem;
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+    }
+
+    .kpi-card h3 {
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    .kpi-card h3 small {
+        font-size: 0.7rem;
+    }
+
+    .kpi-card .badge {
+        white-space: normal;
+        font-size: 0.55rem;
+        line-height: 1.25;
+        padding: 0.25rem 0.4rem;
+    }
+
+    .kpi-card .card-footer small,
+    .kpi-card .card-footer a {
+        font-size: 0.64rem;
+    }
+}
+
+/* ------------------------------------------------------------------------------
+   Enrollment List — Mobile record cards & page header scaling
+   ------------------------------------------------------------------------------ */
+@media (max-width: 767.98px) {
+    .enrollment-table,
+    .enrollment-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    .enrollment-table thead {
+        display: none;
+    }
+
+    .enrollment-table tbody {
+        display: grid;
+        gap: 0.75rem;
+        padding: 0.8rem;
+    }
+
+    .enrollment-table tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem 0.9rem;
+        width: 100%;
+        margin: 0;
+        padding: 0.85rem 0.9rem;
+        border: 1px solid var(--bbu-border);
+        border-radius: 14px;
+        background: var(--bbu-surface);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .enrollment-table td {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        text-align: left !important;
+    }
+
+    .enrollment-table td::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 0.18rem;
+        font-size: 0.58rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--bbu-subtle);
+        white-space: nowrap;
+    }
+
+    .enrollment-table td[data-label="Student"] {
+        grid-column: 1 / -1;
+        padding-bottom: 0.55rem;
+        border-bottom: 1px dashed var(--bbu-border);
+    }
+
+    .enrollment-table td[data-label="Student"]::before {
+        display: none;
+    }
+
+    .enrollment-table td[data-label="Course"] {
+        grid-column: 1 / -1;
+        padding-bottom: 0.55rem;
+        border-bottom: 1px dashed var(--bbu-border);
+        overflow-wrap: anywhere;
+    }
+
+    .enrollment-table td[data-label="Course"]::before {
+        margin-bottom: 0.35rem;
+    }
+
+    .enrollment-table td[data-label="Term"] small {
+        display: block;
+        margin-top: 0.1rem !important;
+        font-size: 0.68rem;
+    }
+
+    .enrollment-table td[data-label="Term"] small + small::before {
+        content: none;
+    }
+
+    .enrollment-table td[data-label="Actions"] {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 0.5rem;
+        border-top: 1px dashed var(--bbu-border);
+    }
+
+    .enrollment-table td[data-label="Actions"]::before {
+        display: none;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .page-header {
+        margin-bottom: 1.2rem;
+    }
+
+    .page-header-title {
+        font-size: 1.45rem;
+        line-height: 1.25;
+    }
+
+    .page-header-subtitle {
+        font-size: 0.84rem;
+    }
+
+    .page-header > div:last-child {
+        width: 100%;
+    }
+
+    .page-header > div:last-child .btn {
+        flex: 1 1 0;
+        justify-content: center;
+        padding-inline: 0.75rem;
+    }
 }

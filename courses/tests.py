@@ -52,6 +52,17 @@ class CourseModelTest(TestCase):
             reverse('courses:course_detail', kwargs={'pk': self.course.pk})
         )
 
+    # test_semester_helpers verifies the study year / semester labels used by
+    # the curriculum page when grouping subjects by year and semester.
+    def test_semester_helpers(self):
+        self.assertEqual(self.course.study_year, 2)
+        self.assertEqual(self.course.study_year_label, 'Year 2')
+        self.assertEqual(self.course.semester_label, 'Not scheduled')
+
+        self.course.semester = 'S1'
+        self.assertEqual(self.course.semester_label, 'Semester 1')
+        self.assertEqual(self.course.get_semester_display(), 'Semester 1')
+
 # define CourseViewsTest class to test the course views
 class CourseViewsTest(TestCase):
     # setUp method is used to set up the test environment
@@ -133,4 +144,4 @@ class CourseViewsTest(TestCase):
         self.client.login(username='teacher', password='password123')
         response = self.client.get(reverse('courses:export_csv'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'text/csv')
+        self.assertTrue(response['Content-Type'].startswith('text/csv'))

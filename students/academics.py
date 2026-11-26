@@ -27,6 +27,8 @@ STANDING_BANDS = [
     (0.00, 'Academic Probation', 'ត្រូវតាមដានការសិក្សា', 'danger', 'Probation'),
 ]
 
+SEMESTER_RANK = {'S1': 1, 'S2': 2, 'SUM': 3}
+
 
 def grade_from_score(score):
     """Return the BBU letter grade for a numeric score."""
@@ -98,16 +100,17 @@ def split_course_title(course):
 
 
 def summarize_academics(student):
-    """Enrich a student's enrollments and return all academic summary values."""
+    """Enrich a student's enrollments and return all academic summary values.
+
+    Every attempt stays visible in the semester groups and transcript, but the
+    cumulative GPA, earned credits and degree progress only count the latest
+    attempt of each course (retakes replace earlier attempts).
+    """
     enrollments = list(student.enrollments.select_related('course').all())
 
-    total_credits = 0
-    earned_credits = 0
-    total_credit_points = 0.0
-    completed = []
-    in_progress = []
-    grade_counts = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0}
-
+    # ------------------------------------------------------------------
+    # Enrich every individual attempt (term views show all of them).
+    # ------------------------------------------------------------------
     for enrollment in enrollments:
         grade = (enrollment.grade or '').strip().upper()
         if not grade:
@@ -117,19 +120,75 @@ def summarize_academics(student):
         enrollment.grade_point = GRADE_POINTS.get(grade, 0.0)
         credits = enrollment.course.credits if (enrollment.course and enrollment.course.credits) else 0
         enrollment.clean_en_title, enrollment.clean_kh_title = split_course_title(enrollment.course)
-        total_credits += credits
 
         if enrollment.status == 'COMPLETED':
             enrollment.credit_points = round(credits * enrollment.grade_point, 2)
-            total_credit_points += enrollment.credit_points
-            earned_credits += credits
             enrollment.is_passed = grade != 'F' and (
                 enrollment.score is None or float(enrollment.score) >= 50
             )
-            completed.append(enrollment)
         else:
             enrollment.credit_points = 0.0
             enrollment.is_passed = False
+
+    # ------------------------------------------------------------------
+    # Order attempts oldest → newest so the last one per course wins, and
+    # label earlier attempts as retakes/superseded for the UI.
+    # ------------------------------------------------------------------
+    ordered_for_attempts = sorted(
+        enrollments,
+        key=lambda e: (
+            e.academic_year or '',
+            SEMESTER_RANK.get(e.semester, 0),
+            e.enrollment_date or date.min,
+            e.pk or 0,
+        ),
+    )
+    attempt_counts = {}
+    latest_by_course = {}
+    for enrollment in ordered_for_attempts:
+        attempt_counts[enrollment.course_id] = attempt_counts.get(enrollment.course_id, 0) + 1
+        enrollment.attempt_number = attempt_counts[enrollment.course_id]
+        enrollment.is_retake = enrollment.attempt_number > 1
+        enrollment.is_latest_attempt = True
+
+        earlier = latest_by_course.get(enrollment.course_id)
+        if earlier is not None:
+            earlier.is_latest_attempt = False
+        latest_by_course[enrollment.course_id] = enrollment
+
+    for enrollment in enrollments:
+        enrollment.is_superseded = (
+            not enrollment.is_latest_attempt
+            and attempt_counts.get(enrollment.course_id, 0) > 1
+        )
+        enrollment.counts_toward_gpa = (
+            enrollment.is_latest_attempt and enrollment.status == 'COMPLETED'
+        )
+
+    # ------------------------------------------------------------------
+    # Cumulative totals: latest attempt of each course only.
+    # ------------------------------------------------------------------
+    counting_attempts = list(latest_by_course.values())
+    total_credits = 0
+    earned_credits = 0
+    gpa_credits = 0
+    total_credit_points = 0.0
+    completed = []
+    in_progress = []
+    grade_counts = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0}
+
+    for enrollment in counting_attempts:
+        grade = enrollment.grade
+        credits = enrollment.course.credits if (enrollment.course and enrollment.course.credits) else 0
+        total_credits += credits
+
+        if enrollment.status == 'COMPLETED':
+            gpa_credits += credits
+            total_credit_points += enrollment.credit_points
+            if enrollment.is_passed:
+                earned_credits += credits
+            completed.append(enrollment)
+        else:
             in_progress.append(enrollment)
 
         if grade == 'A':
@@ -149,13 +208,76 @@ def summarize_academics(student):
         if scored_completed else 0.0
     )
 
-    calculated_gpa = round(total_credit_points / earned_credits, 2) if earned_credits > 0 else 0.0
+    calculated_gpa = (
+        round(total_credit_points / gpa_credits, 2) if gpa_credits > 0 else 0.0
+    )
     stored_gpa = float(student.gpa or 0)
-    effective_gpa = stored_gpa if stored_gpa > 0 else calculated_gpa
+    effective_gpa = calculated_gpa if completed else stored_gpa
+
+    # ------------------------------------------------------------------
+    # Term grouping (all attempts remain visible within their term).
+    # ------------------------------------------------------------------
+    term_map = {}
+    for enrollment in enrollments:
+        key = (enrollment.academic_year or 'Unassigned', enrollment.semester or '')
+        bucket = term_map.get(key)
+        if bucket is None:
+            bucket = {
+                'academic_year': enrollment.academic_year or 'Unassigned',
+                'semester': enrollment.semester or '',
+                'semester_label': (
+                    enrollment.get_semester_display()
+                    if enrollment.semester else 'Unassigned term'
+                ),
+                'enrollments': [],
+                'credits': 0,
+                'earned_credits': 0,
+                'credit_points': 0.0,
+                'completed_count': 0,
+                'in_progress_count': 0,
+                'scored': [],
+            }
+            term_map[key] = bucket
+
+        credits = enrollment.course.credits if (enrollment.course and enrollment.course.credits) else 0
+        bucket['enrollments'].append(enrollment)
+        bucket['credits'] += credits
+        if enrollment.status == 'COMPLETED':
+            bucket['earned_credits'] += credits
+            bucket['credit_points'] += enrollment.credit_points
+            bucket['completed_count'] += 1
+        else:
+            bucket['in_progress_count'] += 1
+        if enrollment.score is not None:
+            bucket['scored'].append(float(enrollment.score))
+
+    term_groups = []
+    for bucket in term_map.values():
+        bucket['enrollments'].sort(key=lambda e: ((e.course.code or ''), e.pk or 0))
+        bucket['count'] = len(bucket['enrollments'])
+        bucket['label'] = f"{bucket['semester_label']} · {bucket['academic_year']}"
+        bucket['gpa'] = (
+            round(bucket['credit_points'] / bucket['earned_credits'], 2)
+            if bucket['earned_credits'] else None
+        )
+        bucket['avg_score'] = (
+            round(sum(bucket['scored']) / len(bucket['scored']), 1)
+            if bucket['scored'] else None
+        )
+        term_groups.append(bucket)
+
+    term_groups.sort(
+        key=lambda t: (t['academic_year'], SEMESTER_RANK.get(t['semester'], 0)),
+        reverse=True,
+    )
+    for index, bucket in enumerate(term_groups, start=1):
+        bucket['anchor'] = f"term-{index}"
 
     summary = {
         'enrollments': enrollments,
-        'total_enrolled': len(enrollments),
+        'term_groups': term_groups,
+        'semester_count': len(term_groups),
+        'total_enrolled': len(counting_attempts),
         'completed_count': len(completed),
         'in_progress_count': len(in_progress),
         'total_credits': total_credits,

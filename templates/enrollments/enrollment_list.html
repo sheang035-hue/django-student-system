@@ -6,47 +6,64 @@
 {% block content %}
 <!-- Page Header Component -->
 {% url 'enrollments:enrollment_create' as add_enrollment_url %}
-{% include "components/_page_header.html" with title="Course Enrollments / ការចុះឈ្មោះសិក្សា" subtitle="Track student course registrations, scores, academic grades, and course completions" action_url=add_enrollment_url action_label="New Enrollment" action_icon="fa-solid fa-circle-plus" %}
+{% url 'enrollments:grade_entry' as grade_entry_url %}
+{% include "components/_page_header.html" with title="Course Enrollments / ការចុះឈ្មោះសិក្សា" subtitle="Track student course registrations, scores, academic grades, and course completions" action_url=add_enrollment_url action_label="New Enrollment" action_icon="fa-solid fa-circle-plus" secondary_url=grade_entry_url secondary_label="Grade Entry" secondary_icon="fa-solid fa-award" secondary_staff_only=True %}
 
-<!-- Toolbar Card (Search, Status Filters & CSV Export) -->
+<!-- Toolbar Card (Search, Term Filters & CSV Export) -->
 <div class="toolbar-card">
     <div class="row g-2 align-items-center">
         <div class="col-lg-9">
             <form method="get" class="row g-2 align-items-center">
-                <div class="col-md-6 col-lg-6">
+                <div class="col-md-6 col-lg-4">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
                         <input type="text" name="search" class="form-control border-start-0 ps-0" 
-                               placeholder="Search by student ID, name, or course... (Press / to focus)" 
+                               placeholder="Search student or course..."
                                value="{{ request.GET.search }}">
                         <span class="input-group-text bg-transparent border-start-0 text-muted d-none d-sm-flex">
                             <kbd class="shortcut-kbd">/</kbd>
                         </span>
                     </div>
                 </div>
-                <div class="col-md-3 col-lg-3">
+                <div class="col-6 col-md-3 col-lg-2">
                     <select name="status" class="form-select">
-                        <option value="">All Statuses / ទាំងអស់</option>
-                        <option value="ENROLLED" {% if request.GET.status == 'ENROLLED' %}selected{% endif %}>Enrolled / បានចុះឈ្មោះ</option>
-                        <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed / បានបញ្ចប់</option>
-                        <option value="DROPPED" {% if request.GET.status == 'DROPPED' %}selected{% endif %}>Dropped / បានបោះបង់</option>
-                        <option value="SUSPENDED" {% if request.GET.status == 'SUSPENDED' %}selected{% endif %}>Suspended / ព្យួរ</option>
+                        <option value="">All Statuses</option>
+                        <option value="ENROLLED" {% if request.GET.status == 'ENROLLED' %}selected{% endif %}>Enrolled</option>
+                        <option value="COMPLETED" {% if request.GET.status == 'COMPLETED' %}selected{% endif %}>Completed</option>
+                        <option value="DROPPED" {% if request.GET.status == 'DROPPED' %}selected{% endif %}>Dropped</option>
+                        <option value="SUSPENDED" {% if request.GET.status == 'SUSPENDED' %}selected{% endif %}>Suspended</option>
                     </select>
                 </div>
-                <div class="col-md-3 col-lg-3 d-flex gap-2">
+                <div class="col-6 col-md-3 col-lg-2">
+                    <select name="academic_year" class="form-select" aria-label="Filter by academic year">
+                        <option value="">All Years</option>
+                        {% for year in academic_years %}
+                        <option value="{{ year }}" {% if selected_academic_year == year %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2">
+                    <select name="semester" class="form-select" aria-label="Filter by semester">
+                        <option value="">All Semesters</option>
+                        {% for value, label in semester_choices %}
+                        <option value="{{ value }}" {% if selected_semester == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 col-lg-2 d-flex gap-2">
                     <button type="submit" class="btn btn-bbu-primary flex-grow-1 text-nowrap">
                         <i class="fa-solid fa-filter me-1"></i> Filter
                     </button>
-                    {% if request.GET.search or request.GET.status %}
-                    <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft text-nowrap" title="Clear Filters">
-                        <i class="fa-solid fa-rotate-left me-1"></i> Reset
+                    {% if request.GET.search or request.GET.status or selected_academic_year or selected_semester %}
+                    <a href="{% url 'enrollments:enrollment_list' %}" class="btn btn-bbu-soft px-2" title="Clear Filters">
+                        <i class="fa-solid fa-rotate-left"></i>
                     </a>
                     {% endif %}
                 </div>
             </form>
         </div>
         <div class="col-lg-3 d-flex justify-content-lg-end">
-            <a href="{% url 'enrollments:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of student enrollments">
+            <a href="{% url 'enrollments:export_csv' %}{% if request.GET.search %}?search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if selected_academic_year %}&academic_year={{ selected_academic_year }}{% endif %}{% if selected_semester %}&semester={{ selected_semester }}{% endif %}" class="btn btn-bbu-gold w-100 w-lg-auto text-nowrap" title="Download Excel-compatible CSV of student enrollments">
                 <i class="fa-solid fa-file-excel me-1"></i> Export CSV
             </a>
         </div>
@@ -63,6 +80,16 @@
         <span><i class="fa-solid fa-circle-check me-1 text-success"></i>Completed: <strong>{{ completed_count }}</strong></span>
     </div>
     {% endif %}
+    {% if in_progress_count is not None %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-hourglass-half me-1 text-warning"></i>In Progress: <strong>{{ in_progress_count }}</strong></span>
+    </div>
+    {% endif %}
+    {% if graded_count is not None %}
+    <div class="stat-chip">
+        <span><i class="fa-solid fa-award me-1 text-info"></i>Graded: <strong>{{ graded_count }}</strong></span>
+    </div>
+    {% endif %}
     {% if page_obj %}
     <div class="stat-chip">
         <span><i class="fa-solid fa-file-lines me-1 text-info"></i>Page: <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</strong></span>
@@ -74,7 +101,7 @@
 {% if enrollments %}
 <div class="table-bbu-wrapper">
     <div class="table-responsive">
-        <table class="table table-bbu table-bbu-responsive align-middle mb-0">
+        <table class="table table-bbu table-bbu-responsive enrollment-table align-middle mb-0">
             <thead>
                 <tr>
                     <th class="ps-3">Student / និស្សិត</th>
@@ -82,7 +109,7 @@
                     <th class="text-center col-w-100">Score</th>
                     <th class="text-center col-w-90">Grade</th>
                     <th class="text-center col-w-120">Status</th>
-                    <th class="text-center col-w-130">Date Enrolled</th>
+                    <th class="text-center col-w-130">Term / Enrolled</th>
                     <th class="text-end pe-3 col-min-160">Actions</th>
                 </tr>
             </thead>
@@ -113,7 +140,7 @@
                     <!-- Score -->
                     <td class="text-center fw-semibold" data-label="Score">
                         {% if enrollment.score is not None %}
-                            <span class="badge bg-light text-dark border px-2 py-1">{{ enrollment.score }}</span>
+                            <span class="badge bg-light text-dark border px-2 py-1">{{ enrollment.score|stringformat:"s" }}</span>
                         {% else %}
                             <span class="text-muted small">—</span>
                         {% endif %}
@@ -129,9 +156,11 @@
                         {% include "components/_status_badge.html" with status=enrollment.status %}
                     </td>
 
-                    <!-- Enrollment Date -->
-                    <td class="text-center text-muted small" data-label="Date">
-                        {{ enrollment.enrollment_date|date:"d M Y" }}
+                    <!-- Academic Term -->
+                    <td class="text-center" data-label="Term">
+                        <span class="badge badge-soft-primary">{{ enrollment.get_semester_display }}</span>
+                        <small class="d-block text-muted mt-1">{{ enrollment.academic_year }}</small>
+                        <small class="d-block text-muted">{{ enrollment.enrollment_date|date:"d M Y" }}</small>
                     </td>
 
                     <!-- Row Action Buttons -->
